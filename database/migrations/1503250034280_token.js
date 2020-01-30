@@ -1,12 +1,17 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema');
 
+const uuidv4 = require('uuid/v4');
+
 class TokensSchema extends Schema {
   up() {
     this.create('tokens', table => {
-      table.increments();
       table
-        .integer('user_id')
+        .uuid('id')
+        .primary()
+        .defaultTo(uuidv4());
+      table
+        .uuid('user_id')
         .unsigned()
         .references('id')
         .inTable('users');

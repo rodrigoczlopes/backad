@@ -3,15 +3,20 @@ const Model = use('Model');
 
 /** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash');
+const Env = use('Env');
 
 class User extends Model {
+  static get computed() {
+    return ['avatar_url'];
+  }
+
+  getAvatarUrl({ avatar }) {
+    return `${Env.get('APP_URL')}/files/${avatar || 'placeholder.png'}`;
+  }
+
   static boot() {
     super.boot();
 
-    /**
-     * A hook to hash the user password before saving
-     * it to the database.
-     */
     this.addHook('beforeSave', async userInstance => {
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password);
@@ -19,16 +24,22 @@ class User extends Model {
     });
   }
 
-  /**
-   * A relationship on tokens is required for auth to
-   * work. Since features like `refreshTokens` or
-   * `rememberToken` will be saved inside the
-   * tokens table.
-   *
-   * @method tokens
-   *
-   * @return {Object}
-   */
+  static get incrementing() {
+    return false;
+  }
+
+  createGroup() {
+    return this.hasMany('App/Models/UserGroup', 'id', 'created_by');
+  }
+
+  updateGroup() {
+    return this.hasMany('App/Models/UserGroup', 'id', 'updated_by');
+  }
+
+  userGroups() {
+    return this.belongsTo('App/Models/UserGroup');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

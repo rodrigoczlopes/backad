@@ -11,24 +11,35 @@
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory');
+const uuidv4 = require('uuid/v4');
 
 Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
   return {
-    registry: faker.integer(),
+    id: uuidv4(),
+    registry: faker.string({ length: 20 }),
     username: faker.name(),
     name: faker.name(),
     email: faker.email(),
     password: faker.string(),
-    cpf: faker.integer(),
+    cpf: faker.string({ length: 15 }),
     admitted_at: faker.date(),
-    fired_at: faker.date(),
-    deleted_at: faker.date(),
+    active: faker.bool(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/UserGroup', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    description: faker.paragraph(),
     ...data,
   };
 });
 
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
+    id: uuidv4(),
     type: data.type || 'forgotpassword',
     token: faker.string({ length: 20 }),
     ...data,

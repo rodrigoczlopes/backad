@@ -14,10 +14,26 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route');
 
-Route.post('/register', 'AuthController.register');
-Route.post('/authenticate', 'AuthController.authenticate');
-Route.post('/forgot', 'AuthController.forgot');
-Route.post('/reset', 'AuthController.reset');
+Route.post('/authenticate', 'AuthController.authenticate').validator('Auth');
+Route.post('/forgot', 'ForgotPasswordController.store').validator('ForgotPassword');
+Route.post('/reset', 'ResetPasswordController.store').validator('ResetPassword');
+Route.get('/files/:file', 'FileController.show');
+
+Route.group(() => {
+  Route.put('/profile', 'ProfileController.update').validator('Profile');
+  Route.post('/register', 'AuthController.register').validator('RegisterUser');
+
+  Route.put('/users/:id', 'UserController.update').validator('User');
+  Route.delete('/users/:id', 'UserController.destroy');
+  Route.get('/users', 'UserController.index');
+  Route.get('/users/:id', 'UserController.show');
+
+  Route.post('/usergroups', 'UserGroupController.store').validator('UserGroup');
+  Route.put('/usergroups/:id', 'UserGroupController.update').validator('UserGroup');
+  Route.delete('/usergroups/:id', 'UserGroupController.destroy');
+  Route.get('/usergroups', 'UserGroupController.index');
+  Route.get('/usergroups/:id', 'UserGroupController.show');
+}).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
 // Route.get('/app', 'AppController.index').middleware(['auth']);

@@ -1,6 +1,6 @@
 const { test, trait } = use('Test/Suite')('Forgot Password');
 
-const { subHours, format } = require('date-fns');
+const { subHours, subMinutes, format } = require('date-fns');
 
 const Mail = use('Mail');
 const Hash = use('Hash');
@@ -12,10 +12,7 @@ const Factory = use('Factory');
 trait('Test/ApiClient');
 trait('DatabaseTransactions');
 
-test('it should send an email with reset password instructions', async ({
-  assert,
-  client,
-}) => {
+test('it should send an email with reset password instructions', async ({ assert, client }) => {
   Mail.fake();
 
   const forgotPayload = {
@@ -67,9 +64,7 @@ test('it should be able to reset password', async ({ assert, client }) => {
   assert.isTrue(checkPassword);
 });
 
-test('it cannot reset password after 2h of forgot password request', async ({
-  client,
-}) => {
+test('it cannot reset password after 2h of forgot password request', async ({ client }) => {
   const forgotPayload = {
     username: '50.0145',
     email: 'mateus.silva@unimedvarginha.coop.br',
@@ -80,7 +75,7 @@ test('it cannot reset password after 2h of forgot password request', async ({
 
   await user.tokens().save(userToken);
 
-  const dateWithSub = format(subHours(new Date(), 2), 'yyyy-MM-dd HH:ii:ss');
+  const dateWithSub = format(subMinutes(subHours(new Date(), 2), 10), 'yyyy-MM-dd HH:ii:ss');
   await Database.table('tokens')
     .where('token', userToken.token)
     .update('created_at', dateWithSub);
