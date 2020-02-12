@@ -17,6 +17,13 @@ class UserSchema extends Schema {
         .inTable('user_groups')
         .onDelete('SET NULL')
         .onUpdate('CASCADE');
+      table
+        .uuid('company_id')
+        .unsigned()
+        .references('id')
+        .inTable('componies')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
       table.string('registry', 20).notNullable();
       table
         .string('username', 80)
@@ -30,7 +37,7 @@ class UserSchema extends Schema {
         .notNullable()
         .unique();
       table.string('avatar');
-      table.bool('active').notNullable();
+      table.boolean('active').notNullable();
       table.date('admitted_at').notNullable();
       table.date('fired_at');
       table.date('deleted_at');

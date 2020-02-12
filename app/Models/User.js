@@ -40,6 +40,18 @@ class User extends Model {
     return this.belongsTo('App/Models/UserGroup');
   }
 
+  createCompany() {
+    return this.hasMany('App/Models/Company', 'id', 'created_by');
+  }
+
+  updateCompany() {
+    return this.hasMany('App/Models/Company', 'id', 'updated_by');
+  }
+
+  companies() {
+    return this.belongsTo('App/Models/Company');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

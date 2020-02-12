@@ -1,27 +1,20 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema');
+
 const uuidv4 = require('uuid/v4');
 
-class DepartmentSchema extends Schema {
+class CompanySchema extends Schema {
   up() {
-    this.create('departments', table => {
+    this.create('companies', table => {
       table
         .uuid('id')
         .primary()
         .defaultTo(uuidv4());
       table
-        .uuid('company_id')
-        .unsigned()
-        .references('id')
-        .inTable('componies')
-        .onDelete('SET NULL')
-        .onUpdate('CASCADE');
-      table
-        .string('name', 250)
+        .string('name', 80)
         .unique()
         .notNullable();
-      table.string('level', 80);
-      table.integer('area_code');
+      table.integer('code');
       table
         .uuid('created_by')
         .unsigned()
@@ -37,8 +30,8 @@ class DepartmentSchema extends Schema {
   }
 
   down() {
-    this.drop('departments');
+    this.drop('companies');
   }
 }
 
-module.exports = DepartmentSchema;
+module.exports = CompanySchema;

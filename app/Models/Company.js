@@ -1,9 +1,13 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class Department extends Model {
+class Company extends Model {
   static get incrementing() {
     return false;
+  }
+
+  users() {
+    return this.hasMany('App/Models/User');
   }
 
   createdBy() {
@@ -13,6 +17,10 @@ class Department extends Model {
   updatedBy() {
     return this.belongsTo('App/Model/User', 'updated_by', 'id');
   }
+
+  departments() {
+    return this.hasMany('App/Models/Departments');
+  }
 }
 
-module.exports = Department;
+module.exports = Company;

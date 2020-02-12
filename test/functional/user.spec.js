@@ -31,7 +31,8 @@ test('it should be able to update profile', async ({ assert, client }) => {
 });
 
 test('it should be able to update user data', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
+  const userGroup = await Factory.model('App/Models/User').create();
+  const user = await Factory.model('App/Models/User').create({ user_group_id: userGroup.id });
 
   const response = await client
     .put(`/users/${user.id}`)

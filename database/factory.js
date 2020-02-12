@@ -37,6 +37,25 @@ Factory.blueprint('App/Models/UserGroup', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/Company', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    code: faker.integer(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Department', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    area_code: faker.integer(),
+    level: faker.sentence({ words: 1 }),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),

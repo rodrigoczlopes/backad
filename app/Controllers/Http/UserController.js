@@ -4,10 +4,8 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
+const Helpers = use('Helpers');
 
-/**
- * Resourceful controller for interacting with usergroups
- */
 class UserController {
   async index() {
     const users = await User.query()
@@ -29,15 +27,33 @@ class UserController {
       'registry',
       'username',
       'email',
-      'password',
-      'password_confirmation',
       'cpf',
       'active',
       'admitted_at',
       'fired_at',
     ]);
+
+    const avatar = request.file('avatar');
+
     const user = await User.find(params.id);
+    if (avatar) {
+      await avatar.move(Helpers.tmpPath('uploads'), {
+        name: `${new Date().getTime()}.${avatar.subtype}`,
+      });
+
+      if (!avatar.moved()) {
+        return avatar.error();
+      }
+
+      user.avatar = avatar.fileName;
+    }
     user.merge(data);
+
+    const password = request.input('password');
+    if (password) {
+      user.password = password;
+    }
+
     await user.save();
     return user;
   }

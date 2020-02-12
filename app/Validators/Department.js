@@ -1,7 +1,7 @@
 const { rule } = use('Validator');
 const Antl = use('Antl');
 
-class User {
+class Department {
   get validateAll() {
     return true;
   }
@@ -9,13 +9,10 @@ class User {
   get rules() {
     return {
       name: [rule('required')],
-      user_group_id: [rule('exists', ['user_groups', 'id'])],
+      area_code: [rule('integer')],
       company_id: [rule('exists', ['companies', 'id'])],
-      email: [rule('email')],
-      password: [rule('confirmed')],
-      active: [rule('boolean')],
-      admitted_at: [rule('date')],
-      fire_at: [rule('date')],
+      created_by: [rule('exists', ['users', 'id'])],
+      updated_by: [rule('exists', ['users', 'id'])],
     };
   }
 
@@ -24,4 +21,4 @@ class User {
   }
 }
 
-module.exports = User;
+module.exports = Department;

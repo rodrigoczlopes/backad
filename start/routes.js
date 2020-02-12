@@ -23,6 +23,18 @@ Route.group(() => {
   Route.put('/profile', 'ProfileController.update').validator('Profile');
   Route.post('/register', 'AuthController.register').validator('RegisterUser');
 
+  Route.post('/companies', 'CompanyController.store').validator('Company');
+  Route.put('/companies/:id', 'CompanyController.update').validator('Company');
+  Route.delete('/companies/:id', 'CompanyController.destroy');
+  Route.get('/companies', 'CompanyController.index');
+  Route.get('/companies/:id', 'CompanyController.show');
+
+  Route.post('/departments', 'DepartmentController.store').validator('Department');
+  Route.put('/departments/:id', 'DepartmentController.update').validator('Department');
+  Route.delete('/departments/:id', 'DepartmentController.destroy');
+  Route.get('/departments', 'DepartmentController.index');
+  Route.get('/departments/:id', 'DepartmentController.show');
+
   Route.put('/users/:id', 'UserController.update').validator('User');
   Route.delete('/users/:id', 'UserController.destroy');
   Route.get('/users', 'UserController.index');

@@ -9,6 +9,8 @@ class RegisterUser {
     return {
       registry: 'required',
       username: 'required|unique:users',
+      user_group_id: 'required',
+      company_id: 'required',
       name: 'required',
       email: 'required|email',
       password: 'required',

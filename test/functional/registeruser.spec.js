@@ -9,6 +9,7 @@ trait('Auth/Client');
 
 test('it should register new user', async ({ assert, client }) => {
   const userGroup = await Factory.model('App/Models/UserGroup').create();
+  const company = await Factory.model('App/Models/Company').create();
   const userPayload = {
     registry: '0145',
     username: '50.0145',
@@ -16,6 +17,7 @@ test('it should register new user', async ({ assert, client }) => {
     email: 'mateus.silva@unimedvarginha.coop.br',
     cpf: '063.602.086-01',
     user_group_id: userGroup.id,
+    company_id: company.id,
   };
 
   const loggedUser = await Factory.model('App/Models/User').create();
@@ -33,6 +35,8 @@ test('it should register new user', async ({ assert, client }) => {
 
 test('it should user be unique', async ({ client }) => {
   const userGroup = await Factory.model('App/Models/UserGroup').create();
+  const company = await Factory.model('App/Models/Company').create();
+
   const userPayload = {
     registry: '0145',
     username: '50.0145',
@@ -40,6 +44,7 @@ test('it should user be unique', async ({ client }) => {
     email: 'mateus.silva@unimedvarginha.coop.br',
     cpf: '063.602.086-01',
     user_group_id: userGroup.id,
+    company_id: company.id,
   };
 
   const loggedUser = await Factory.model('App/Models/User').create();
