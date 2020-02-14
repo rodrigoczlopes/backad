@@ -15,11 +15,23 @@ class Company extends Model {
   }
 
   updatedBy() {
-    return this.belongsTo('App/Model/User', 'updated_by', 'id');
+    return this.belongsTo('App/Models/User', 'updated_by', 'id');
   }
 
   departments() {
-    return this.hasMany('App/Models/Departments');
+    return this.hasMany('App/Models/Department');
+  }
+
+  hierarchies() {
+    return this.hasMany('App/Models/Hierarchy');
+  }
+
+  paths() {
+    return this.hasMany('App/Models/Path');
+  }
+
+  positions() {
+    return this.hasMany('App/Models/Position');
   }
 }
 

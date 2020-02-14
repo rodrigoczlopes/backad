@@ -1,93 +1,45 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with paths
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Path = use('App/Models/Path');
+
 class PathController {
-  /**
-   * Show a list of all paths.
-   * GET paths
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const paths = await Path.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .fetch();
+    return paths;
   }
 
-  /**
-   * Render a form to be used for creating a new path.
-   * GET paths/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const path = await Path.create(data);
+    return response.status(201).json(path);
   }
 
-  /**
-   * Create/save a new path.
-   * POST paths
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const path = await Path.find(params.id);
+    await path.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    return path;
   }
 
-  /**
-   * Display a single path.
-   * GET paths/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['description']);
+    const path = await Path.find(params.id);
+    path.merge(data);
+    await path.save();
+    return path;
   }
 
-  /**
-   * Render a form to update an existing path.
-   * GET paths/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const path = await Path.find(params.id);
 
-  /**
-   * Update path details.
-   * PUT or PATCH paths/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a path with id.
-   * DELETE paths/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await path.delete();
   }
 }
 
-module.exports = PathController
+module.exports = PathController;

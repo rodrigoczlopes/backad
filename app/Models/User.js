@@ -52,6 +52,50 @@ class User extends Model {
     return this.belongsTo('App/Models/Company');
   }
 
+  createDepartment() {
+    return this.hasMany('App/Models/Department', 'id', 'created_by');
+  }
+
+  updateDepartment() {
+    return this.hasMany('App/Models/Department', 'id', 'updated_by');
+  }
+
+  departments() {
+    return this.belongsTo('App/Models/Department');
+  }
+
+  createPath() {
+    return this.hasMany('App/Models/Path', 'id', 'created_by');
+  }
+
+  updatePath() {
+    return this.hasMany('App/Models/Path', 'id', 'updated_by');
+  }
+
+  positions() {
+    return this.belongsTo('App/Models/Position');
+  }
+
+  createPosition() {
+    return this.hasMany('App/Models/Position', 'id', 'created_by');
+  }
+
+  updatePosition() {
+    return this.hasMany('App/Models/Position', 'id', 'updated_by');
+  }
+
+  hierarchies() {
+    return this.belongsTo('App/Models/Hierarchy');
+  }
+
+  createHierarchy() {
+    return this.hasMany('App/Models/Hierarchy', 'id', 'created_by');
+  }
+
+  updateHierarchy() {
+    return this.hasMany('App/Models/Hierarchy', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

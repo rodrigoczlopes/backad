@@ -8,7 +8,7 @@ class UserGroup {
 
   get rules() {
     return {
-      name: [rule('required')],
+      name: [rule('required'), rule('unique', ['user_groups'])],
       description: [rule('required')],
       created_by: [rule('exists', ['users', 'id'])],
       updated_by: [rule('exists', ['users', 'id'])],

@@ -56,6 +56,33 @@ Factory.blueprint('App/Models/Department', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/Path', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 2 }),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Position', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 2 }),
+    position_code: faker.integer(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Hierarchy', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 2 }),
+    level: faker.sentence({ words: 1 }),
+    active: faker.bool(),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),

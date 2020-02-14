@@ -1,93 +1,50 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with positions
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Position = use('App/Models/Position');
+
 class PositionController {
-  /**
-   * Show a list of all positions.
-   * GET positions
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const positions = await Position.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .with('paths')
+      .fetch();
+    return positions;
   }
 
-  /**
-   * Render a form to be used for creating a new position.
-   * GET positions/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const position = await Position.create(data);
+    return response.status(201).json(position);
   }
 
-  /**
-   * Create/save a new position.
-   * POST positions
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const position = await Position.find(params.id);
+    await position.loadMany({
+      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+      companies: null,
+      paths: null,
+    });
+    return position;
   }
 
-  /**
-   * Display a single position.
-   * GET positions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['description', 'position_code']);
+    const position = await Position.find(params.id);
+    position.merge(data);
+    await position.save();
+    return position;
   }
 
-  /**
-   * Render a form to update an existing position.
-   * GET positions/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const position = await Position.find(params.id);
 
-  /**
-   * Update position details.
-   * PUT or PATCH positions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a position with id.
-   * DELETE positions/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await position.delete();
   }
 }
 
-module.exports = PositionController
+module.exports = PositionController;

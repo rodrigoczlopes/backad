@@ -24,6 +24,7 @@ class UserController {
     const data = request.only([
       'name',
       'user_group_id',
+      'company_id',
       'registry',
       'username',
       'email',

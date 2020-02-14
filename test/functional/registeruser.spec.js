@@ -23,7 +23,7 @@ test('it should register new user', async ({ assert, client }) => {
   const loggedUser = await Factory.model('App/Models/User').create();
   let user = await Factory.model('App/Models/User').make(userPayload);
   user = user.toJSON();
-  delete user.avatar_url;
+  delete user.avatar_url; // Deleting this field because when make toJSON on upper row this field is auto generated
   const response = await client
     .post('/register')
     .loginVia(loggedUser, 'jwt')
@@ -50,17 +50,22 @@ test('it should user be unique', async ({ client }) => {
   const loggedUser = await Factory.model('App/Models/User').create();
   let user = await Factory.model('App/Models/User').make(userPayload);
   user = user.toJSON();
-  delete user.avatar_url;
+  delete user.avatar_url; // Deleting this field because when make toJSON on upper row this field is auto generated
+
   const response = await client
     .post('/register')
     .loginVia(loggedUser, 'jwt')
     .send(user)
     .end();
 
+  let userDuplicate = await Factory.model('App/Models/User').make(userPayload);
+  userDuplicate = userDuplicate.toJSON();
+  delete userDuplicate.avatar_url; // Deleting this field because when make toJSON on upper row this field is auto generated
+
   const responseDuplicate = await client
     .post('/register')
     .loginVia(loggedUser, 'jwt')
-    .send(user)
+    .send(userDuplicate)
     .end();
 
   response.assertStatus(201);

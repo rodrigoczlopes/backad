@@ -53,7 +53,7 @@ test('it cannot be able to register a duplicate user group', async ({ client }) 
     .loginVia(user, 'jwt')
     .send(userGroupDuplicated.toJSON())
     .end();
-  responseDuplicate.assertStatus(500);
+  responseDuplicate.assertStatus(400);
 });
 
 test('it should be able to list users groups', async ({ assert, client }) => {

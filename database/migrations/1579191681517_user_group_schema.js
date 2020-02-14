@@ -10,10 +10,7 @@ class UserGroupSchema extends Schema {
         .uuid('id')
         .primary()
         .defaultTo(uuidv4());
-      table
-        .string('name', 80)
-        .unique()
-        .notNullable();
+      table.string('name', 80).notNullable();
       table.text('description');
       table
         .string('color')

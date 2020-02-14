@@ -35,6 +35,24 @@ Route.group(() => {
   Route.get('/departments', 'DepartmentController.index');
   Route.get('/departments/:id', 'DepartmentController.show');
 
+  Route.post('/hierarchies', 'HierarchyController.store').validator('Hierarchy');
+  Route.put('/hierarchies/:id', 'HierarchyController.update').validator('Hierarchy');
+  Route.delete('/hierarchies/:id', 'HierarchyController.destroy');
+  Route.get('/hierarchies', 'HierarchyController.index');
+  Route.get('/hierarchies/:id', 'HierarchyController.show');
+
+  Route.post('/paths', 'PathController.store').validator('Path');
+  Route.put('/paths/:id', 'PathController.update').validator('Path');
+  Route.delete('/paths/:id', 'PathController.destroy');
+  Route.get('/paths', 'PathController.index');
+  Route.get('/paths/:id', 'PathController.show');
+
+  Route.post('/positions', 'PositionController.store').validator('Position');
+  Route.put('/positions/:id', 'PositionController.update').validator('Position');
+  Route.delete('/positions/:id', 'PositionController.destroy');
+  Route.get('/positions', 'PositionController.index');
+  Route.get('/positions/:id', 'PositionController.show');
+
   Route.put('/users/:id', 'UserController.update').validator('User');
   Route.delete('/users/:id', 'UserController.destroy');
   Route.get('/users', 'UserController.index');

@@ -1,93 +1,45 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with hierarchies
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Hierarchy = use('App/Models/Hierarchy');
+
 class HierarchyController {
-  /**
-   * Show a list of all hierarchies.
-   * GET hierarchies
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const hierarchies = await Hierarchy.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .fetch();
+    return hierarchies;
   }
 
-  /**
-   * Render a form to be used for creating a new hierarchy.
-   * GET hierarchies/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const hierarchy = await Hierarchy.create(data);
+    return response.status(201).json(hierarchy);
   }
 
-  /**
-   * Create/save a new hierarchy.
-   * POST hierarchies
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const hierarchy = await Hierarchy.find(params.id);
+    await hierarchy.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    return hierarchy;
   }
 
-  /**
-   * Display a single hierarchy.
-   * GET hierarchies/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['description', 'level', 'active']);
+    const hierarchy = await Hierarchy.find(params.id);
+    hierarchy.merge(data);
+    await hierarchy.save();
+    return hierarchy;
   }
 
-  /**
-   * Render a form to update an existing hierarchy.
-   * GET hierarchies/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const hierarchy = await Hierarchy.find(params.id);
 
-  /**
-   * Update hierarchy details.
-   * PUT or PATCH hierarchies/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a hierarchy with id.
-   * DELETE hierarchies/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await hierarchy.delete();
   }
 }
 
-module.exports = HierarchyController
+module.exports = HierarchyController;

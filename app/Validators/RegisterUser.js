@@ -1,3 +1,4 @@
+const { rule } = use('Validator');
 const Antl = use('Antl');
 
 class RegisterUser {
@@ -7,17 +8,17 @@ class RegisterUser {
 
   get rules() {
     return {
-      registry: 'required',
-      username: 'required|unique:users',
-      user_group_id: 'required',
-      company_id: 'required',
-      name: 'required',
-      email: 'required|email',
-      password: 'required',
-      cpf: 'required',
-      admitted_at: 'required|date',
-      fired_at: 'date',
-      deleted_at: 'date',
+      registry: [rule('required')],
+      username: [rule('required'), rule('unique_combination', ['users', 'company_id'])],
+      user_group_id: [rule('required')],
+      company_id: [rule('exists', ['companies', 'id'])],
+      name: [rule('required')],
+      email: [rule('required'), rule('email')],
+      password: [rule('required')],
+      cpf: [rule('required'), rule('unique', 'users')],
+      admitted_at: [rule('required'), rule('date')],
+      fired_at: [rule('date')],
+      deleted_at: [rule('date')],
     };
   }
 

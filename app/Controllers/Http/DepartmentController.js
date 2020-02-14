@@ -6,11 +6,12 @@
 const Department = use('App/Models/Department');
 
 class DepartmentController {
-  async index({ request, response, view }) {
+  async index() {
     const departments = await Department.query()
       .with('createdBy', builder => {
         builder.select(['id', 'name', 'email', 'avatar']);
-      }).with()
+      })
+      .with('companies')
       .fetch();
     return departments;
   }
@@ -21,11 +22,25 @@ class DepartmentController {
     return response.status(201).json(department);
   }
 
-  async show({ params, request, response, view }) {}
+  async show({ params }) {
+    const department = await Department.find(params.id);
+    await department.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    return department;
+  }
 
-  async update({ params, request, response }) {}
+  async update({ params, request }) {
+    const data = request.only(['name', 'level', 'area_code']);
+    const department = await Department.find(params.id);
+    department.merge(data);
+    await department.save();
+    return department;
+  }
 
-  async destroy({ params, request, response }) {}
+  async destroy({ params }) {
+    const department = await Department.find(params.id);
+
+    await department.delete();
+  }
 }
 
 module.exports = DepartmentController;

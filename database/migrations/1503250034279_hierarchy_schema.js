@@ -3,14 +3,23 @@ const Schema = use('Schema');
 
 const uuidv4 = require('uuid/v4');
 
-class PathSchema extends Schema {
+class HierarchySchema extends Schema {
   up() {
-    this.create('paths', table => {
+    this.create('hierarchies', table => {
       table
         .uuid('id')
         .primary()
         .defaultTo(uuidv4());
+      table
+        .uuid('company_id')
+        .unsigned()
+        .references('id')
+        .inTable('companies')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
       table.string('description', 250);
+      table.string('level', 250);
+      table.boolean('active').notNullable();
       table
         .uuid('created_by')
         .unsigned()
@@ -28,8 +37,8 @@ class PathSchema extends Schema {
   }
 
   down() {
-    this.drop('paths');
+    this.drop('hierarchies');
   }
 }
 
-module.exports = PathSchema;
+module.exports = HierarchySchema;

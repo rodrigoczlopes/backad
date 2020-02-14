@@ -11,7 +11,11 @@ class Department extends Model {
   }
 
   updatedBy() {
-    return this.belongsTo('App/Model/User', 'updated_by', 'id');
+    return this.belongsTo('App/Models/User', 'updated_by', 'id');
+  }
+
+  companies() {
+    return this.belongsTo('App/Models/Company', 'company_id', 'id');
   }
 }
 

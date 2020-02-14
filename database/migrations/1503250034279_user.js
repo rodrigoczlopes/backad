@@ -21,21 +21,36 @@ class UserSchema extends Schema {
         .uuid('company_id')
         .unsigned()
         .references('id')
-        .inTable('componies')
+        .inTable('companies')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
+      table
+        .uuid('department_id')
+        .unsigned()
+        .references('id')
+        .inTable('departments')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
+      table
+        .uuid('position_id')
+        .unsigned()
+        .references('id')
+        .inTable('positions')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
+      table
+        .uuid('hierarchy_id')
+        .unsigned()
+        .references('id')
+        .inTable('hierarchies')
         .onDelete('SET NULL')
         .onUpdate('CASCADE');
       table.string('registry', 20).notNullable();
-      table
-        .string('username', 80)
-        .notNullable()
-        .unique();
+      table.string('username', 80).notNullable();
       table.string('name', 80).notNullable();
       table.string('email', 254).notNullable();
       table.string('password', 60).notNullable();
-      table
-        .string('cpf', 15)
-        .notNullable()
-        .unique();
+      table.string('cpf', 15).notNullable();
       table.string('avatar');
       table.boolean('active').notNullable();
       table.date('admitted_at').notNullable();

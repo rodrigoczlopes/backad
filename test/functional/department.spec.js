@@ -2,7 +2,7 @@ const { test, trait } = use('Test/Suite')('Department');
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory');
-// const Department = use('App/Models/Department');
+const Department = use('App/Models/Department');
 
 trait('Test/ApiClient');
 trait('DatabaseTransactions');
@@ -25,7 +25,7 @@ test('it should be able to create department', async ({ client }) => {
   response.assertStatus(201);
 });
 
-test('it cannot be able to register a duplicate department', async ({ client }) => {
+test('it should not be able to register a duplicate department', async ({ client }) => {
   const user = await Factory.model('App/Models/User').create();
   const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
   const department = await Factory.model('App/Models/Department').make({
@@ -57,19 +57,18 @@ test('it cannot be able to register a duplicate department', async ({ client }) 
     .loginVia(user, 'jwt')
     .send(departmentDuplicated.toJSON())
     .end();
-  responseDuplicate.assertStatus(500);
+  responseDuplicate.assertStatus(400);
 });
 
 test('it should be able to list departments', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
   const department = await Factory.model('App/Models/Department').make({ company_id: company.id, created_by: user.id });
 
-  await user.createCompany().save(company);
   await company.departments().save(department);
 
   const response = await client
-    .get('/companies')
+    .get('/departments')
     .loginVia(user, 'jwt')
     .end();
 
@@ -77,54 +76,59 @@ test('it should be able to list departments', async ({ assert, client }) => {
 
   assert.equal(response.body[0].name, department.name);
   assert.equal(response.body[0].createdBy.id, user.id);
+  assert.equal(response.body[0].companies.name, 'OrangeDev');
 });
 
-// test('it should be able to show single company', async ({ assert, client }) => {
-//   const user = await Factory.model('App/Models/User').create();
-//   const company = await Factory.model('App/Models/Company').create({ created_by: user.id, updated_by: user.id });
+test('it should be able to show single department', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create();
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
+  const department = await Factory.model('App/Models/Department').make({ company_id: company.id, created_by: user.id });
 
-//   await user.createGroup().save(company);
+  await company.departments().save(department);
 
-//   const response = await client
-//     .get(`/companies/${company.id}`)
-//     .loginVia(user, 'jwt')
-//     .end();
+  const response = await client
+    .get(`/departments/${department.id}`)
+    .loginVia(user, 'jwt')
+    .end();
 
-//   response.assertStatus(200);
+  response.assertStatus(200);
 
-//   assert.equal(response.body.name, company.name);
-//   assert.equal(response.body.createdBy.id, user.id);
-// });
+  assert.equal(response.body.name, department.name);
+  assert.equal(response.body.createdBy.id, user.id);
+  assert.equal(response.body.companies.name, 'OrangeDev');
+});
 
-// test('it should be able to update company', async ({ assert, client }) => {
-//   const user = await Factory.model('App/Models/User').create();
-//   const company = await Factory.model('App/Models/Company').create({ updated_by: user.id });
+test('it should be able to update department', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create();
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
+  const department = await Factory.model('App/Models/Department').make({ company_id: company.id, created_by: user.id });
 
-//   await user.createGroup().save(company);
+  await company.departments().save(department);
 
-//   const response = await client
-//     .put(`/companies/${company.id}`)
-//     .loginVia(user, 'jwt')
-//     .send({ ...company.toJSON(), name: 'Unimed Três Pontas Cooperativa de Trabalho Médico' })
-//     .end();
+  const response = await client
+    .put(`/departments/${department.id}`)
+    .loginVia(user, 'jwt')
+    .send({ ...department.toJSON(), name: 'Tecnologia da Informação' })
+    .end();
 
-//   response.assertStatus(200);
+  response.assertStatus(200);
 
-//   assert.equal(response.body.name, 'Unimed Três Pontas Cooperativa de Trabalho Médico');
-// });
+  assert.equal(response.body.name, 'Tecnologia da Informação');
+});
 
-// test('it should be able to delete company', async ({ assert, client }) => {
-//   const user = await Factory.model('App/Models/User').create();
-//   const company = await Factory.model('App/Models/Company').create({ updated_by: user.id });
+test('it should be able to delete department', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create();
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
+  const department = await Factory.model('App/Models/Department').make({ company_id: company.id, created_by: user.id });
 
-//   await user.createGroup().save(company);
+  await company.departments().save(department);
 
-//   const response = await client
-//     .delete(`/companies/${company.id}`)
-//     .loginVia(user, 'jwt')
-//     .end();
+  const response = await client
+    .delete(`/departments/${department.id}`)
+    .loginVia(user, 'jwt')
+    .end();
 
-//   response.assertStatus(204);
-//   const checkCompany = await Company.find(company.id);
-//   assert.isNull(checkCompany);
-// });
+  response.assertStatus(204);
+  const checkDepartment = await Department.find(company.id);
+  assert.isNull(checkDepartment);
+});
