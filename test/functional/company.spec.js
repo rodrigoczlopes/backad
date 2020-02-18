@@ -53,7 +53,7 @@ test('it cannot be able to register a duplicate company', async ({ client }) => 
     .loginVia(user, 'jwt')
     .send(companyDuplicated.toJSON())
     .end();
-  responseDuplicate.assertStatus(500);
+  responseDuplicate.assertStatus(400);
 });
 
 test('it should be able to list companies', async ({ assert, client }) => {

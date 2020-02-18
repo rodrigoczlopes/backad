@@ -8,7 +8,7 @@ class Company {
 
   get rules() {
     return {
-      name: [rule('required')],
+      name: [rule('required'), rule('unique', ['companies', 'name'])],
       code: [rule('integer'), rule('required')],
       created_by: [rule('exists', ['users', 'id'])],
       updated_by: [rule('exists', ['users', 'id'])],

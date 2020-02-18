@@ -22,16 +22,25 @@ class CustomValidationProvider extends ServiceProvider {
     if (!value) {
       return;
     }
-    const [table, column] = args;
+    const [table, ...columns] = args;
+
+    const multipleClauses = columns.reduce(
+      (oldObject, column) => ({
+        ...oldObject,
+        [column]: data[column],
+      }),
+      {}
+    );
+
+    const where = { ...multipleClauses, [field]: value };
+
     const row = data.id
       ? await Database.table(table)
-          .where(field, value)
-          .where(column, data[column])
+          .where(where)
           .whereNot('id', data.id)
           .first()
       : await Database.table(table)
-          .where(field, value)
-          .where(column, data[column])
+          .where(where)
           .first();
     if (row) {
       throw message;
