@@ -33,6 +33,14 @@ class Company extends Model {
   positions() {
     return this.hasMany('App/Models/Position');
   }
+
+  skills() {
+    return this.hasMany('App/Models/Skill');
+  }
+
+  behaviors() {
+    return this.hasMany('App/Models/Behavior');
+  }
 }
 
 module.exports = Company;

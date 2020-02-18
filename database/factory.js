@@ -83,6 +83,25 @@ Factory.blueprint('App/Models/Hierarchy', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/Skill', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    description: faker.sentence({ words: 20 }),
+    active: faker.bool(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Behavior', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 20 }),
+    active: faker.bool(),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),

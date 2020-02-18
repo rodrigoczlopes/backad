@@ -19,6 +19,7 @@ class DepartmentSchema extends Schema {
       table.string('name', 250).notNullable();
       table.string('level', 80);
       table.integer('area_code');
+      table.boolean('active');
       table
         .uuid('created_by')
         .unsigned()

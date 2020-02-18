@@ -178,6 +178,6 @@ test('it should be able to delete position', async ({ assert, client }) => {
     .end();
 
   response.assertStatus(204);
-  const checkPosition = await Position.find(company.id);
+  const checkPosition = await Position.find(position.id);
   assert.isNull(checkPosition);
 });

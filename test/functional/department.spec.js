@@ -129,6 +129,6 @@ test('it should be able to delete department', async ({ assert, client }) => {
     .end();
 
   response.assertStatus(204);
-  const checkDepartment = await Department.find(company.id);
+  const checkDepartment = await Department.find(department.id);
   assert.isNull(checkDepartment);
 });

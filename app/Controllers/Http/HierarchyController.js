@@ -28,7 +28,7 @@ class HierarchyController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['description', 'level', 'active']);
+    const data = request.only(['description', 'level', 'company_id', 'active']);
     const hierarchy = await Hierarchy.find(params.id);
     hierarchy.merge(data);
     await hierarchy.save();

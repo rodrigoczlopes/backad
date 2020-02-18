@@ -28,7 +28,7 @@ class PathController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['description']);
+    const data = request.only(['description', 'company_id']);
     const path = await Path.find(params.id);
     path.merge(data);
     await path.save();

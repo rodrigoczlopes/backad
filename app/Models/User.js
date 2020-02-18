@@ -96,6 +96,22 @@ class User extends Model {
     return this.hasMany('App/Models/Hierarchy', 'id', 'updated_by');
   }
 
+  createSkill() {
+    return this.hasMany('App/Models/Skill', 'id', 'created_by');
+  }
+
+  updateSkill() {
+    return this.hasMany('App/Models/Skill', 'id', 'updated_by');
+  }
+
+  createBehavior() {
+    return this.hasMany('App/Models/Behavior', 'id', 'created_by');
+  }
+
+  updateBehavior() {
+    return this.hasMany('App/Models/Behavior', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

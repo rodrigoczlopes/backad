@@ -1,93 +1,45 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with behaviors
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Behavior = use('App/Models/Behavior');
+
 class BehaviorController {
-  /**
-   * Show a list of all behaviors.
-   * GET behaviors
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const behaviors = await Behavior.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .fetch();
+    return behaviors;
   }
 
-  /**
-   * Render a form to be used for creating a new behavior.
-   * GET behaviors/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const behavior = await Behavior.create(data);
+    return response.status(201).json(behavior);
   }
 
-  /**
-   * Create/save a new behavior.
-   * POST behaviors
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const behavior = await Behavior.find(params.id);
+    await behavior.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    return behavior;
   }
 
-  /**
-   * Display a single behavior.
-   * GET behaviors/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['description', 'path_id', 'skill_id', 'company_id', 'active']);
+    const behavior = await Behavior.find(params.id);
+    behavior.merge(data);
+    await behavior.save();
+    return behavior;
   }
 
-  /**
-   * Render a form to update an existing behavior.
-   * GET behaviors/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update behavior details.
-   * PUT or PATCH behaviors/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a behavior with id.
-   * DELETE behaviors/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy({ params }) {
+    const behavior = await Behavior.find(params.id);
+    await behavior.delete();
   }
 }
 
-module.exports = BehaviorController
+module.exports = BehaviorController;

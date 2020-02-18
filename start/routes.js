@@ -23,6 +23,12 @@ Route.group(() => {
   Route.put('/profile', 'ProfileController.update').validator('Profile');
   Route.post('/register', 'AuthController.register').validator('RegisterUser');
 
+  Route.post('/behaviors', 'BehaviorController.store').validator('Behavior');
+  Route.put('/behaviors/:id', 'BehaviorController.update').validator('Behavior');
+  Route.delete('/behaviors/:id', 'BehaviorController.destroy');
+  Route.get('/behaviors', 'BehaviorController.index');
+  Route.get('/behaviors/:id', 'BehaviorController.show');
+
   Route.post('/companies', 'CompanyController.store').validator('Company');
   Route.put('/companies/:id', 'CompanyController.update').validator('Company');
   Route.delete('/companies/:id', 'CompanyController.destroy');
@@ -52,6 +58,12 @@ Route.group(() => {
   Route.delete('/positions/:id', 'PositionController.destroy');
   Route.get('/positions', 'PositionController.index');
   Route.get('/positions/:id', 'PositionController.show');
+
+  Route.post('/skills', 'SkillController.store').validator('Skill');
+  Route.put('/skills/:id', 'SkillController.update').validator('Skill');
+  Route.delete('/skills/:id', 'SkillController.destroy');
+  Route.get('/skills', 'SkillController.index');
+  Route.get('/skills/:id', 'SkillController.show');
 
   Route.put('/users/:id', 'UserController.update').validator('User');
   Route.delete('/users/:id', 'UserController.destroy');

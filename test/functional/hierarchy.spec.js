@@ -151,6 +151,6 @@ test('it should be able to delete hierarchy', async ({ assert, client }) => {
     .end();
 
   response.assertStatus(204);
-  const checkHierarchy = await Hierarchy.find(company.id);
+  const checkHierarchy = await Hierarchy.find(hierarchy.id);
   assert.isNull(checkHierarchy);
 });

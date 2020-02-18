@@ -10,6 +10,13 @@ class UserGroupSchema extends Schema {
         .uuid('id')
         .primary()
         .defaultTo(uuidv4());
+      table
+        .uuid('company_id')
+        .unsigned()
+        .references('id')
+        .inTable('companies')
+        .onDelete('SET NULL')
+        .onUpdate('CASCADE');
       table.string('name', 80).notNullable();
       table.text('description');
       table

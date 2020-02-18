@@ -1,15 +1,16 @@
 const { rule } = use('Validator');
 const Antl = use('Antl');
 
-class UserGroup {
+class Behavior {
   get validateAll() {
     return true;
   }
 
   get rules() {
     return {
-      name: [rule('required'), rule('unique', ['user_groups'])],
       description: [rule('required')],
+      path_id: [rule('required'), rule('exists', ['paths', 'id'])],
+      skill_id: [rule('required'), rule('exists', ['skills', 'id'])],
       company_id: [rule('exists', ['companies', 'id'])],
       created_by: [rule('exists', ['users', 'id'])],
       updated_by: [rule('exists', ['users', 'id'])],
@@ -21,4 +22,4 @@ class UserGroup {
   }
 }
 
-module.exports = UserGroup;
+module.exports = Behavior;
