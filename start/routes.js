@@ -41,6 +41,18 @@ Route.group(() => {
   Route.get('/departments', 'DepartmentController.index');
   Route.get('/departments/:id', 'DepartmentController.show');
 
+  Route.post('/developmentplans', 'DevelopmentPlanController.store').validator('DevelopmentPlan');
+  Route.put('/developmentplans/:id', 'DevelopmentPlanController.update').validator('DevelopmentPlan');
+  Route.delete('/developmentplans/:id', 'DevelopmentPlanController.destroy');
+  Route.get('/developmentplans', 'DevelopmentPlanController.index');
+  Route.get('/developmentplans/:id', 'DevelopmentPlanController.show');
+
+  Route.post('/evaluationcycles', 'EvaluationCycleController.store').validator('EvaluationCycle');
+  Route.put('/evaluationcycles/:id', 'EvaluationCycleController.update').validator('EvaluationCycle');
+  Route.delete('/evaluationcycles/:id', 'EvaluationCycleController.destroy');
+  Route.get('/evaluationcycles', 'EvaluationCycleController.index');
+  Route.get('/evaluationcycles/:id', 'EvaluationCycleController.show');
+
   Route.post('/hierarchies', 'HierarchyController.store').validator('Hierarchy');
   Route.put('/hierarchies/:id', 'HierarchyController.update').validator('Hierarchy');
   Route.delete('/hierarchies/:id', 'HierarchyController.destroy');

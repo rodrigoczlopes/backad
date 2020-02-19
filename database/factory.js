@@ -102,6 +102,39 @@ Factory.blueprint('App/Models/Behavior', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/DevelopmentPlan', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    action: faker.sentence({ words: 2 }),
+    description: faker.sentence({ words: 20 }),
+    active: faker.bool(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/EvaluationCycle', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 6 }),
+    initial_evaluation_period: faker.date(),
+    final_evaluation_period: faker.date(),
+    initial_manager_feedback: faker.date(),
+    final_manager_feedback: faker.date(),
+    complexity_level: faker.bool(),
+    justificative: faker.bool(),
+    comment: faker.bool(),
+    make_report_available: faker.integer([1, 5]),
+    average_type: faker.integer([1, 5]),
+    feedback_type: faker.integer([1, 5]),
+    quantity_pair: faker.integer([1, 5]),
+    quantity_subordinate: faker.integer([1, 5]),
+    quantity_manager: faker.integer([1, 5]),
+    quantity_inferior: faker.integer([1, 5]),
+    quantity_superior: faker.integer([1, 5]),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),

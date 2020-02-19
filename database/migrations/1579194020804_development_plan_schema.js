@@ -19,6 +19,16 @@ class DevelopmentPlanSchema extends Schema {
       table.string('action', 250).notNullable();
       table.string('description', 1000).notNullable();
       table.boolean('active');
+      table
+        .uuid('created_by')
+        .unsigned()
+        .references('id')
+        .inTable('users');
+      table
+        .uuid('updated_by')
+        .unsigned()
+        .references('id')
+        .inTable('users');
       table.timestamps();
     });
   }

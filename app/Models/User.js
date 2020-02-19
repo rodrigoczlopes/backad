@@ -112,6 +112,14 @@ class User extends Model {
     return this.hasMany('App/Models/Behavior', 'id', 'updated_by');
   }
 
+  createDevelopmentPlan() {
+    return this.hasMany('App/Models/DevelopmentPlan', 'id', 'created_by');
+  }
+
+  updateDevelopmentPlan() {
+    return this.hasMany('App/Models/DevelopmentPlan', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

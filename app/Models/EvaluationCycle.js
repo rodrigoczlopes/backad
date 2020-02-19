@@ -1,7 +1,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class DevelopmentPlan extends Model {
+class EvaluationCycle extends Model {
   static get incrementing() {
     return false;
   }
@@ -17,6 +17,14 @@ class DevelopmentPlan extends Model {
   companies() {
     return this.belongsTo('App/Models/Company', 'company_id', 'id');
   }
+
+  evaluationCycleAreas() {
+    return this.hasMany('App/Models/EvaluationCycleArea');
+  }
+
+  evaluationCycleLevels() {
+    return this.hasMany('App/Models/EvaluationCycleLevel');
+  }
 }
 
-module.exports = DevelopmentPlan;
+module.exports = EvaluationCycle;

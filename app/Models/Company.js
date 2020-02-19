@@ -41,6 +41,14 @@ class Company extends Model {
   behaviors() {
     return this.hasMany('App/Models/Behavior');
   }
+
+  developmentPlans() {
+    return this.hasMany('App/Models/DevelopmentPlan');
+  }
+
+  evaluationCycles() {
+    return this.hasMany('App/Models/EvaluationCycle');
+  }
 }
 
 module.exports = Company;

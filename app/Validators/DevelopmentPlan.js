@@ -8,7 +8,7 @@ class DevelopmentPlan {
 
   get rules() {
     return {
-      name: [rule('required'), rule('unique_combination', ['development_plans', 'company_id'])],
+      action: [rule('required'), rule('unique_combination', ['development_plans', 'company_id'])],
       description: [rule('required')],
       company_id: [rule('exists', ['companies', 'id'])],
       created_by: [rule('exists', ['users', 'id'])],
