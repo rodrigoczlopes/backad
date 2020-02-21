@@ -6,6 +6,14 @@ class EvaluationCycleLevel extends Model {
     return false;
   }
 
+  createdBy() {
+    return this.belongsTo('App/Models/User', 'created_by', 'id');
+  }
+
+  updatedBy() {
+    return this.belongsTo('App/Models/User', 'updated_by', 'id');
+  }
+
   evaluationCycles() {
     return this.belongsTo('App/Models/EvaluationCycle');
   }

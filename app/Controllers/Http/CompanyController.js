@@ -32,7 +32,7 @@ class UserGroupController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['name', 'code']);
+    const data = request.only(['name', 'code', 'updated_by']);
     const company = await Company.find(params.id);
     company.merge(data);
     await company.save();

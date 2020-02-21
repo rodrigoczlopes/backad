@@ -47,11 +47,23 @@ Route.group(() => {
   Route.get('/developmentplans', 'DevelopmentPlanController.index');
   Route.get('/developmentplans/:id', 'DevelopmentPlanController.show');
 
+  Route.post('/evaluationcycleareas', 'EvaluationCycleAreaController.store').validator('EvaluationCycleArea');
+  Route.put('/evaluationcycleareas/:id', 'EvaluationCycleAreaController.update').validator('EvaluationCycleArea');
+  Route.delete('/evaluationcycleareas/:id', 'EvaluationCycleAreaController.destroy');
+  Route.get('/evaluationcycleareas', 'EvaluationCycleAreaController.index');
+  Route.get('/evaluationcycleareas/:id', 'EvaluationCycleAreaController.show');
+
   Route.post('/evaluationcycles', 'EvaluationCycleController.store').validator('EvaluationCycle');
   Route.put('/evaluationcycles/:id', 'EvaluationCycleController.update').validator('EvaluationCycle');
   Route.delete('/evaluationcycles/:id', 'EvaluationCycleController.destroy');
   Route.get('/evaluationcycles', 'EvaluationCycleController.index');
   Route.get('/evaluationcycles/:id', 'EvaluationCycleController.show');
+
+  Route.post('/evaluationcyclelevels', 'EvaluationCycleLevelController.store').validator('EvaluationCycleLevel');
+  Route.put('/evaluationcyclelevels/:id', 'EvaluationCycleLevelController.update').validator('EvaluationCycleLevel');
+  Route.delete('/evaluationcyclelevels/:id', 'EvaluationCycleLevelController.destroy');
+  Route.get('/evaluationcyclelevels', 'EvaluationCycleLevelController.index');
+  Route.get('/evaluationcyclelevels/:id', 'EvaluationCycleLevelController.show');
 
   Route.post('/hierarchies', 'HierarchyController.store').validator('Hierarchy');
   Route.put('/hierarchies/:id', 'HierarchyController.update').validator('Hierarchy');
@@ -70,6 +82,12 @@ Route.group(() => {
   Route.delete('/positions/:id', 'PositionController.destroy');
   Route.get('/positions', 'PositionController.index');
   Route.get('/positions/:id', 'PositionController.show');
+
+  Route.post('/ratingscales', 'RatingScaleController.store').validator('RatingScale');
+  Route.put('/ratingscales/:id', 'RatingScaleController.update').validator('RatingScale');
+  Route.delete('/ratingscales/:id', 'RatingScaleController.destroy');
+  Route.get('/ratingscales', 'RatingScaleController.index');
+  Route.get('/ratingscales/:id', 'RatingScaleController.show');
 
   Route.post('/skills', 'SkillController.store').validator('Skill');
   Route.put('/skills/:id', 'SkillController.update').validator('Skill');

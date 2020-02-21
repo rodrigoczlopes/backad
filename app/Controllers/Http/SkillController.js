@@ -29,7 +29,7 @@ class SkillController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['name', 'description', 'company_id', 'active']);
+    const data = request.only(['name', 'description', 'company_id', 'active', 'updated_by']);
     const skill = await Skill.find(params.id);
     skill.merge(data);
     await skill.save();

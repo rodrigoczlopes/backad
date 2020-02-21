@@ -1,93 +1,46 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with ratingscales
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const RatingScale = use('App/Models/RatingScale');
+
 class RatingScaleController {
-  /**
-   * Show a list of all ratingscales.
-   * GET ratingscales
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const ratingScale = await RatingScale.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .fetch();
+    return ratingScale;
   }
 
-  /**
-   * Render a form to be used for creating a new ratingscale.
-   * GET ratingscales/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const ratingScale = await RatingScale.create(data);
+    return response.status(201).json(ratingScale);
   }
 
-  /**
-   * Create/save a new ratingscale.
-   * POST ratingscales
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const ratingScale = await RatingScale.find(params.id);
+    await ratingScale.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    return ratingScale;
   }
 
-  /**
-   * Display a single ratingscale.
-   * GET ratingscales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['name', 'description', 'company_id', 'updated_by']);
+    const ratingScale = await RatingScale.find(params.id);
+    ratingScale.merge(data);
+    await ratingScale.save();
+    return ratingScale;
   }
 
-  /**
-   * Render a form to update an existing ratingscale.
-   * GET ratingscales/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const ratingScale = await RatingScale.find(params.id);
 
-  /**
-   * Update ratingscale details.
-   * PUT or PATCH ratingscales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a ratingscale with id.
-   * DELETE ratingscales/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await ratingScale.delete();
   }
 }
 
-module.exports = RatingScaleController
+module.exports = RatingScaleController;

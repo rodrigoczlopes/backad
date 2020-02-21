@@ -29,7 +29,7 @@ class BehaviorController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['description', 'path_id', 'skill_id', 'company_id', 'active']);
+    const data = request.only(['description', 'path_id', 'skill_id', 'company_id', 'active', 'updated_by']);
     const behavior = await Behavior.find(params.id);
     behavior.merge(data);
     await behavior.save();

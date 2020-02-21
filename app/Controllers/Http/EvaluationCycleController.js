@@ -29,7 +29,26 @@ class EvaluationCycleController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['action', 'description', 'company_id', 'active']);
+    const data = request.only([
+      'description',
+      'initial_evaluation_period',
+      'finalL_evaluation_period',
+      'initial_manager_feedback',
+      'final_manager_feedback',
+      'complexity_level',
+      'justificative',
+      'comment',
+      'make_report_available',
+      'average_type',
+      'feedback_type',
+      'quantity_pair',
+      'quantity_subordinate',
+      'quantity_manager',
+      'quantity_inferior',
+      'quantity_superior',
+      'company_id',
+      'updated_by',
+    ]);
     const evaluationCycle = await EvaluationCycle.find(params.id);
     evaluationCycle.merge(data);
     await evaluationCycle.save();

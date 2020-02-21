@@ -135,6 +135,29 @@ Factory.blueprint('App/Models/EvaluationCycle', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/EvaluationCycleLevel', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/EvaluationCycleArea', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/RatingScale', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    description: faker.sentence({ words: 20 }),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),

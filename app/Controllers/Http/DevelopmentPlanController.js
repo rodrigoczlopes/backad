@@ -29,7 +29,7 @@ class DevelopmentPlanController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['action', 'description', 'company_id', 'active']);
+    const data = request.only(['action', 'description', 'company_id', 'active', 'updated_by']);
     const developmentPlan = await DevelopmentPlan.find(params.id);
     developmentPlan.merge(data);
     await developmentPlan.save();

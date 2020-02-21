@@ -32,6 +32,7 @@ class UserController {
       'active',
       'admitted_at',
       'fired_at',
+      'updated_by',
     ]);
 
     const avatar = request.file('avatar');

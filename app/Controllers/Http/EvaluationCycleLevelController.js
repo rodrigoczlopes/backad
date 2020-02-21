@@ -1,93 +1,47 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with evaluationcyclelevels
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const EvaluationCycleLevel = use('App/Models/EvaluationCycleLevel');
+
 class EvaluationCycleLevelController {
-  /**
-   * Show a list of all evaluationcyclelevels.
-   * GET evaluationcyclelevels
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const evaluationCycleLevels = await EvaluationCycleLevel.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .fetch();
+    return evaluationCycleLevels;
   }
 
-  /**
-   * Render a form to be used for creating a new evaluationcyclelevel.
-   * GET evaluationcyclelevels/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const evaluationCycleLevel = await EvaluationCycleLevel.create(data);
+    return response.status(201).json(evaluationCycleLevel);
   }
 
-  /**
-   * Create/save a new evaluationcyclelevel.
-   * POST evaluationcyclelevels
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const evaluationCycleLevel = await EvaluationCycleLevel.find(params.id);
+    await evaluationCycleLevel.loadMany({
+      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+    });
+    return evaluationCycleLevel;
   }
 
-  /**
-   * Display a single evaluationcyclelevel.
-   * GET evaluationcyclelevels/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['evaluation_cycle_id', 'hierarchy_id', 'updated_by']);
+    const evaluationCycleLevel = await EvaluationCycleLevel.find(params.id);
+    evaluationCycleLevel.merge(data);
+    await evaluationCycleLevel.save();
+    return evaluationCycleLevel;
   }
 
-  /**
-   * Render a form to update an existing evaluationcyclelevel.
-   * GET evaluationcyclelevels/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const evaluationCycleLevel = await EvaluationCycleLevel.find(params.id);
 
-  /**
-   * Update evaluationcyclelevel details.
-   * PUT or PATCH evaluationcyclelevels/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a evaluationcyclelevel with id.
-   * DELETE evaluationcyclelevels/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await evaluationCycleLevel.delete();
   }
 }
 
-module.exports = EvaluationCycleLevelController
+module.exports = EvaluationCycleLevelController;

@@ -29,7 +29,7 @@ class DepartmentController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['name', 'level', 'area_code', 'company_id', 'active']);
+    const data = request.only(['name', 'level', 'area_code', 'company_id', 'active', 'updated_by']);
     const department = await Department.find(params.id);
     department.merge(data);
     await department.save();

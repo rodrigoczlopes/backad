@@ -1,93 +1,47 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with evaluationcycleareas
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const EvaluationCycleArea = use('App/Models/EvaluationCycleArea');
+
 class EvaluationCycleAreaController {
-  /**
-   * Show a list of all evaluationcycleareas.
-   * GET evaluationcycleareas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  async index() {
+    const evaluationCycleAreas = await EvaluationCycleArea.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .fetch();
+    return evaluationCycleAreas;
   }
 
-  /**
-   * Render a form to be used for creating a new evaluationcyclearea.
-   * GET evaluationcycleareas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const evaluationCycleArea = await EvaluationCycleArea.create(data);
+    return response.status(201).json(evaluationCycleArea);
   }
 
-  /**
-   * Create/save a new evaluationcyclearea.
-   * POST evaluationcycleareas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
+    await evaluationCycleArea.loadMany({
+      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+    });
+    return evaluationCycleArea;
   }
 
-  /**
-   * Display a single evaluationcyclearea.
-   * GET evaluationcycleareas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['evaluation_cycle_id', 'department_id', 'updated_by']);
+    const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
+    evaluationCycleArea.merge(data);
+    await evaluationCycleArea.save();
+    return evaluationCycleArea;
   }
 
-  /**
-   * Render a form to update an existing evaluationcyclearea.
-   * GET evaluationcycleareas/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
 
-  /**
-   * Update evaluationcyclearea details.
-   * PUT or PATCH evaluationcycleareas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a evaluationcyclearea with id.
-   * DELETE evaluationcycleareas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await evaluationCycleArea.delete();
   }
 }
 
-module.exports = EvaluationCycleAreaController
+module.exports = EvaluationCycleAreaController;

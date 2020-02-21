@@ -120,6 +120,30 @@ class User extends Model {
     return this.hasMany('App/Models/DevelopmentPlan', 'id', 'updated_by');
   }
 
+  createEvaluationCycle() {
+    return this.hasMany('App/Models/EvaluationCycle', 'id', 'created_by');
+  }
+
+  updateEvaluationCycle() {
+    return this.hasMany('App/Models/EvaluationCycle', 'id', 'updated_by');
+  }
+
+  createEvaluationCycleArea() {
+    return this.hasMany('App/Models/EvaluationCycleArea', 'id', 'created_by');
+  }
+
+  updateEvaluationCycleArea() {
+    return this.hasMany('App/Models/EvaluationCycleArea', 'id', 'updated_by');
+  }
+
+  createEvaluationCycleLevel() {
+    return this.hasMany('App/Models/EvaluationCycleLevel', 'id', 'created_by');
+  }
+
+  updateEvaluationCycleLevel() {
+    return this.hasMany('App/Models/EvaluationCycleLevel', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

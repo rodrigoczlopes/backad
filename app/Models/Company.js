@@ -49,6 +49,10 @@ class Company extends Model {
   evaluationCycles() {
     return this.hasMany('App/Models/EvaluationCycle');
   }
+
+  ratingScales() {
+    return this.hasMany('App/Models/RatingScale');
+  }
 }
 
 module.exports = Company;

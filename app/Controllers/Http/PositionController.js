@@ -33,7 +33,7 @@ class PositionController {
   }
 
   async update({ params, request }) {
-    const data = request.only(['description', 'position_code', 'company_id']);
+    const data = request.only(['description', 'position_code', 'company_id', 'update_by']);
     const position = await Position.find(params.id);
     position.merge(data);
     await position.save();

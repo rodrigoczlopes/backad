@@ -67,7 +67,6 @@ test('it should be able to list evaluation cycle', async ({ assert, client }) =>
     .loginVia(user, 'jwt')
     .end();
 
-  console.log(response);
   response.assertStatus(200);
 
   assert.equal(response.body[0].description, evaluationCycle.description);
