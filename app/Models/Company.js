@@ -53,6 +53,18 @@ class Company extends Model {
   ratingScales() {
     return this.hasMany('App/Models/RatingScale');
   }
+
+  questions() {
+    return this.hasMany('App/Models/Question');
+  }
+
+  comments() {
+    return this.hasMany('App/Models/Comment');
+  }
+
+  classifications() {
+    return this.hasMany('App/Models/Classification');
+  }
 }
 
 module.exports = Company;

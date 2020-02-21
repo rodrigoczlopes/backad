@@ -29,6 +29,18 @@ Route.group(() => {
   Route.get('/behaviors', 'BehaviorController.index');
   Route.get('/behaviors/:id', 'BehaviorController.show');
 
+  Route.post('/classifications', 'ClassificationController.store').validator('Classification');
+  Route.put('/classifications/:id', 'ClassificationController.update').validator('Classification');
+  Route.delete('/classifications/:id', 'ClassificationController.destroy');
+  Route.get('/classifications', 'ClassificationController.index');
+  Route.get('/classifications/:id', 'ClassificationController.show');
+
+  Route.post('/comments', 'CommentController.store').validator('Comment');
+  Route.put('/comments/:id', 'CommentController.update').validator('Comment');
+  Route.delete('/comments/:id', 'CommentController.destroy');
+  Route.get('/comments', 'CommentController.index');
+  Route.get('/comments/:id', 'CommentController.show');
+
   Route.post('/companies', 'CompanyController.store').validator('Company');
   Route.put('/companies/:id', 'CompanyController.update').validator('Company');
   Route.delete('/companies/:id', 'CompanyController.destroy');
@@ -82,6 +94,12 @@ Route.group(() => {
   Route.delete('/positions/:id', 'PositionController.destroy');
   Route.get('/positions', 'PositionController.index');
   Route.get('/positions/:id', 'PositionController.show');
+
+  Route.post('/questions', 'QuestionController.store').validator('Question');
+  Route.put('/questions/:id', 'QuestionController.update').validator('Question');
+  Route.delete('/questions/:id', 'QuestionController.destroy');
+  Route.get('/questions', 'QuestionController.index');
+  Route.get('/questions/:id', 'QuestionController.show');
 
   Route.post('/ratingscales', 'RatingScaleController.store').validator('RatingScale');
   Route.put('/ratingscales/:id', 'RatingScaleController.update').validator('RatingScale');

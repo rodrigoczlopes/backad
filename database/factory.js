@@ -158,6 +158,32 @@ Factory.blueprint('App/Models/RatingScale', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/Question', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 20 }),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Comment', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 20 }),
+    ...data,
+  };
+});
+
+Factory.blueprint('App/Models/Classification', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    description: faker.sentence({ words: 20 }),
+    initial_value: faker.floating({ min: 0, max: 3, fixed: 2 }),
+    final_value: faker.floating({ min: 0, max: 3, fixed: 2 }),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),
