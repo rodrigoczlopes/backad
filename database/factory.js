@@ -184,6 +184,16 @@ Factory.blueprint('App/Models/Classification', (faker, i, data = {}) => {
   };
 });
 
+Factory.blueprint('App/Models/Form', (faker, i, data = {}) => {
+  return {
+    id: uuidv4(),
+    name: faker.sentence({ words: 2 }),
+    observation: faker.sentence({ words: 20 }),
+    active: faker.boolean(),
+    ...data,
+  };
+});
+
 Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
   return {
     id: uuidv4(),
