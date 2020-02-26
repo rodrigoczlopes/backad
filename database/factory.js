@@ -189,7 +189,7 @@ Factory.blueprint('App/Models/Form', (faker, i, data = {}) => {
     id: uuidv4(),
     name: faker.sentence({ words: 2 }),
     observation: faker.sentence({ words: 20 }),
-    active: faker.boolean(),
+    active: faker.bool(),
     ...data,
   };
 });

@@ -21,6 +21,10 @@ class Path extends Model {
   positions() {
     return this.hasMany('App/Models/Position');
   }
+
+  forms() {
+    return this.hasMany('App/Models/Form');
+  }
 }
 
 module.exports = Path;

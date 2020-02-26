@@ -144,6 +144,14 @@ class User extends Model {
     return this.hasMany('App/Models/EvaluationCycleLevel', 'id', 'updated_by');
   }
 
+  createForm() {
+    return this.hasMany('App/Models/Form', 'id', 'created_by');
+  }
+
+  updateForm() {
+    return this.hasMany('App/Models/Form', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

@@ -77,6 +77,12 @@ Route.group(() => {
   Route.get('/evaluationcyclelevels', 'EvaluationCycleLevelController.index');
   Route.get('/evaluationcyclelevels/:id', 'EvaluationCycleLevelController.show');
 
+  Route.post('/forms', 'FormController.store').validator('Form');
+  Route.put('/forms/:id', 'FormController.update').validator('Form');
+  Route.delete('/forms/:id', 'FormController.destroy');
+  Route.get('/forms', 'FormController.index');
+  Route.get('/forms/:id', 'FormController.show');
+
   Route.post('/hierarchies', 'HierarchyController.store').validator('Hierarchy');
   Route.put('/hierarchies/:id', 'HierarchyController.update').validator('Hierarchy');
   Route.delete('/hierarchies/:id', 'HierarchyController.destroy');

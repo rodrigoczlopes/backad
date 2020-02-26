@@ -1,93 +1,50 @@
-'use strict'
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with forms
- */
-class FormController {
-  /**
-   * Show a list of all forms.
-   * GET forms
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Form = use('App/Models/Form');
+
+class PathController {
+  async index() {
+    const forms = await Form.query()
+      .with('createdBy', builder => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .with('companies')
+      .with('paths')
+      .fetch();
+    return forms;
   }
 
-  /**
-   * Render a form to be used for creating a new form.
-   * GET forms/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async store({ request, response }) {
+    const data = request.all();
+    const form = await Form.create(data);
+    return response.status(201).json(form);
   }
 
-  /**
-   * Create/save a new form.
-   * POST forms
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params }) {
+    const form = await Form.find(params.id);
+    await form.loadMany({
+      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+      companies: null,
+      paths: null,
+    });
+    return form;
   }
 
-  /**
-   * Display a single form.
-   * GET forms/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+  async update({ params, request }) {
+    const data = request.only(['name', 'observation', 'active', 'path_id', 'company_id', 'updated_by']);
+    const form = await Form.find(params.id);
+    form.merge(data);
+    await form.save();
+    return form;
   }
 
-  /**
-   * Render a form to update an existing form.
-   * GET forms/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
+  async destroy({ params }) {
+    const form = await Form.find(params.id);
 
-  /**
-   * Update form details.
-   * PUT or PATCH forms/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a form with id.
-   * DELETE forms/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    await form.delete();
   }
 }
 
-module.exports = FormController
+module.exports = PathController;

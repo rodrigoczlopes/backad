@@ -143,6 +143,6 @@ test('it should be able to delete path', async ({ assert, client }) => {
     .end();
 
   response.assertStatus(204);
-  const checkPath = await Path.find(company.id);
+  const checkPath = await Path.find(path.id);
   assert.isNull(checkPath);
 });

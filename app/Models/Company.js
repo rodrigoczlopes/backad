@@ -65,6 +65,10 @@ class Company extends Model {
   classifications() {
     return this.hasMany('App/Models/Classification');
   }
+
+  forms() {
+    return this.hasMany('App/Models/Form');
+  }
 }
 
 module.exports = Company;
