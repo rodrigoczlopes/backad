@@ -1,7 +1,7 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema');
+const { v4: uuidv4 } = require('uuid');
 
-const uuidv4 = require('uuid/v4');
+const Schema = use('Schema');
 
 class CompanySchema extends Schema {
   up() {

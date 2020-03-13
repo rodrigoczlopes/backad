@@ -28,15 +28,16 @@
     "@adonisjs/mail": "^3.0.10",
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/vow": "^1.0.17",
-    "date-fns": "^2.9.0",
-    "mssql": "4.1.0",
-    "uuid": "^3.4.0"
+    "date-fns": "^2.10.0",
+    "mssql": "6.1.0",
+    "pg": "^7.18.2",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1",
     "sqlite3": "^4.1.1"

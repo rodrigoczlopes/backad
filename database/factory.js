@@ -11,7 +11,7 @@
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 
 Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
   return {
