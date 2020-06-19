@@ -8,9 +8,7 @@ class CustomValidationProvider extends ServiceProvider {
       return;
     }
     const [table, column] = args;
-    const row = await Database.table(table)
-      .where(column, value)
-      .first();
+    const row = await Database.table(table).where(column, value).first();
     if (!row) {
       throw message;
     }
@@ -35,13 +33,8 @@ class CustomValidationProvider extends ServiceProvider {
     const where = { ...multipleClauses, [field]: value };
 
     const row = data.id
-      ? await Database.table(table)
-          .where(where)
-          .whereNot('id', data.id)
-          .first()
-      : await Database.table(table)
-          .where(where)
-          .first();
+      ? await Database.table(table).where(where).whereNot('id', data.id).first()
+      : await Database.table(table).where(where).first();
     if (row) {
       throw message;
     }

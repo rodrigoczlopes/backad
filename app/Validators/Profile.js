@@ -1,3 +1,4 @@
+const { rule } = use('Validator');
 const Antl = use('Antl');
 
 class Profile {
@@ -7,10 +8,10 @@ class Profile {
 
   get rules() {
     return {
-      name: 'required',
-      email: 'email',
-      password: 'confirmed',
-      avatar: 'file|file_ext:png,jpg,jpeg|file_size:7mb|file_types:image',
+      name: [rule('required')],
+      email: [rule('email')],
+      password: [rule('confirmed')],
+      // avatar: [rule('file'), rule('file_ext', ['png', 'jpg', 'jpeg']), rule('file_size', '7mb'), rule('file_types', 'image')],
     };
   }
 

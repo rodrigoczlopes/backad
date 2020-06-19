@@ -152,6 +152,10 @@ class User extends Model {
     return this.hasMany('App/Models/Form', 'id', 'updated_by');
   }
 
+  notifications() {
+    return this.hasMany('App/Models/Notification', 'id', 'user');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

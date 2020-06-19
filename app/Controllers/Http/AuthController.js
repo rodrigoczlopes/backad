@@ -11,7 +11,18 @@ class AuthController {
   async authenticate({ request, auth }) {
     const { username, password } = request.all();
     const { token } = await auth.attempt(username, password);
-    return { token };
+    const { id, name, registry, email, avatar, user_group_id, active } = await User.findBy('username', username);
+    const user = {
+      id,
+      username,
+      name,
+      registry,
+      email,
+      avatar,
+      user_group_id,
+      active,
+    };
+    return { token, user };
   }
 }
 

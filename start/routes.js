@@ -89,6 +89,12 @@ Route.group(() => {
   Route.get('/hierarchies', 'HierarchyController.index');
   Route.get('/hierarchies/:id', 'HierarchyController.show');
 
+  Route.post('/notifications', 'NotificationController.store');
+  Route.put('/notifications/:id', 'NotificationController.update');
+  Route.delete('/notifications/:id', 'NotificationController.destroy');
+  Route.get('/notifications', 'NotificationController.index');
+  Route.get('/notifications/:id', 'NotificationController.show');
+
   Route.post('/paths', 'PathController.store').validator('Path');
   Route.put('/paths/:id', 'PathController.update').validator('Path');
   Route.delete('/paths/:id', 'PathController.destroy');
