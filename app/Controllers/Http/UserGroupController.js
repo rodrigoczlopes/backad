@@ -11,7 +11,7 @@ const UserGroup = use('App/Models/UserGroup');
 class UserGroupController {
   async index() {
     const userGroups = await UserGroup.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .fetch();
@@ -20,7 +20,7 @@ class UserGroupController {
 
   async show({ params }) {
     const userGroup = await UserGroup.find(params.id);
-    await userGroup.load('createdBy', builder => {
+    await userGroup.load('createdBy', (builder) => {
       builder.select(['id', 'name', 'email', 'avatar']);
     });
     return userGroup;
