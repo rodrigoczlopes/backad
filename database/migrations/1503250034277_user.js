@@ -5,11 +5,8 @@ const { v4: uuidv4 } = require('uuid');
 
 class UserSchema extends Schema {
   up() {
-    this.create('users', table => {
-      table
-        .uuid('id')
-        .primary()
-        .defaultTo(uuidv4());
+    this.create('users', (table) => {
+      table.uuid('id').primary().defaultTo(uuidv4());
       table.string('registry', 20).notNullable();
       table.string('username', 80).notNullable();
       table.string('name', 80).notNullable();

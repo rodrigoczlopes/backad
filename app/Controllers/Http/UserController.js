@@ -8,9 +8,7 @@ const Helpers = use('Helpers');
 
 class UserController {
   async index() {
-    const users = await User.query()
-      .with('userGroups')
-      .fetch();
+    const users = await User.query().with('userGroups').fetch();
     return users;
   }
 
