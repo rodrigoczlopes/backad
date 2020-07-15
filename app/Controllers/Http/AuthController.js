@@ -1,5 +1,6 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
+const Ws = use('Ws');
 
 class AuthController {
   async register({ request, response }) {
@@ -22,6 +23,13 @@ class AuthController {
       user_group_id,
       active,
     };
+
+    // Logout the other sessions if theres's any
+    const userChannel = Ws.getChannel('user:*').topic(`user:${user.id}`);
+    if (userChannel) {
+      userChannel.broadcastToAll('logout');
+    }
+
     return { token, user };
   }
 }
