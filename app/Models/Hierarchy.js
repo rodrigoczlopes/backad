@@ -2,8 +2,17 @@
 const Model = use('Model');
 
 class Hierarchy extends Model {
+  static boot() {
+    super.boot();
+    this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
+  }
+
   static get incrementing() {
     return false;
+  }
+
+  static get primaryKey() {
+    return 'id';
   }
 
   createdBy() {

@@ -8,13 +8,19 @@ const Helpers = use('Helpers');
 
 class UserController {
   async index() {
-    const users = await User.query().with('userGroups').fetch();
+    const users = await User.query()
+      .with('userGroups')
+      .with('companies')
+      .with('departments')
+      .with('positions')
+      .with('hierarchies')
+      .fetch();
     return users;
   }
 
   async show({ params }) {
     const user = await User.find(params.id);
-    await user.load('userGroups');
+    await user.load('userGroups').load('companies');
     return user;
   }
 
@@ -23,6 +29,9 @@ class UserController {
       'name',
       'user_group_id',
       'company_id',
+      'hierarchy_id',
+      'position_id',
+      'department_id',
       'registry',
       'username',
       'email',

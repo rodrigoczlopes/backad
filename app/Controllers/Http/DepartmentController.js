@@ -8,7 +8,7 @@ const Department = use('App/Models/Department');
 class DepartmentController {
   async index() {
     const departments = await Department.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
@@ -24,7 +24,7 @@ class DepartmentController {
 
   async show({ params }) {
     const department = await Department.find(params.id);
-    await department.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await department.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return department;
   }
 

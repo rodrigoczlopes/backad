@@ -4,11 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 
 class EvaluationCycleAreaSchema extends Schema {
   up() {
-    this.create('evaluation_cycle_areas', table => {
-      table
-        .uuid('id')
-        .primary()
-        .defaultTo(uuidv4());
+    this.create('evaluation_cycle_areas', (table) => {
+      table.uuid('id').primary().defaultTo(uuidv4());
       table
         .uuid('evaluation_cycle_id')
         .unsigned()
@@ -16,23 +13,9 @@ class EvaluationCycleAreaSchema extends Schema {
         .inTable('evaluation_cycles')
         .onDelete('SET NULL')
         .onUpdate('CASCADE');
-      table
-        .uuid('department_id')
-        .unsigned()
-        .references('id')
-        .inTable('departments')
-        .onDelete('SET NULL')
-        .onUpdate('CASCADE');
-      table
-        .uuid('created_by')
-        .unsigned()
-        .references('id')
-        .inTable('users');
-      table
-        .uuid('updated_by')
-        .unsigned()
-        .references('id')
-        .inTable('users');
+      table.uuid('department_id').unsigned().references('id').inTable('departments').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('created_by').unsigned().references('id').inTable('users');
+      table.uuid('updated_by').unsigned().references('id').inTable('users');
       table.timestamps();
     });
   }

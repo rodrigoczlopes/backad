@@ -18,6 +18,11 @@ class UserSchema extends Schema {
       table.date('admitted_at').notNullable();
       table.date('fired_at');
       table.date('deleted_at');
+      table.uuid('user_group_id').unsigned().references('id').inTable('user_groups').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('company_id').unsigned().references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('department_id').unsigned().references('id').inTable('departments').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('position_id').unsigned().references('id').inTable('positions').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('hierarchy_id').unsigned().references('id').inTable('hierarchies').onDelete('SET NULL').onUpdate('CASCADE');
       table.timestamps();
     });
   }

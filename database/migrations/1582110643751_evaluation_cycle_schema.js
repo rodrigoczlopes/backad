@@ -4,18 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 
 class EvaluationCycleSchema extends Schema {
   up() {
-    this.create('evaluation_cycles', table => {
-      table
-        .uuid('id')
-        .primary()
-        .defaultTo(uuidv4());
-      table
-        .uuid('company_id')
-        .unsigned()
-        .references('id')
-        .inTable('companies')
-        .onDelete('SET NULL')
-        .onUpdate('CASCADE');
+    this.create('evaluation_cycles', (table) => {
+      table.uuid('id').primary().defaultTo(uuidv4());
+      table.uuid('company_id').unsigned().references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
       table.string('description', 250).notNullable();
       table.date('initial_evaluation_period').notNullable();
       table.date('final_evaluation_period').notNullable();
@@ -32,16 +23,8 @@ class EvaluationCycleSchema extends Schema {
       table.integer('quantity_manager').notNullable();
       table.integer('quantity_inferior');
       table.integer('quantity_superior');
-      table
-        .uuid('created_by')
-        .unsigned()
-        .references('id')
-        .inTable('users');
-      table
-        .uuid('updated_by')
-        .unsigned()
-        .references('id')
-        .inTable('users');
+      table.uuid('created_by').unsigned().references('id').inTable('users');
+      table.uuid('updated_by').unsigned().references('id').inTable('users');
       table.timestamps();
     });
   }

@@ -7,7 +7,7 @@ const Hierarchy = use('App/Models/Hierarchy');
 class HierarchyController {
   async index() {
     const hierarchies = await Hierarchy.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
@@ -23,7 +23,7 @@ class HierarchyController {
 
   async show({ params }) {
     const hierarchy = await Hierarchy.find(params.id);
-    await hierarchy.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await hierarchy.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return hierarchy;
   }
 
