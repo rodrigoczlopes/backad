@@ -20,7 +20,8 @@ class UserController {
 
   async show({ params }) {
     const user = await User.find(params.id);
-    await user.load('userGroups').load('companies');
+    await user.load('companies');
+
     return user;
   }
 

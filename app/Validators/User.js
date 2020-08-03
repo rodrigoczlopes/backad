@@ -9,7 +9,7 @@ class User {
   get rules() {
     return {
       name: [rule('required')],
-      user_group_id: [rule('exists', ['user_groups', 'id'])],
+      user_group_id: [rule('required'), rule('exists', ['user_groups', 'id'])],
       company_id: [rule('exists', ['companies', 'id'])],
       department_id: [rule('required'), rule('exists', ['departments', 'id'])],
       position_id: [rule('required'), rule('exists', ['positions', 'id'])],

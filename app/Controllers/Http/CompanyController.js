@@ -10,7 +10,7 @@ const Company = use('App/Models/Company');
 class UserGroupController {
   async index() {
     const companies = await Company.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .fetch();
@@ -19,7 +19,7 @@ class UserGroupController {
 
   async show({ params }) {
     const company = await Company.find(params.id);
-    await company.load('createdBy', builder => {
+    await company.load('createdBy', (builder) => {
       builder.select(['id', 'name', 'email', 'avatar']);
     });
     return company;
