@@ -1,3 +1,4 @@
+const { rule } = use('Validator');
 const Antl = use('Antl');
 
 class Auth {
@@ -7,8 +8,8 @@ class Auth {
 
   get rules() {
     return {
-      username: 'required',
-      password: 'required',
+      username: [rule('required')],
+      password: [rule('required')],
     };
   }
 

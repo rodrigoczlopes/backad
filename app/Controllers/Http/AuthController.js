@@ -12,7 +12,8 @@ class AuthController {
   async authenticate({ request, auth }) {
     const { username, password } = request.all();
     const { token } = await auth.attempt(username, password);
-    const { id, name, registry, email, avatar, user_group_id, active } = await User.findBy('username', username);
+
+    const { id, name, registry, email, avatar, user_group_id, active, company_id } = await User.findBy('username', username);
     const user = {
       id,
       username,
@@ -22,6 +23,7 @@ class AuthController {
       avatar,
       user_group_id,
       active,
+      company_id,
     };
 
     // Logout the other sessions if theres's any
