@@ -14,7 +14,9 @@ class UserController {
       .with('departments')
       .with('positions')
       .with('hierarchies')
+      .orderBy('name', 'asc')
       .fetch();
+
     return users;
   }
 
