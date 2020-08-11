@@ -22,7 +22,7 @@ class ForgotPasswordController {
       type: 'forgotpassword',
     });
 
-    await Mail.send('emails.forgotpassword', { name: user.name, resetPasswordUrl }, message => {
+    await Mail.send('emails.forgotpassword', { name: user.name, resetPasswordUrl }, (message) => {
       message
         .to(user.email)
         .from('Crescer - Unimed Vargnha<naoresponda@unimedvarginha.coop.br>')

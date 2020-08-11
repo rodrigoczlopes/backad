@@ -11,6 +11,7 @@ class HierarchyController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
+      .orderBy('level')
       .fetch();
     return hierarchies;
   }

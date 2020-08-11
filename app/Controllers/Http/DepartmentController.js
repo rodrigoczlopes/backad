@@ -12,6 +12,7 @@ class DepartmentController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
+      .orderBy('name')
       .fetch();
     return departments;
   }
@@ -19,7 +20,8 @@ class DepartmentController {
   async store({ request, response }) {
     const data = request.all();
     const department = await Department.create(data);
-    return response.status(201).json(department);
+    const departmentReturn = await this.show({ params: { id: department.id } });
+    return response.status(201).json(departmentReturn);
   }
 
   async show({ params }) {

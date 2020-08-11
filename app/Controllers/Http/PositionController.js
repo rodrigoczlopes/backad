@@ -7,11 +7,12 @@ const Position = use('App/Models/Position');
 class PositionController {
   async index() {
     const positions = await Position.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .with('paths')
+      .orderBy('description')
       .fetch();
     return positions;
   }
@@ -19,13 +20,14 @@ class PositionController {
   async store({ request, response }) {
     const data = request.all();
     const position = await Position.create(data);
-    return response.status(201).json(position);
+    const positionReturn = await this.show({ params: { id: position.id } });
+    return response.status(201).json(positionReturn);
   }
 
   async show({ params }) {
     const position = await Position.find(params.id);
     await position.loadMany({
-      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+      createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
       companies: null,
       paths: null,
     });
