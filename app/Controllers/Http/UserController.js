@@ -7,7 +7,8 @@ const User = use('App/Models/User');
 const Helpers = use('Helpers');
 
 class UserController {
-  async index() {
+  async index({ request }) {
+    const { page, itemsPerPage } = request.get();
     const users = await User.query()
       .with('userGroups')
       .with('companies')
@@ -15,7 +16,7 @@ class UserController {
       .with('positions')
       .with('hierarchies')
       .orderBy('name', 'asc')
-      .fetch();
+      .paginate(page, itemsPerPage);
 
     return users;
   }

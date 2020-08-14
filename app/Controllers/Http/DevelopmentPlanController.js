@@ -6,25 +6,34 @@
 const DevelopmentPlan = use('App/Models/DevelopmentPlan');
 
 class DevelopmentPlanController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const developmentPlans = await DevelopmentPlan.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .paginate(page, itemsPerPage);
     return developmentPlans;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const developmentPlan = await DevelopmentPlan.create(data);
-    return response.status(201).json(developmentPlan);
+    const developmentPlanReturn = await this.show({ params: { id: developmentPlan.id } });
+    return response.status(201).json(developmentPlanReturn);
   }
 
   async show({ params }) {
     const developmentPlan = await DevelopmentPlan.find(params.id);
-    await developmentPlan.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await developmentPlan.loadMany({
+      createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
+      companies: null,
+    });
     return developmentPlan;
   }
 

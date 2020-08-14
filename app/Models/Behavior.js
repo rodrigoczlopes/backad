@@ -26,6 +26,14 @@ class Behavior extends Model {
   companies() {
     return this.belongsTo('App/Models/Company', 'company_id', 'id');
   }
+
+  paths() {
+    return this.belongsTo('App/Models/Path', 'path_id', 'id');
+  }
+
+  skills() {
+    return this.belongsTo('App/Models/Skill', 'skill_id', 'id');
+  }
 }
 
 module.exports = Behavior;

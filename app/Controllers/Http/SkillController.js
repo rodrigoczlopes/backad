@@ -6,13 +6,20 @@
 const Skill = use('App/Models/Skill');
 
 class SkillController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const skills = await Skill.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('name')
+      .paginate(page, itemsPerPage);
+
     return skills;
   }
 
@@ -24,7 +31,7 @@ class SkillController {
 
   async show({ params }) {
     const skill = await Skill.find(params.id);
-    await skill.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await skill.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return skill;
   }
 

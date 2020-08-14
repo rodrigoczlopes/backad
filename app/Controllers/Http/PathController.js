@@ -5,25 +5,33 @@
 const Path = use('App/Models/Path');
 
 class PathController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const paths = await Path.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
+
     return paths;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const path = await Path.create(data);
-    return response.status(201).json(path);
+    const pathReturn = await this.show({ params: { id: path.id } });
+    return response.status(201).json(pathReturn);
   }
 
   async show({ params }) {
     const path = await Path.find(params.id);
-    await path.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await path.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return path;
   }
 

@@ -6,14 +6,20 @@
 const Department = use('App/Models/Department');
 
 class DepartmentController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const departments = await Department.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('name')
-      .fetch();
+      .paginate(page, itemsPerPage);
+
     return departments;
   }
 

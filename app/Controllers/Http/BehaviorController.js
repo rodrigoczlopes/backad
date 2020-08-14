@@ -6,25 +6,39 @@
 const Behavior = use('App/Models/Behavior');
 
 class BehaviorController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const behaviors = await Behavior.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .with('paths')
+      .with('skills')
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
     return behaviors;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const behavior = await Behavior.create(data);
-    return response.status(201).json(behavior);
+    const behaviorReturn = await this.show({ params: { id: behavior.id } });
+    return response.status(201).json(behaviorReturn);
   }
 
   async show({ params }) {
     const behavior = await Behavior.find(params.id);
-    await behavior.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await behavior.loadMany({
+      createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
+      companies: null,
+      paths: null,
+      skills: null,
+    });
     return behavior;
   }
 

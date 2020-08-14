@@ -5,7 +5,12 @@
 const Position = use('App/Models/Position');
 
 class PositionController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const positions = await Position.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
@@ -13,7 +18,8 @@ class PositionController {
       .with('companies')
       .with('paths')
       .orderBy('description')
-      .fetch();
+      .paginate(page, itemsPerPage);
+
     return positions;
   }
 

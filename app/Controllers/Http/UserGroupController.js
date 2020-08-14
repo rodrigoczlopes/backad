@@ -9,12 +9,18 @@ const UserGroup = use('App/Models/UserGroup');
  * Resourceful controller for interacting with usergroups
  */
 class UserGroupController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const userGroups = await UserGroup.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
-      .fetch();
+      .paginate(page, itemsPerPage);
+
     return userGroups;
   }
 
