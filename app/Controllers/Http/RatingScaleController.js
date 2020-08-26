@@ -6,25 +6,33 @@
 const RatingScale = use('App/Models/RatingScale');
 
 class RatingScaleController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
     const ratingScale = await RatingScale.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('name')
+      .paginate(page, itemsPerPage);
+
     return ratingScale;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const ratingScale = await RatingScale.create(data);
-    return response.status(201).json(ratingScale);
+    const ratingScaleReturn = await this.show({ params: { id: ratingScale.id } });
+    return response.status(201).json(ratingScaleReturn);
   }
 
   async show({ params }) {
     const ratingScale = await RatingScale.find(params.id);
-    await ratingScale.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await ratingScale.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return ratingScale;
   }
 
