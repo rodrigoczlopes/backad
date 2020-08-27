@@ -8,7 +8,26 @@ const Helpers = use('Helpers');
 
 class UserController {
   async index({ request }) {
-    const { page, itemsPerPage } = request.get();
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const usersList = await User.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .with('userGroups')
+        .with('companies')
+        .with('departments')
+        .with('positions')
+        .with('hierarchies')
+        .orderBy(searchBy, 'asc')
+        .paginate(page, itemsPerPage);
+      return usersList;
+    }
+
     const users = await User.query()
       .with('userGroups')
       .with('companies')

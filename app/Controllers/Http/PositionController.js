@@ -7,10 +7,22 @@ const Position = use('App/Models/Position');
 class PositionController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
     }
+
+    if (searchSentence) {
+      const positionList = await Position.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .with('companies')
+        .with('paths')
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return positionList;
+    }
+
     const positions = await Position.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);

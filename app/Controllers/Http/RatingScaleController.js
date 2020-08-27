@@ -8,10 +8,20 @@ const RatingScale = use('App/Models/RatingScale');
 class RatingScaleController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
     }
+
+    if (searchSentence) {
+      const ratingScales = await RatingScale.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return ratingScales;
+    }
+
     const ratingScale = await RatingScale.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
@@ -19,7 +29,6 @@ class RatingScaleController {
       .with('companies')
       .orderBy('name')
       .paginate(page, itemsPerPage);
-
     return ratingScale;
   }
 

@@ -8,10 +8,21 @@ const Department = use('App/Models/Department');
 class DepartmentController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
     }
+
+    if (searchSentence) {
+      const ratingScales = await Department.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .with('companies')
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return ratingScales;
+    }
+
     const departments = await Department.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
