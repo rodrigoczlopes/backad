@@ -6,25 +6,43 @@
 const Classification = use('App/Models/Classification');
 
 class ClassificationController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const classifications = await Classification.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .with('companies')
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return classifications;
+    }
+
     const classification = await Classification.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('initial_value')
+      .paginate(page, itemsPerPage);
     return classification;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const classification = await Classification.create(data);
-    return response.status(201).json(classification);
+    const classificationReturn = await this.show({ params: { id: classification.id } });
+    return response.status(201).json(classificationReturn);
   }
 
   async show({ params }) {
     const classification = await Classification.find(params.id);
-    await classification.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await classification.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return classification;
   }
 

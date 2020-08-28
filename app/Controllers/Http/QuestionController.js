@@ -6,25 +6,42 @@
 const Question = use('App/Models/Question');
 
 class QuestionController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const questions = await Question.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return questions;
+    }
+
     const question = await Question.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
     return question;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const question = await Question.create(data);
-    return response.status(201).json(question);
+    const questionReturn = await this.show({ params: { id: question.id } });
+    return response.status(201).json(questionReturn);
   }
 
   async show({ params }) {
     const question = await Question.find(params.id);
-    await question.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await question.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return question;
   }
 

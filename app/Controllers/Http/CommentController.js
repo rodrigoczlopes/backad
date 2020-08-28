@@ -6,25 +6,42 @@
 const Comment = use('App/Models/Comment');
 
 class CommentController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const comments = await Comment.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return comments;
+    }
+
     const comment = await Comment.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .fetch();
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
     return comment;
   }
 
   async store({ request, response }) {
     const data = request.all();
     const comment = await Comment.create(data);
-    return response.status(201).json(comment);
+    const commentReturn = await this.show({ params: { id: comment.id } });
+    return response.status(201).json(commentReturn);
   }
 
   async show({ params }) {
     const comment = await Comment.find(params.id);
-    await comment.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await comment.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return comment;
   }
 
