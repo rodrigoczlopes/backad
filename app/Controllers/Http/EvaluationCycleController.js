@@ -8,7 +8,7 @@ const EvaluationCycle = use('App/Models/EvaluationCycle');
 class EvaluationCycleController {
   async index() {
     const evaluationCycles = await EvaluationCycle.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with(['companies'])
@@ -16,19 +16,22 @@ class EvaluationCycleController {
     return evaluationCycles;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const evaluationCycle = await EvaluationCycle.create(data);
+    const evaluationCycle = await EvaluationCycle.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(evaluationCycle);
   }
 
   async show({ params }) {
     const evaluationCycle = await EvaluationCycle.find(params.id);
-    await evaluationCycle.loadMany({ createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
+    await evaluationCycle.loadMany({
+      createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
+      companies: null,
+    });
     return evaluationCycle;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only([
       'description',
       'initial_evaluation_period',
@@ -50,7 +53,7 @@ class EvaluationCycleController {
       'updated_by',
     ]);
     const evaluationCycle = await EvaluationCycle.find(params.id);
-    evaluationCycle.merge(data);
+    evaluationCycle.merge({ ...data, updated_by: auth.user.id });
     await evaluationCycle.save();
     return evaluationCycle;
   }

@@ -47,7 +47,7 @@ class UserController {
     return user;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only([
       'name',
       'user_group_id',

@@ -17,7 +17,7 @@ class RatingScaleController {
     if (searchSentence) {
       const ratingScales = await RatingScale.query()
         .where(searchBy, 'ilike', `%${searchSentence}%`)
-        .orderBy(searchBy)
+        .orderBy('score')
         .paginate(page, itemsPerPage);
       return ratingScales;
     }
@@ -27,14 +27,14 @@ class RatingScaleController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .orderBy('name')
+      .orderBy('score')
       .paginate(page, itemsPerPage);
     return ratingScale;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const ratingScale = await RatingScale.create(data);
+    const ratingScale = await RatingScale.create({ ...data, created_by: auth.user.id });
     const ratingScaleReturn = await this.show({ params: { id: ratingScale.id } });
     return response.status(201).json(ratingScaleReturn);
   }
@@ -45,10 +45,10 @@ class RatingScaleController {
     return ratingScale;
   }
 
-  async update({ params, request }) {
-    const data = request.only(['name', 'description', 'company_id', 'updated_by']);
+  async update({ params, request, auth }) {
+    const data = request.only(['name', 'description', 'score', 'company_id', 'updated_by']);
     const ratingScale = await RatingScale.find(params.id);
-    ratingScale.merge(data);
+    ratingScale.merge({ ...data, updated_by: auth.user.id });
     await ratingScale.save();
     return ratingScale;
   }

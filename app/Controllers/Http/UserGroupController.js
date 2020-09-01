@@ -32,16 +32,16 @@ class UserGroupController {
     return userGroup;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const usergroup = await UserGroup.create(data);
+    const usergroup = await UserGroup.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(usergroup);
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['name', 'description', 'color', 'company_id', 'updated_by']);
     const userGroup = await UserGroup.find(params.id);
-    userGroup.merge(data);
+    userGroup.merge({ ...data, updated_by: auth.user.id });
     await userGroup.save();
     return userGroup;
   }

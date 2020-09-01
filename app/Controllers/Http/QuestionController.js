@@ -32,9 +32,9 @@ class QuestionController {
     return question;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const question = await Question.create(data);
+    const question = await Question.create({ ...data, created_by: auth.user.id });
     const questionReturn = await this.show({ params: { id: question.id } });
     return response.status(201).json(questionReturn);
   }
@@ -45,10 +45,10 @@ class QuestionController {
     return question;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['description', 'company_id', 'updated_by']);
     const question = await Question.find(params.id);
-    question.merge(data);
+    question.merge({ ...data, updated_by: auth.user.id });
     await question.save();
     return question;
   }

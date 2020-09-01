@@ -34,23 +34,23 @@ class DepartmentController {
     return departments;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const department = await Department.create(data);
+    const department = await Department.create({ ...data, created_by: auth.user.id });
     const departmentReturn = await this.show({ params: { id: department.id } });
     return response.status(201).json(departmentReturn);
   }
 
   async show({ params }) {
-    const department = await Department.find(params.id);
+    const department = await Department.findOrFail(params.id);
     await department.loadMany({ createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']), companies: null });
     return department;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['name', 'level', 'area_code', 'company_id', 'active', 'updated_by']);
     const department = await Department.find(params.id);
-    department.merge(data);
+    department.merge({ ...data, updated_by: auth.user.id });
     await department.save();
     return department;
   }

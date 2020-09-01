@@ -33,9 +33,9 @@ class HierarchyController {
     return hierarchies;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const hierarchy = await Hierarchy.create(data);
+    const hierarchy = await Hierarchy.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(hierarchy);
   }
 
@@ -45,10 +45,10 @@ class HierarchyController {
     return hierarchy;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['description', 'level', 'company_id', 'active', 'updated_by']);
     const hierarchy = await Hierarchy.find(params.id);
-    hierarchy.merge(data);
+    hierarchy.merge({ ...data, updated_by: auth.user.id });
     await hierarchy.save();
     return hierarchy;
   }

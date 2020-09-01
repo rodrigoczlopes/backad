@@ -32,9 +32,9 @@ class DevelopmentPlanController {
     return developmentPlans;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const developmentPlan = await DevelopmentPlan.create(data);
+    const developmentPlan = await DevelopmentPlan.create({ ...data, created_by: auth.user.id });
     const developmentPlanReturn = await this.show({ params: { id: developmentPlan.id } });
     return response.status(201).json(developmentPlanReturn);
   }
@@ -48,10 +48,10 @@ class DevelopmentPlanController {
     return developmentPlan;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['action', 'description', 'company_id', 'active', 'updated_by']);
     const developmentPlan = await DevelopmentPlan.find(params.id);
-    developmentPlan.merge(data);
+    developmentPlan.merge({ ...data, updated_by: auth.user.id });
     await developmentPlan.save();
     return developmentPlan;
   }

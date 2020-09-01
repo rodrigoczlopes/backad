@@ -25,16 +25,16 @@ class UserGroupController {
     return company;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const company = await Company.create(data);
+    const company = await Company.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(company);
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['name', 'code', 'updated_by']);
     const company = await Company.find(params.id);
-    company.merge(data);
+    company.merge({ ...data, updated_by: auth.user.id });
     await company.save();
     return company;
   }

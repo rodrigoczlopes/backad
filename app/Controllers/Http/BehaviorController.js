@@ -24,9 +24,9 @@ class BehaviorController {
     return behaviors;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const behavior = await Behavior.create(data);
+    const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
     const behaviorReturn = await this.show({ params: { id: behavior.id } });
     return response.status(201).json(behaviorReturn);
   }
@@ -42,10 +42,10 @@ class BehaviorController {
     return behavior;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['description', 'path_id', 'skill_id', 'company_id', 'active', 'updated_by']);
     const behavior = await Behavior.find(params.id);
-    behavior.merge(data);
+    behavior.merge({ ...data, updated_by: auth.user.id });
     await behavior.save();
     return behavior;
   }

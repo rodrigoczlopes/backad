@@ -34,9 +34,9 @@ class SkillController {
     return skills;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const skill = await Skill.create(data);
+    const skill = await Skill.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(skill);
   }
 
@@ -46,10 +46,10 @@ class SkillController {
     return skill;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['name', 'description', 'company_id', 'active', 'updated_by']);
     const skill = await Skill.find(params.id);
-    skill.merge(data);
+    skill.merge({ ...data, updated_by: auth.user.id });
     await skill.save();
     return skill;
   }

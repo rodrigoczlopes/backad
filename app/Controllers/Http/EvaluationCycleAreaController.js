@@ -8,31 +8,31 @@ const EvaluationCycleArea = use('App/Models/EvaluationCycleArea');
 class EvaluationCycleAreaController {
   async index() {
     const evaluationCycleAreas = await EvaluationCycleArea.query()
-      .with('createdBy', builder => {
+      .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .fetch();
     return evaluationCycleAreas;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const evaluationCycleArea = await EvaluationCycleArea.create(data);
+    const evaluationCycleArea = await EvaluationCycleArea.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(evaluationCycleArea);
   }
 
   async show({ params }) {
     const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
     await evaluationCycleArea.loadMany({
-      createdBy: builder => builder.select(['id', 'name', 'email', 'avatar']),
+      createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
     });
     return evaluationCycleArea;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['evaluation_cycle_id', 'department_id', 'updated_by']);
     const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
-    evaluationCycleArea.merge(data);
+    evaluationCycleArea.merge({ ...data, updated_by: auth.user.id });
     await evaluationCycleArea.save();
     return evaluationCycleArea;
   }

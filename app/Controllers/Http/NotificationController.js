@@ -8,30 +8,30 @@ const Notification = use('App/Models/Notification');
 class NotificationController {
   async index() {
     const notification = await Notification.query()
-      .with('users', builder => {
+      .with('users', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .fetch();
     return notification;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
-    const notification = await Notification.create(data);
+    const notification = await Notification.create({ ...data, created_by: auth.user.id });
     return response.status(201).json(notification);
   }
 
   async show({ params }) {
     const notification = await Notification.find(params.id);
-    await notification.loadMany({ users: builder => builder.select(['id', 'name', 'email', 'avatar']) });
+    await notification.loadMany({ users: (builder) => builder.select(['id', 'name', 'email', 'avatar']) });
     return notification;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['content', 'user', 'read']);
     data.read = true;
     const notification = await Notification.find(params.id);
-    notification.merge(data);
+    notification.merge({ ...data, updated_by: auth.user.id });
     await notification.save();
     return notification;
   }
