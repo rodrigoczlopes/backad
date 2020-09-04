@@ -158,6 +158,14 @@ class User extends Model {
     return this.hasMany('App/Models/Notification', 'id', 'user');
   }
 
+  createBehaviorForms() {
+    return this.hasMany('App/Models/BehaviorForm', 'id', 'created_by');
+  }
+
+  updateBehaviorForms() {
+    return this.hasMany('App/Models/BehaviorForm', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

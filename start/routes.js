@@ -28,7 +28,15 @@ Route.group(() => {
     .validator(
       new Map([
         [['behaviors.store'], ['Behavior']],
-        [['behaviors.update'], ['Behavior']],
+        [['behaviors.update'], ['BehaviorUpdate']],
+      ])
+    );
+  Route.resource('behaviorforms', 'BehaviorFormController')
+    .apiOnly()
+    .validator(
+      new Map([
+        [['behaviorforms.store'], ['BehaviorForm']],
+        [['behaviorforms.update'], ['BehaviorForm']],
       ])
     );
   Route.resource('classifications', 'ClassificationController')
@@ -159,6 +167,7 @@ Route.group(() => {
         [['skills.update'], ['Skill']],
       ])
     );
+  Route.get('skillbehaviors/:id', 'SkillBehaviorController.index');
   Route.resource('users', 'UserController')
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));

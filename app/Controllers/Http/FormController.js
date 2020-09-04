@@ -5,21 +5,41 @@
 const Form = use('App/Models/Form');
 
 class PathController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const formList = await Form.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .with('companies')
+        .with('paths')
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return formList;
+    }
+
     const forms = await Form.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .with('paths')
-      .fetch();
+      .orderBy('name')
+      .paginate(page, itemsPerPage);
+
     return forms;
   }
 
   async store({ request, response, auth }) {
     const data = request.all();
     const form = await Form.create({ ...data, created_by: auth.user.id });
-    return response.status(201).json(form);
+    const formReturn = await this.show({ params: { id: form.id } });
+    return response.status(201).json(formReturn);
   }
 
   async show({ params }) {
