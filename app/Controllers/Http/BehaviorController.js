@@ -19,7 +19,6 @@ class BehaviorController {
       .with('companies')
       .with('paths')
       .with('skills')
-      .orderBy('description')
       .paginate(page, itemsPerPage);
     return behaviors;
   }
@@ -33,7 +32,7 @@ class BehaviorController {
 
   async show({ params }) {
     const behavior = await Behavior.find(params.id);
-    await behavior.loadMany({
+    await behavior?.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
       companies: null,
       paths: null,

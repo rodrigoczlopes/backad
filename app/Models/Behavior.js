@@ -34,6 +34,10 @@ class Behavior extends Model {
   skills() {
     return this.belongsTo('App/Models/Skill', 'skill_id', 'id');
   }
+
+  behaviorForms() {
+    return this.hasMany('App/Models/BehaviorForm', 'behavior_id', 'id');
+  }
 }
 
 module.exports = Behavior;

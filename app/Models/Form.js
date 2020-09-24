@@ -30,6 +30,10 @@ class Form extends Model {
   paths() {
     return this.belongsTo('App/Models/Path', 'path_id', 'id');
   }
+
+  behaviorForms() {
+    return this.hasMany('App/Models/BehaviorForm', 'form_id', 'id');
+  }
 }
 
 module.exports = Form;
