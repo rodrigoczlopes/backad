@@ -3,6 +3,8 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Form = use('App/Models/Form');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const BehaviorForm = use('App/Models/BehaviorForm');
 
 class PathController {
@@ -39,11 +41,16 @@ class PathController {
   }
 
   async store({ request, response, auth }) {
-    const data = request.only(["active", "company_id", "name", "observation", "path_id", "behaviors"]);
+    const data = request.only(['active', 'company_id', 'name', 'observation', 'path_id', 'behaviors']);
 
     const form = await Form.create({ ...data, created_by: auth.user.id });
 
-    const behaviorForm = data?.behaviors?.map(behavior=>({form_id: form.id, behavior_id: behavior, company_id: data.company_id, created_by: auth.user.id}));
+    const behaviorForm = data?.behaviors?.map((behavior) => ({
+      form_id: form.id,
+      behavior_id: behavior,
+      company_id: data.company_id,
+      created_by: auth.user.id,
+    }));
     await BehaviorForm.createMany(behaviorForm);
     const formReturn = await this.show({ params: { id: form.id } });
     return response.status(201).json(formReturn);
@@ -64,7 +71,6 @@ class PathController {
     const form = await Form.find(params.id);
     form.merge({ ...data, updated_by: auth.user.id });
     await form.save();
-
 
     return form;
   }
