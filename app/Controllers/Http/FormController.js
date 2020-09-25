@@ -7,7 +7,7 @@ const Form = use('App/Models/Form');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const BehaviorForm = use('App/Models/BehaviorForm');
 
-class PathController {
+class FormController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
@@ -41,11 +41,11 @@ class PathController {
   }
 
   async store({ request, response, auth }) {
-    const data = request.only(['active', 'company_id', 'name', 'observation', 'path_id', 'behaviors']);
-
+    const data = request.only(['active', 'company_id', 'name', 'observation', 'path_id']);
+    const listBehaviors = request.only('behaviors');
     const form = await Form.create({ ...data, created_by: auth.user.id });
 
-    const behaviorForm = data?.behaviors?.map((behavior) => ({
+    const behaviorForm = listBehaviors?.behaviors?.map((behavior) => ({
       form_id: form.id,
       behavior_id: behavior,
       company_id: data.company_id,
@@ -61,6 +61,7 @@ class PathController {
     await form.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
       companies: null,
+      behaviorForms: null,
       paths: null,
     });
     return form;
@@ -68,10 +69,20 @@ class PathController {
 
   async update({ params, request, auth }) {
     const data = request.only(['name', 'observation', 'active', 'path_id', 'company_id']);
+    const listBehaviors = request.only('behaviors');
+
     const form = await Form.find(params.id);
     form.merge({ ...data, updated_by: auth.user.id });
     await form.save();
 
+    await BehaviorForm.query().where({ form_id: form.id }).delete();
+    const behaviorForm = listBehaviors?.behaviors?.map((behavior) => ({
+      form_id: form.id,
+      behavior_id: behavior,
+      company_id: data.company_id,
+      created_by: auth.user.id,
+    }));
+    await BehaviorForm.createMany(behaviorForm);
     return form;
   }
 
@@ -82,4 +93,4 @@ class PathController {
   }
 }
 
-module.exports = PathController;
+module.exports = FormController;

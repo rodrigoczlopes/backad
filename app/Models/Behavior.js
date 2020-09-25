@@ -36,7 +36,7 @@ class Behavior extends Model {
   }
 
   behaviorForms() {
-    return this.hasMany('App/Models/BehaviorForm', 'behavior_id', 'id');
+    return this.hasMany('App/Models/BehaviorForm');
   }
 }
 

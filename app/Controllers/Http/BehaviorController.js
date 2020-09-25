@@ -11,7 +11,7 @@ class BehaviorController {
       page = 1;
       itemsPerPage = 20000;
     }
-    const behaviors = await Behavior.query()
+    const behaviors = Behavior.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
@@ -19,6 +19,7 @@ class BehaviorController {
       .with('paths')
       .with('skills')
       .paginate(page, itemsPerPage);
+
     return behaviors;
   }
 
@@ -31,7 +32,7 @@ class BehaviorController {
 
   async show({ params }) {
     const behavior = await Behavior.find(params.id);
-    await behavior?.loadMany({
+    await behavior.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
       companies: null,
       paths: null,
