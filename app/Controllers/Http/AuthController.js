@@ -1,11 +1,19 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const UserAccessProfile = use('App/Models/UserAccessProfile');
 const Ws = use('Ws');
 
 class AuthController {
-  async register({ request, response }) {
+  async register({ request, response, auth }) {
     const data = request.all();
     const user = await User.create(data);
+
+    const acessProfile = request.only('user_access_profile');
+    await acessProfile?.user_access_profile?.forEach((profile) => {
+      UserAccessProfile.create({ user_id: user.id, user_group_id: profile, created_by: auth.user.id, updated_by: auth.user.id });
+    });
     return response.status(201).json(user);
   }
 

@@ -6,6 +6,9 @@
 const User = use('App/Models/User');
 const Helpers = use('Helpers');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const UserAccessProfile = use('App/Models/UserAccessProfile');
+
 class UserController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
@@ -18,7 +21,7 @@ class UserController {
     if (searchSentence) {
       const usersList = await User.query()
         .where(searchBy, 'ilike', `%${searchSentence}%`)
-        .with('userGroups')
+        .with('userAccessProfiles')
         .with('companies')
         .with('departments')
         .with('positions')
@@ -29,7 +32,7 @@ class UserController {
     }
 
     const users = await User.query()
-      .with('userGroups')
+      .with('userAccessProfiles')
       .with('companies')
       .with('departments')
       .with('positions')
@@ -43,6 +46,7 @@ class UserController {
   async show({ params }) {
     const user = await User.find(params.id);
     await user.load('companies');
+    await user.load('userAccessProfiles');
 
     return user;
   }
@@ -87,6 +91,13 @@ class UserController {
     }
 
     await user.save();
+
+    const acessProfile = request.only('user_access_profile');
+    await UserAccessProfile.query().where({ user_id: user.id }).delete();
+
+    await acessProfile?.user_access_profile?.forEach((profile) => {
+      UserAccessProfile.create({ user_id: user.id, user_group_id: profile, created_by: auth.user.id, updated_by: auth.user.id });
+    });
     return user;
   }
 

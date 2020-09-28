@@ -166,6 +166,10 @@ class User extends Model {
     return this.hasMany('App/Models/BehaviorForm', 'id', 'updated_by');
   }
 
+  userAccessProfiles() {
+    return this.hasMany('App/Models/UserAccessProfile');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }
