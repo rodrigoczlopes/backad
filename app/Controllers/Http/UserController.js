@@ -92,12 +92,19 @@ class UserController {
 
     await user.save();
 
-    const acessProfile = request.only('user_access_profile');
-    await UserAccessProfile.query().where({ user_id: user.id }).delete();
+    const accessProfile = request.only('user_access_profile');
+    if (accessProfile) {
+      await UserAccessProfile.query().where({ user_id: user.id }).delete();
 
-    await acessProfile?.user_access_profile?.forEach((profile) => {
-      UserAccessProfile.create({ user_id: user.id, user_group_id: profile, created_by: auth.user.id, updated_by: auth.user.id });
-    });
+      await accessProfile?.user_access_profile?.forEach((profile) => {
+        UserAccessProfile.create({
+          user_id: user.id,
+          user_group_id: profile,
+          created_by: auth.user.id,
+          updated_by: auth.user.id,
+        });
+      });
+    }
     return user;
   }
 
