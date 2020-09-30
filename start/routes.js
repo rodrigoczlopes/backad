@@ -71,6 +71,7 @@ Route.group(() => {
         [['departments.update'], ['Department']],
       ])
     );
+  Route.get('departmenthierarchies', 'DepartmentHierarchyController.index');
   Route.resource('developmentplans', 'DevelopmentPlanController')
     .apiOnly()
     .validator(

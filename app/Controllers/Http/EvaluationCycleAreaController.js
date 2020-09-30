@@ -23,7 +23,7 @@ class EvaluationCycleAreaController {
 
   async show({ params }) {
     const evaluationCycleArea = await EvaluationCycleArea.find(params.id);
-    await evaluationCycleArea.loadMany({
+    await evaluationCycleArea?.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
     });
     return evaluationCycleArea;

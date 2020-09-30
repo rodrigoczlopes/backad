@@ -37,6 +37,11 @@ class PositionController {
 
   async store({ request, response, auth }) {
     const data = request.all();
+    // console.log(data.Cargos);
+    // data.Cargos.forEach((position) => {
+    //   Position.create({ ...position, created_by: auth.user.id });
+    // });
+    // return response.status(201).json({ status: 'ok mano' });
     const position = await Position.create({ ...data, created_by: auth.user.id });
     const positionReturn = await this.show({ params: { id: position.id } });
     return response.status(201).json(positionReturn);

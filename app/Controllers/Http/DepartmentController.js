@@ -1,6 +1,5 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Department = use('App/Models/Department');
@@ -28,7 +27,7 @@ class DepartmentController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .orderBy('name')
+      .orderBy('level')
       .paginate(page, itemsPerPage);
 
     return departments;
