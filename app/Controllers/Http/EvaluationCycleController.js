@@ -5,21 +5,51 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycle = use('App/Models/EvaluationCycle');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const EvaluationCycleArea = use('App/Models/EvaluationCycleArea');
+
 class EvaluationCycleController {
-  async index() {
+  async index({ request }) {
+    let { page, itemsPerPage } = request.get();
+    const { searchSentence, searchBy } = request.get();
+    if (!page) {
+      page = 1;
+      itemsPerPage = 20000;
+    }
+
+    if (searchSentence) {
+      const ratingScales = await EvaluationCycle.query()
+        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .orderBy(searchBy)
+        .paginate(page, itemsPerPage);
+      return ratingScales;
+    }
+
     const evaluationCycles = await EvaluationCycle.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
-      .with(['companies'])
-      .fetch();
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
+
     return evaluationCycles;
   }
 
   async store({ request, response, auth }) {
     const data = request.all();
+    const { department_hierarchies } = data;
+    delete data.department_hierarchies;
+    delete data.companies;
     const evaluationCycle = await EvaluationCycle.create({ ...data, created_by: auth.user.id });
-    return response.status(201).json(evaluationCycle);
+
+    const evaluationCycleAreas = department_hierarchies.map((department) => ({
+      evaluation_cycle_id: evaluationCycle.id,
+      department_id: department,
+    }));
+
+    await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    const evaluationCycleReturn = await this.show({ params: { id: evaluationCycle.id } });
+    return response.status(201).json(evaluationCycleReturn);
   }
 
   async show({ params }) {
@@ -27,38 +57,36 @@ class EvaluationCycleController {
     await evaluationCycle.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
       companies: null,
+      evaluationCycleAreas: null,
     });
     return evaluationCycle;
   }
 
-  async update({ params, request, auth }) {
-    const data = request.only([
-      'description',
-      'initial_evaluation_period',
-      'finalL_evaluation_period',
-      'initial_manager_feedback',
-      'final_manager_feedback',
-      'complexity_level',
-      'justificative',
-      'comment',
-      'make_report_available',
-      'average_type',
-      'feedback_type',
-      'quantity_pair',
-      'quantity_subordinate',
-      'quantity_manager',
-      'quantity_inferior',
-      'quantity_superior',
-      'company_id',
-      'updated_by',
-    ]);
+  async update({ params, response, request, auth }) {
+    const data = request.all();
+    const { department_hierarchies } = data;
+    delete data.department_hierarchies;
+    delete data.companies;
+    delete data.id;
+
     const evaluationCycle = await EvaluationCycle.find(params.id);
     evaluationCycle.merge({ ...data, updated_by: auth.user.id });
     await evaluationCycle.save();
-    return evaluationCycle;
+
+    await EvaluationCycleArea.query().where({ evaluation_cycle_id: evaluationCycle.id }).delete();
+    const evaluationCycleAreas = department_hierarchies.map((department) => ({
+      evaluation_cycle_id: evaluationCycle.id,
+      department_id: department,
+    }));
+
+    await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    const evaluationCycleReturn = await this.show({ params: { id: evaluationCycle.id } });
+
+    return response.status(200).json(evaluationCycleReturn);
   }
 
   async destroy({ params }) {
+    await EvaluationCycleArea.query().where({ evaluation_cycle_id: params.id }).delete();
     const evaluationCycle = await EvaluationCycle.find(params.id);
 
     await evaluationCycle.delete();
