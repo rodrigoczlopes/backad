@@ -71,6 +71,7 @@ Route.group(() => {
         [['departments.update'], ['Department']],
       ])
     );
+  Route.get('departmentemployees/:id', 'DepartmentEmployeeController.show');
   Route.get('departmenthierarchies', 'DepartmentHierarchyController.index');
   Route.resource('developmentplans', 'DevelopmentPlanController')
     .apiOnly()
@@ -128,6 +129,7 @@ Route.group(() => {
         [['notifications.update'], ['Notification']],
       ])
     );
+  Route.get('pathforms/:id', 'PathFormController.show');
   Route.resource('paths', 'PathController')
     .apiOnly()
     .validator(
@@ -168,7 +170,7 @@ Route.group(() => {
         [['skills.update'], ['Skill']],
       ])
     );
-  Route.get('skillbehaviors/:id', 'SkillBehaviorController.index');
+  Route.get('skillbehaviors', 'SkillBehaviorController.index');
   Route.resource('users', 'UserController')
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));

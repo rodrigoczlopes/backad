@@ -4,9 +4,6 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Department = use('App/Models/Department');
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Hierarchy = use('App/Models/Hierarchy');
-
 function list_to_tree(list) {
   const map = {};
   let node;
@@ -32,9 +29,6 @@ function list_to_tree(list) {
 
 class DepartmentHierarchyController {
   async index({ auth }) {
-    const hierarchy = await Hierarchy.query('company_id', auth.user.company_id).fetch();
-    if (!hierarchy) return null;
-
     const departments = await Department.query().where('company_id', auth.user.company_id).orderBy('level').fetch();
     let treeNode = [];
     let parentId = {};
@@ -49,6 +43,7 @@ class DepartmentHierarchyController {
       const item = {
         value: department.id,
         label: department.name,
+        leaf: true,
         children: [],
         parentId: parentId[`${unPreviousLevel || '00'}.${previousLevel}`],
       };
