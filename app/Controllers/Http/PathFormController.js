@@ -8,12 +8,13 @@ const Position = use('App/Models/Position');
 const Form = use('App/Models/Form');
 
 class PathFormController {
-  async show({ params }) {
+  async show({ params, auth }) {
     const position = await Position.find(params.id);
-    const form = await Form.findBy('path_id', position.path_id);
-    if (form) {
-      form.loadMany({ behaviorForms: null });
-    }
+    const form = await Form.query()
+      .where('path_id', position.path_id)
+      .where('company_id', auth.user.company_id)
+      .with('behaviorForms')
+      .first();
     return form;
   }
 }

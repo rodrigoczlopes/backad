@@ -1,7 +1,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class Department extends Model {
+class EvaluationCycleAnswer extends Model {
   static boot() {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
@@ -23,13 +23,25 @@ class Department extends Model {
     return this.belongsTo('App/Models/User', 'updated_by', 'id');
   }
 
-  leader() {
-    return this.belongsTo('App/Models/User', 'leader_id', 'id');
+  evaluationCycles() {
+    return this.belongsTo('App/Models/EvaluationCycle');
   }
 
-  companies() {
-    return this.belongsTo('App/Models/Company', 'company_id', 'id');
+  employees() {
+    return this.belongsTo('App/Models/User');
+  }
+
+  leaders() {
+    return this.belongsTo('App/Models/User');
+  }
+
+  forms() {
+    return this.belongsTo('App/Models/Form');
+  }
+
+  behaviors() {
+    return this.belongsTo('App/Models/Behavior');
   }
 }
 
-module.exports = Department;
+module.exports = EvaluationCycleAnswer;

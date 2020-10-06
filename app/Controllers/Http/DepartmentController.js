@@ -17,6 +17,7 @@ class DepartmentController {
       const ratingScales = await Department.query()
         .where(searchBy, 'ilike', `%${searchSentence}%`)
         .with('companies')
+        .with('leader')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
       return ratingScales;
@@ -27,6 +28,7 @@ class DepartmentController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
+      .with('leader')
       .orderBy('level')
       .paginate(page, itemsPerPage);
 
@@ -47,7 +49,7 @@ class DepartmentController {
   }
 
   async update({ params, request, auth }) {
-    const data = request.only(['name', 'level', 'area_code', 'company_id', 'active', 'updated_by']);
+    const data = request.only(['name', 'level', 'area_code', 'company_id', 'active', 'updated_by', 'leader_id']);
     const department = await Department.find(params.id);
     department.merge({ ...data, updated_by: auth.user.id });
     await department.save();

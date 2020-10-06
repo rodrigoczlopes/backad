@@ -71,7 +71,7 @@ Route.group(() => {
         [['departments.update'], ['Department']],
       ])
     );
-  Route.get('departmentemployees/:id', 'DepartmentEmployeeController.show');
+  Route.post('departmentemployees', 'DepartmentEmployeeController.store');
   Route.get('departmenthierarchies', 'DepartmentHierarchyController.index');
   Route.resource('developmentplans', 'DevelopmentPlanController')
     .apiOnly()
@@ -89,6 +89,8 @@ Route.group(() => {
         [['evaluationcycleareas.update'], ['EvaluationCycleArea']],
       ])
     );
+  Route.resource('evaluationcycleanswers', 'EvaluationCycleAnswerController').apiOnly();
+  Route.resource('evaluationcyclecomments', 'EvaluationCycleCommentController').apiOnly();
   Route.resource('evaluationcycles', 'EvaluationCycleController')
     .apiOnly()
     .validator(
@@ -121,6 +123,7 @@ Route.group(() => {
         [['hierarchies.update'], ['Hierarchy']],
       ])
     );
+  Route.get('leaders', 'LeaderController.index');
   Route.resource('notifications', 'NotificationController')
     .apiOnly()
     .validator(
