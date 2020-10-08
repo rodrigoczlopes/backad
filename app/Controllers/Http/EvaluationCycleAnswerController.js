@@ -6,7 +6,22 @@
 const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 class EvaluationCycleAnswerController {
-  async index({ request, response }) {}
+  async index({ request, response }) {
+    const { employeeId, leaderId } = request.get();
+
+    if (leaderId !== 'undefined') {
+      const answers = await EvaluationCycleAnswer.query()
+        .where('leader_id', leaderId)
+        .where('employee_id', employeeId)
+        .with('behaviors')
+        .fetch();
+      return answers;
+    }
+
+    const answer = await EvaluationCycleAnswer.query().where('employee_id', employeeId).with('behaviors').fetch();
+
+    return answer;
+  }
 
   async store({ request, response, auth }) {
     const data = request.all();
@@ -17,7 +32,17 @@ class EvaluationCycleAnswerController {
 
   async show({ params, request, response }) {}
 
-  async update({ params, request, response }) {}
+  async update({ request, response }) {
+    const { data } = request.only('data');
+
+    data.forEach(async (answer) => {
+      const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
+      evaluationCycleAnswer.merge(answer);
+      await evaluationCycleAnswer.save();
+    });
+
+    return response.json({ status: 'ok' });
+  }
 
   async destroy({ params, request, response }) {}
 }
