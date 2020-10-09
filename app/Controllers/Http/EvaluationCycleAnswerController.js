@@ -13,12 +13,19 @@ class EvaluationCycleAnswerController {
       const answers = await EvaluationCycleAnswer.query()
         .where('leader_id', leaderId)
         .where('employee_id', employeeId)
-        .with('behaviors')
+        .with('behaviors', (builder) => {
+          builder.with('skills');
+        })
         .fetch();
       return answers;
     }
 
-    const answer = await EvaluationCycleAnswer.query().where('employee_id', employeeId).with('behaviors').fetch();
+    const answer = await EvaluationCycleAnswer.query()
+      .where('employee_id', employeeId)
+      .with('behaviors', (builder) => {
+        builder.with('skills');
+      })
+      .fetch();
 
     return answer;
   }
