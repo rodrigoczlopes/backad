@@ -2,9 +2,9 @@
 const Schema = use('Schema');
 const { v4: uuidv4 } = require('uuid');
 
-class EvaluationCycleAnswerSchema extends Schema {
+class EvaluationCycleJustificativeSchema extends Schema {
   up() {
-    this.create('evaluation_cycle_answers', (table) => {
+    this.create('evaluation_cycle_justificatives', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.uuid('employee_id').unsigned().references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
       table.uuid('leader_id').unsigned().references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
@@ -16,11 +16,9 @@ class EvaluationCycleAnswerSchema extends Schema {
         .inTable('evaluation_cycles')
         .onDelete('SET NULL')
         .onUpdate('CASCADE');
-      table.uuid('behavior_id').unsigned().references('id').inTable('behaviors').onDelete('SET NULL').onUpdate('CASCADE');
-      table.numeric('user_answer');
+      table.uuid('skill_id').unsigned().references('id').inTable('skills').onDelete('SET NULL').onUpdate('CASCADE');
       table.string('user_justificative');
       table.boolean('user_finished');
-      table.numeric('leader_answer');
       table.string('leader_justificative');
       table.boolean('leader_finished');
       table.timestamps();
@@ -28,8 +26,8 @@ class EvaluationCycleAnswerSchema extends Schema {
   }
 
   down() {
-    this.drop('evaluation_cycle_answers');
+    this.drop('evaluation_cycle_justificatives');
   }
 }
 
-module.exports = EvaluationCycleAnswerSchema;
+module.exports = EvaluationCycleJustificativeSchema;
