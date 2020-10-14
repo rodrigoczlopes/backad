@@ -6,10 +6,11 @@ const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 class EvaluationCycleAnswerController {
   async index({ request }) {
-    const { employeeId, leaderId } = request.get();
+    const { employeeId, leaderId, evaluation_cycle_id } = request.get();
 
     if (leaderId !== 'undefined') {
       const answers = await EvaluationCycleAnswer.query()
+        .where('evaluation_cycle_id', evaluation_cycle_id)
         .where('leader_id', leaderId)
         .where('employee_id', employeeId)
         .with('behaviors', (builder) => {
@@ -20,6 +21,7 @@ class EvaluationCycleAnswerController {
     }
 
     const answer = await EvaluationCycleAnswer.query()
+      .where('evaluation_cycle_id', evaluation_cycle_id)
       .where('employee_id', employeeId)
       .with('behaviors', (builder) => {
         builder.with('skills');

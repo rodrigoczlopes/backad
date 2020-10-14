@@ -14,7 +14,13 @@ const Form = use('App/Models/Form');
 const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const EvaluationCycleJustificative = use('App/Models/EvaluationCycleJustificative');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Behavior = use('App/Models/Behavior');
 
 class DepartmentEmployeeController {
   async store({ request, response, auth }) {
@@ -75,7 +81,9 @@ class DepartmentEmployeeController {
             const formJSON = form.toJSON();
             const { behaviorForms } = formJSON;
             let questions = [];
-            behaviorForms.forEach((behaviorForm) => {
+            const bhs = behaviorForms.map(async (behaviorForm) => {
+              const behavior = await Behavior.query().where('id', behaviorForm.behavior_id).first();
+              const behaviorjson = behavior.toJSON();
               questions = [
                 ...questions,
                 {
@@ -84,20 +92,46 @@ class DepartmentEmployeeController {
                   form_id: behaviorForm.form_id,
                   evaluation_cycle_id: user.evaluation_cycle_id,
                   behavior_id: behaviorForm.behavior_id,
+                  skill_id: behaviorjson.skill_id,
                 },
               ];
             });
+            await Promise.all(bhs);
             return questions;
           }
         } catch (error) {
           return response.status(500).json({ message: error.message });
         }
       });
-
       const userQuestionsAwait = await Promise.all(userQuestions);
+
+      // Clonando esta variável para não alaterar o clone quando excluir o skill_id
+      const userJustificative = JSON.parse(JSON.stringify(userQuestionsAwait));
+
       userQuestionsAwait.forEach(async (questions) => {
         questions.forEach(async (question) => {
+          delete question.skill_id;
           await EvaluationCycleAnswer.findOrCreate(question);
+        });
+      });
+
+      const userJustificativeUniques = userJustificative.map((currentUserJustificative) => {
+        return currentUserJustificative.reduce((acc, current) => {
+          const x = acc.find((item) => item.employee_id === current.employee_id && item.skill_id === current.skill_id);
+          if (!x) {
+            return acc.concat([current]);
+          }
+          return acc;
+        }, []);
+      });
+
+      userJustificativeUniques.forEach(async (questions) => {
+        questions.forEach(async (question) => {
+          delete question.behavior_id;
+          await EvaluationCycleJustificative.findOrCreate(
+            { employee_id: question.employee_id, evaluation_cycle_id: question.evaluation_cycle_id, skill_id: question.skill_id },
+            question
+          );
         });
       });
 

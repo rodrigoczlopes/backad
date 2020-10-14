@@ -11,28 +11,36 @@ const EvaluationCycleArea = use('App/Models/EvaluationCycleArea');
 class EvaluationCycleController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
-    const { searchSentence, searchBy } = request.get();
+    const { searchSentence, searchBy, company_id } = request.get();
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
     }
+    if (!company_id) {
+      if (searchSentence) {
+        const ratingScales = await EvaluationCycle.query()
+          .where(searchBy, 'ilike', `%${searchSentence}%`)
+          .orderBy(searchBy)
+          .paginate(page, itemsPerPage);
+        return ratingScales;
+      }
 
-    if (searchSentence) {
-      const ratingScales = await EvaluationCycle.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
-        .orderBy(searchBy)
+      const evaluationCycles = await EvaluationCycle.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .orderBy('description')
         .paginate(page, itemsPerPage);
-      return ratingScales;
+      return evaluationCycles;
     }
 
-    const evaluationCycles = await EvaluationCycle.query()
-      .with('createdBy', (builder) => {
-        builder.select(['id', 'name', 'email', 'avatar']);
-      })
-      .orderBy('description')
-      .paginate(page, itemsPerPage);
-
-    return evaluationCycles;
+    const evaluationCycle = await EvaluationCycle.query()
+      .where({ company_id })
+      .where('initial_evaluation_period', '<=', new Date())
+      .where('final_evaluation_period', '>=', new Date())
+      .select('id', 'company_id')
+      .first();
+    return evaluationCycle;
   }
 
   async store({ request, response, auth }) {
