@@ -71,7 +71,7 @@ Route.group(() => {
         [['departments.update'], ['Department']],
       ])
     );
-  Route.post('departmentemployees', 'DepartmentEmployeeController.store');
+  Route.get('departmentemployees', 'DepartmentEmployeeController.index');
   Route.get('departmenthierarchies', 'DepartmentHierarchyController.index');
   Route.resource('developmentplans', 'DevelopmentPlanController')
     .apiOnly()
@@ -166,6 +166,7 @@ Route.group(() => {
         [['ratingscales.update'], ['RatingScale']],
       ])
     );
+  Route.post('sendcycleforms', 'SendCycleFormController.store');
   Route.resource('skills', 'SkillController')
     .apiOnly()
     .validator(
