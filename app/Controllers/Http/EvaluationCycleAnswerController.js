@@ -6,6 +6,9 @@ const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 class EvaluationCycleAnswerController {
   async index({ request }) {
+    // FIXME:
+    // Ao retornar os dados sempre tomar cuidado com as notas dos superior não aparecerem para os subordinados
+
     const { employeeId, leaderId, evaluation_cycle_id } = request.get();
 
     if (leaderId !== 'undefined') {
