@@ -15,16 +15,18 @@ class EvaluationCycleAnswerController {
         .with('behaviors', (builder) => {
           builder.with('skills');
         })
+        .leftJoin('behaviors', 'behaviors.id', 'evaluation_cycle_answers.behavior_id')
         .select(
-          'id',
-          'employee_id',
-          'leader_id',
-          'form_id',
-          'evaluation_cycle_id',
-          'behavior_id',
-          'leader_answer',
-          'leader_finished'
+          'evaluation_cycle_answers.id',
+          'evaluation_cycle_answers.employee_id',
+          'evaluation_cycle_answers.leader_id',
+          'evaluation_cycle_answers.form_id',
+          'evaluation_cycle_answers.evaluation_cycle_id',
+          'evaluation_cycle_answers.behavior_id',
+          'evaluation_cycle_answers.leader_answer',
+          'evaluation_cycle_answers.leader_finished'
         )
+        .orderBy('behaviors.description', 'asc')
         .fetch();
       return answers;
     }
@@ -35,7 +37,18 @@ class EvaluationCycleAnswerController {
       .with('behaviors', (builder) => {
         builder.with('skills');
       })
-      .select('id', 'employee_id', 'leader_id', 'form_id', 'evaluation_cycle_id', 'behavior_id', 'user_answer', 'user_finished')
+      .leftJoin('behaviors', 'behaviors.id', 'evaluation_cycle_answers.behavior_id')
+      .select(
+        'evaluation_cycle_answers.id',
+        'evaluation_cycle_answers.employee_id',
+        'evaluation_cycle_answers.leader_id',
+        'evaluation_cycle_answers.form_id',
+        'evaluation_cycle_answers.evaluation_cycle_id',
+        'evaluation_cycle_answers.behavior_id',
+        'evaluation_cycle_answers.user_answer',
+        'evaluation_cycle_answers.user_finished'
+      )
+      .orderBy('behaviors.description', 'asc')
       .fetch();
 
     return answer;
@@ -48,8 +61,6 @@ class EvaluationCycleAnswerController {
     return response.status(201).json(evaluationCycleAnswerReturn);
   }
 
-  // async show({ params, request, response }) {}
-
   async update({ request, response }) {
     const { data } = request.only('data');
 
@@ -61,8 +72,6 @@ class EvaluationCycleAnswerController {
 
     return response.json({ status: 'ok' });
   }
-
-  // async destroy({ params, request, response }) {}
 }
 
 module.exports = EvaluationCycleAnswerController;
