@@ -70,7 +70,6 @@ class SendCycleFormController {
           ...userCommentFormList,
           {
             employee_id: user.id,
-            leader_id: user.departments.leader_id,
             form_id: form.id,
             evaluation_cycle_id: user.evaluation_cycle_id,
           },
@@ -88,7 +87,6 @@ class SendCycleFormController {
                 ...questions,
                 {
                   employee_id: user.id,
-                  leader_id: user.departments.leader_id,
                   form_id: behaviorForm.form_id,
                   evaluation_cycle_id: user.evaluation_cycle_id,
                   behavior_id: behaviorForm.behavior_id,
@@ -111,7 +109,14 @@ class SendCycleFormController {
       userQuestionsAwait.forEach(async (questions) => {
         questions.forEach(async (question) => {
           delete question.skill_id;
-          await EvaluationCycleAnswer.findOrCreate(question);
+          await EvaluationCycleAnswer.findOrCreate(
+            {
+              employee_id: question.employee_id,
+              evaluation_cycle_id: question.evaluation_cycle_id,
+              behavior_id: question.behavior_id,
+            },
+            question
+          );
         });
       });
 
@@ -136,7 +141,10 @@ class SendCycleFormController {
       });
 
       userCommentFormList.forEach(async (commentForm) => {
-        await EvaluationCycleComment.findOrCreate(commentForm);
+        await EvaluationCycleComment.findOrCreate(
+          { employee_id: commentForm.employee_Id, evaluation_cycle_id: commentForm.evaluation_cycle_id },
+          commentForm
+        );
       });
 
       return response.status(200).json({ data: userQuestionsAwait, status: true });

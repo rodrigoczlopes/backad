@@ -50,6 +50,7 @@ class DepartmentEmployeeController {
       const employees = await User.query()
         .where({ department_id: auth.user.department_id })
         .where('id', '<>', auth.user.id)
+        .where({ active: true })
         .with('departments')
         .with('positions')
         .with('hierarchies')
@@ -61,6 +62,7 @@ class DepartmentEmployeeController {
     const leaders = childrenDepartments.map(async (children) => {
       const employees = await User.query()
         .where({ department_id: children.id })
+        .where({ active: true })
         .with('departments')
         .with('positions')
         .with('hierarchies')

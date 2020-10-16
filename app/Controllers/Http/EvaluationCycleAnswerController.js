@@ -6,19 +6,25 @@ const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 class EvaluationCycleAnswerController {
   async index({ request }) {
-    // FIXME:
-    // Ao retornar os dados sempre tomar cuidado com as notas dos superior não aparecerem para os subordinados
-
     const { employeeId, leaderId, evaluation_cycle_id } = request.get();
 
     if (leaderId !== 'undefined') {
       const answers = await EvaluationCycleAnswer.query()
         .where('evaluation_cycle_id', evaluation_cycle_id)
-        .where('leader_id', leaderId)
         .where('employee_id', employeeId)
         .with('behaviors', (builder) => {
           builder.with('skills');
         })
+        .select(
+          'id',
+          'employee_id',
+          'leader_id',
+          'form_id',
+          'evaluation_cycle_id',
+          'behavior_id',
+          'leader_answer',
+          'leader_finished'
+        )
         .fetch();
       return answers;
     }
@@ -29,6 +35,7 @@ class EvaluationCycleAnswerController {
       .with('behaviors', (builder) => {
         builder.with('skills');
       })
+      .select('id', 'employee_id', 'leader_id', 'form_id', 'evaluation_cycle_id', 'behavior_id', 'user_answer', 'user_finished')
       .fetch();
 
     return answer;

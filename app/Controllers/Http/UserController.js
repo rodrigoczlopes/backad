@@ -46,6 +46,7 @@ class UserController {
   async show({ params }) {
     const user = await User.find(params.id);
     await user.load('companies');
+    await user.load('positions');
     await user.load('userAccessProfiles');
 
     return user;
