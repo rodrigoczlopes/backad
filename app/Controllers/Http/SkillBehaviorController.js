@@ -5,15 +5,24 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Behavior = use('App/Models/Behavior');
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Skill = use('App/Models/Skill');
-
 class SkillBehaviorController {
-  async index({ auth }) {
-    const skills = await Skill.query('company_id', auth.user.company_id).fetch();
+  async index({ auth, params }) {
+    if (params.id === 'undefined' || params.id === 'null') return [];
+    const behaviorSkills = await Behavior.query()
+      .where('path_id', params.id)
+      .where('company_id', auth.user.company_id)
+      .with('skills')
+      .fetch();
+    const behaviorJson = behaviorSkills.toJSON();
+    const skills = behaviorJson.map((beh) => {
+      return { id: beh.skills.id, name: beh.skills.name };
+    });
+
+    const uniqueSkills = Array.from(skills.reduce((a, o) => a.set(o.name, o), new Map()).values());
+    // const skills = await Skill.query('company_id', auth.user.company_id).fetch();
     if (!skills) return null;
 
-    const treeNode = skills.toJSON().map(async (skill) => {
+    const treeNode = uniqueSkills.map(async (skill) => {
       const behaviors = await Behavior.query().where('skill_id', skill.id).fetch();
       const childrens =
         behaviors.toJSON().map((behavior) => ({ value: behavior.id, label: behavior.description, leaf: true, children: [] })) ||

@@ -22,6 +22,7 @@ Route.get('/files/:file', 'FileController.show');
 Route.group(() => {
   Route.put('/profile', 'ProfileController.update').validator('Profile');
   Route.post('/register', 'AuthController.register').validator('RegisterUser');
+  Route.put('/resetall', 'ResetPasswordController.update');
 
   Route.resource('behaviors', 'BehaviorController')
     .apiOnly()
@@ -175,7 +176,7 @@ Route.group(() => {
         [['skills.update'], ['Skill']],
       ])
     );
-  Route.get('skillbehaviors', 'SkillBehaviorController.index');
+  Route.get('skillbehaviors/:id', 'SkillBehaviorController.index');
   Route.resource('users', 'UserController')
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));

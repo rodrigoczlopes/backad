@@ -3,6 +3,8 @@ const { parseISO, isBefore, subHours } = require('date-fns');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Token = use('App/Models/Token');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
 /*
 TODO:
 - Montar o método Update para resetar a senha pelo Administrador
@@ -22,7 +24,13 @@ class ResetPasswordController {
     await user.save();
   }
 
-  async update() {
+  async update({ request }) {
+    const data = request.all();
+    data.forEach(async (user) => {
+      const userToAlter = await User.find(user.id);
+      userToAlter.password = user.password;
+      userToAlter.save();
+    });
     return true;
   }
 }
