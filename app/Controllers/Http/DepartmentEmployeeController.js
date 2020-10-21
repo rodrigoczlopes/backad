@@ -28,21 +28,21 @@ class DepartmentEmployeeController {
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
     const hierarchyjson = hierarchy.toJSON();
-    const employeeLevel = hierarchyjson.level;
-    const employeeLevelLength = employeeLevel.split('.').length;
+    const leaderLevel = hierarchyjson.level;
+    const leaderLevelLength = leaderLevel.split('.').length;
 
     // Pegando o departamento do líder que está acessando
-    const employeeDepartment = await Department.find(auth.user.department_id);
-    const employeeDepartmentjson = employeeDepartment.toJSON();
-    const employeeDepartmentLevel = employeeDepartmentjson.level;
+    const leaderDepartment = await Department.find(auth.user.department_id);
+    const leaderDepartmentjson = leaderDepartment.toJSON();
+    const leaderDepartmentLevel = leaderDepartmentjson.level;
 
     // Listando as áreas que fazem parte do fluxo de análise do líder
     const department = await Department.all();
     const departmentjson = department.toJSON();
     const childrenDepartments = departmentjson.filter(
       (dep) =>
-        dep.level.split('.').length === employeeLevelLength + 1 &&
-        dep.level.split('.')[employeeLevelLength - 1] === employeeDepartmentLevel.split('.')[employeeLevelLength - 1]
+        dep.level.split('.').length === leaderLevelLength + 1 &&
+        dep.level.split('.')[leaderLevelLength - 1] === leaderDepartmentLevel.split('.')[leaderLevelLength - 1]
     );
 
     if (childrenDepartments.length === 0) {
@@ -69,10 +69,16 @@ class DepartmentEmployeeController {
         .fetch();
       return employees.toJSON();
     });
-    const leadersAwait = await Promise.all(leaders);
-    const leadersWithouNulls = leadersAwait.filter((item) => item.length > 0).flat();
-    const trueLeaders = leadersWithouNulls.filter((item) => item.hierarchies.level.split('.').length <= employeeLevelLength + 2);
 
+    const leadersAwait = await Promise.all(leaders);
+    const leadersWithoutNulls = leadersAwait.filter((item) => item.length > 0).flat();
+    let trueLeaders = [];
+    // Superintendente
+    if (leaderLevelLength === 1) {
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 3);
+    } else {
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 1);
+    }
     return trueLeaders;
   }
 }
