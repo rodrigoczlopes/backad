@@ -11,6 +11,9 @@ const Position = use('App/Models/Position');
 const Form = use('App/Models/Form');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Comment = use('App/Models/Comment');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
@@ -51,9 +54,10 @@ class SendCycleFormController {
         return value.length > 0;
       });
 
+      let formId = null;
+
       // colocando todos os objetos no mesmo nível
       const usersFlat = cleanedUserList.flat();
-      let userCommentFormList = [];
 
       const userQuestions = usersFlat.map(async (user) => {
         const position = await Position.find(user.position_id);
@@ -66,14 +70,9 @@ class SendCycleFormController {
           .with('behaviorForms')
           .first();
 
-        userCommentFormList = [
-          ...userCommentFormList,
-          {
-            employee_id: user.id,
-            form_id: form.id,
-            evaluation_cycle_id: user.evaluation_cycle_id,
-          },
-        ];
+        if (!form) return [];
+
+        formId = form.id;
 
         try {
           if (form) {
@@ -101,12 +100,14 @@ class SendCycleFormController {
           return response.status(500).json({ message: error.message });
         }
       });
+
       const userQuestionsAwait = await Promise.all(userQuestions);
+      const removeUserWithoutForm = userQuestionsAwait.filter((userQ) => userQ.length > 0);
 
       // Clonando esta variável para não alaterar o clone quando excluir o skill_id
-      const userJustificative = JSON.parse(JSON.stringify(userQuestionsAwait));
+      const userJustificative = JSON.parse(JSON.stringify(removeUserWithoutForm));
 
-      userQuestionsAwait.forEach(async (questions) => {
+      removeUserWithoutForm.forEach(async (questions) => {
         questions.forEach(async (question) => {
           delete question.skill_id;
           await EvaluationCycleAnswer.findOrCreate(
@@ -140,14 +141,43 @@ class SendCycleFormController {
         });
       });
 
-      userCommentFormList.forEach(async (commentForm) => {
+      const commentUser = userJustificativeUniques.map(async (userF) => {
+        const comments = await Comment.all();
+        const commentsJson = comments.toJSON();
+
+        const createdComment = commentsJson.map((comment) => {
+          const eachUserComment = userF.map((usf) => {
+            return {
+              employee_id: usf.employee_id,
+              form_id: formId,
+              evaluation_cycle_id: usf.evaluation_cycle_id,
+              comment_id: comment.id,
+            };
+          });
+          return eachUserComment;
+        });
+        return createdComment;
+      });
+
+      const commentAwait = await Promise.all(commentUser);
+      const commentAwaitFlat = commentAwait.flat().flat();
+
+      const commentAwaitFlatUnique = commentAwaitFlat.reduce((acc, current) => {
+        const x = acc.find((item) => item.employee_id === current.employee_id && item.comment_id === current.comment_id);
+        if (!x) {
+          return acc.concat([current]);
+        }
+        return acc;
+      }, []);
+
+      commentAwaitFlatUnique.forEach(async (com) => {
         await EvaluationCycleComment.findOrCreate(
-          { employee_id: commentForm.employee_Id, evaluation_cycle_id: commentForm.evaluation_cycle_id },
-          commentForm
+          { employee_id: com.employee_id, evaluation_cycle_id: com.evaluation_cycle_id, comment_id: com.comment_id },
+          com
         );
       });
 
-      return response.status(200).json({ data: userQuestionsAwait, status: true });
+      return response.status(200).json({ data: removeUserWithoutForm, status: true });
     } catch (error) {
       return response.status(500).json({ message: error.message });
     }

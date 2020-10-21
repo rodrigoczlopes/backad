@@ -15,14 +15,6 @@ class EvaluationCycleComment extends Model {
     return false;
   }
 
-  createdBy() {
-    return this.belongsTo('App/Models/User', 'created_by', 'id');
-  }
-
-  updatedBy() {
-    return this.belongsTo('App/Models/User', 'updated_by', 'id');
-  }
-
   evaluationCycles() {
     return this.belongsTo('App/Models/EvaluationCycle');
   }
@@ -37,6 +29,10 @@ class EvaluationCycleComment extends Model {
 
   forms() {
     return this.belongsTo('App/Models/Form');
+  }
+
+  comments() {
+    return this.belongsTo('App/Models/Comment');
   }
 }
 

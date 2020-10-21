@@ -52,7 +52,9 @@ class DepartmentEmployeeController {
         .where('id', '<>', auth.user.id)
         .where({ active: true })
         .with('departments')
-        .with('positions')
+        .with('positions', (builder) => {
+          builder.with('paths');
+        })
         .with('hierarchies')
         .fetch();
       return employees;
@@ -64,7 +66,9 @@ class DepartmentEmployeeController {
         .where({ department_id: children.id })
         .where({ active: true })
         .with('departments')
-        .with('positions')
+        .with('positions', (builder) => {
+          builder.with('paths');
+        })
         .with('hierarchies')
         .fetch();
       return employees.toJSON();
@@ -72,6 +76,7 @@ class DepartmentEmployeeController {
 
     const leadersAwait = await Promise.all(leaders);
     const leadersWithoutNulls = leadersAwait.filter((item) => item.length > 0).flat();
+
     let trueLeaders = [];
     // Superintendente
     if (leaderLevelLength === 1) {

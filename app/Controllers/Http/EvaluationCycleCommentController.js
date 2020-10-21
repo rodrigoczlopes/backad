@@ -11,15 +11,16 @@ class EvaluationCycleCommentController {
     const evaluationCycleComment = await EvaluationCycleComment.query()
       .where({ employee_id })
       .where({ evaluation_cycle_id })
+      .with('comments')
       .fetch();
     return evaluationCycleComment;
   }
 
-  async store({ request, response, auth }) {
+  async store({ request, response }) {
     const data = request.all();
-    const evaluationCycleComment = await EvaluationCycleComment.create({ ...data, created_by: auth.user.id });
-    const evaluationCycleCommentReturn = await this.show({ params: { id: evaluationCycleComment.id } });
-    return response.status(201).json(evaluationCycleCommentReturn);
+    const evaluationCycleComment = await EvaluationCycleComment.create({ ...data });
+
+    return response.status(201).json(evaluationCycleComment);
   }
 
   async update({ request, response }) {
