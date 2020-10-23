@@ -66,7 +66,7 @@ class DepartmentEmployeeController {
           builder.where('leader_finished', false);
         })
         .withCount('evaluationCycleComments', (builder) => {
-          builder.where('leader_comment', null);
+          builder.where('leader_finished', false);
         })
         .orderBy('name', 'asc')
         .fetch();
@@ -90,7 +90,7 @@ class DepartmentEmployeeController {
           builder.where('leader_finished', false);
         })
         .withCount('evaluationCycleComments', (builder) => {
-          builder.where('leader_comment', null);
+          builder.where('leader_finished', false);
         })
         .orderBy('name', 'asc')
         .fetch();

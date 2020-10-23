@@ -14,13 +14,13 @@ class DepartmentController {
     }
 
     if (searchSentence) {
-      const ratingScales = await Department.query()
+      const departmentsSearched = await Department.query()
         .where(searchBy, 'ilike', `%${searchSentence}%`)
         .with('companies')
         .with('leader')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return ratingScales;
+      return departmentsSearched;
     }
 
     const departments = await Department.query()
