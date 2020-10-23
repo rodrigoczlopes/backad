@@ -170,6 +170,18 @@ class User extends Model {
     return this.hasMany('App/Models/UserAccessProfile');
   }
 
+  evaluationCycleAnswers() {
+    return this.hasMany('App/Models/EvaluationCycleAnswer', 'id', 'employee_id');
+  }
+
+  evaluationCycleJustificatives() {
+    return this.hasMany('App/Models/EvaluationCycleJustificative', 'id', 'employee_id');
+  }
+
+  evaluationCycleComments() {
+    return this.hasMany('App/Models/EvaluationCycleComment', 'id', 'employee_id');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

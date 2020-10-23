@@ -18,11 +18,11 @@ class EvaluationCycleController {
     }
     if (!company_id) {
       if (searchSentence) {
-        const ratingScales = await EvaluationCycle.query()
+        const evaluationCyclesSearched = await EvaluationCycle.query()
           .where(searchBy, 'ilike', `%${searchSentence}%`)
           .orderBy(searchBy)
           .paginate(page, itemsPerPage);
-        return ratingScales;
+        return evaluationCyclesSearched;
       }
 
       const evaluationCycles = await EvaluationCycle.query()

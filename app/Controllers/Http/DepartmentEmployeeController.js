@@ -12,7 +12,6 @@ const Hierarchy = use('App/Models/Hierarchy');
 
 class DepartmentEmployeeController {
   async index({ auth }) {
-    // TODO:
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
     // Verificar as áreas que estão imediatamente sob essa hierarquia ou seja tenha o tamanho do array do split com ponto + 1
     // Pegar os usuários desses setores que fazem parte dessa hierarquia
@@ -24,6 +23,10 @@ class DepartmentEmployeeController {
     // esses acima vão avaliar, e serão avaliados
 
     // Ir descendo o nível até achar um nível que tenha funcionários
+
+    /* TODO:
+    - Verificar os usuário que não tiveram o ciclo criado
+    */
 
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
@@ -56,6 +59,16 @@ class DepartmentEmployeeController {
           builder.with('paths');
         })
         .with('hierarchies')
+        .withCount('evaluationCycleAnswers', (builder) => {
+          builder.where('leader_finished', false);
+        })
+        .withCount('evaluationCycleJustificatives', (builder) => {
+          builder.where('leader_finished', false);
+        })
+        .withCount('evaluationCycleComments', (builder) => {
+          builder.where('leader_comment', null);
+        })
+        .orderBy('name', 'asc')
         .fetch();
       return employees;
     }
@@ -70,6 +83,16 @@ class DepartmentEmployeeController {
           builder.with('paths');
         })
         .with('hierarchies')
+        .withCount('evaluationCycleAnswers', (builder) => {
+          builder.where('leader_finished', false);
+        })
+        .withCount('evaluationCycleJustificatives', (builder) => {
+          builder.where('leader_finished', false);
+        })
+        .withCount('evaluationCycleComments', (builder) => {
+          builder.where('leader_comment', null);
+        })
+        .orderBy('name', 'asc')
         .fetch();
       return employees.toJSON();
     });
@@ -78,9 +101,11 @@ class DepartmentEmployeeController {
     const leadersWithoutNulls = leadersAwait.filter((item) => item.length > 0).flat();
 
     let trueLeaders = [];
-    // Superintendente
+    // Superintendente = 1 || Gerentes = 2 ||
     if (leaderLevelLength === 1) {
       trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 3);
+    } else if (leaderLevelLength === 2) {
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 2);
     } else {
       trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 1);
     }
