@@ -10,7 +10,7 @@ const Department = use('App/Models/Department');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
-class DepartmentEmployeeController {
+class SummaryDepartmentEmployeeController {
   async index({ auth }) {
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
     // Verificar as áreas que estão imediatamente sob essa hierarquia ou seja tenha o tamanho do array do split com ponto + 1
@@ -48,7 +48,7 @@ class DepartmentEmployeeController {
         dep.level.split('.')[leaderLevelLength - 1] === leaderDepartmentLevel.split('.')[leaderLevelLength - 1]
     );
 
-    if (childrenDepartments.length === 0 && leaderLevelLength !== 6) {
+    if (childrenDepartments.length === 0) {
       // Pegando todos os colaboradores do setor
       const employees = await User.query()
         .where({ department_id: auth.user.department_id })
@@ -109,9 +109,8 @@ class DepartmentEmployeeController {
     } else {
       trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 1);
     }
-
     return trueLeaders;
   }
 }
 
-module.exports = DepartmentEmployeeController;
+module.exports = SummaryDepartmentEmployeeController;

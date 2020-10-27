@@ -181,6 +181,8 @@ Route.group(() => {
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));
 
+  Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();
+
   Route.resource('usergroups', 'UserGroupController')
     .apiOnly()
     .validator(

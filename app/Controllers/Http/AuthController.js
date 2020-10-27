@@ -8,6 +8,15 @@ const Ws = use('Ws');
 class AuthController {
   async register({ request, response, auth }) {
     const data = request.all();
+
+    if (data.employees?.length > 0) {
+      data.employees?.forEach((userToAdd) => {
+        User.create(userToAdd);
+      });
+
+      return response.status(201).json({ message: 'ok' });
+    }
+
     const accessProfile = request.only('user_access_profile');
     delete data.user_access_profile;
     const user = await User.create(data);

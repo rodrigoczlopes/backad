@@ -2,82 +2,25 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with useraccessprofiles
- */
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const UserAccessProfile = use('App/Models/UserAccessProfile');
+
 class UserAccessProfileController {
-  /**
-   * Show a list of all useraccessprofiles.
-   * GET useraccessprofiles
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async index({ request, response, view }) {}
 
-  /**
-   * Render a form to be used for creating a new useraccessprofile.
-   * GET useraccessprofiles/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create({ request, response, view }) {}
+  async store({ request, response, auth }) {
+    const data = request.all();
+    console.log(data.profiles);
+    data.profiles.forEach((profile) => {
+      UserAccessProfile.create({ ...profile, created_by: auth.user.id });
+    });
+    return response.status(201).json({ message: 'ok' });
+  }
 
-  /**
-   * Create/save a new useraccessprofile.
-   * POST useraccessprofiles
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request, response }) {}
-
-  /**
-   * Display a single useraccessprofile.
-   * GET useraccessprofiles/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async show({ params, request, response, view }) {}
 
-  /**
-   * Render a form to update an existing useraccessprofile.
-   * GET useraccessprofiles/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit({ params, request, response, view }) {}
-
-  /**
-   * Update useraccessprofile details.
-   * PUT or PATCH useraccessprofiles/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async update({ params, request, response }) {}
 
-  /**
-   * Delete a useraccessprofile with id.
-   * DELETE useraccessprofiles/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async destroy({ params, request, response }) {}
 }
 
