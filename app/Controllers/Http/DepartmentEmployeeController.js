@@ -60,13 +60,13 @@ class DepartmentEmployeeController {
         })
         .with('hierarchies')
         .withCount('evaluationCycleAnswers', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .withCount('evaluationCycleJustificatives', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .withCount('evaluationCycleComments', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .orderBy('name', 'asc')
         .fetch();
@@ -84,13 +84,13 @@ class DepartmentEmployeeController {
         })
         .with('hierarchies')
         .withCount('evaluationCycleAnswers', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .withCount('evaluationCycleJustificatives', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .withCount('evaluationCycleComments', (builder) => {
-          builder.where('leader_finished', false);
+          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
         .orderBy('name', 'asc')
         .fetch();
