@@ -11,7 +11,7 @@ const Department = use('App/Models/Department');
 const Hierarchy = use('App/Models/Hierarchy');
 
 class SummaryDepartmentEmployeeController {
-  async index({ auth }) {
+  async show({ auth }) {
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
     // Verificar as áreas que estão imediatamente sob essa hierarquia ou seja tenha o tamanho do array do split com ponto + 1
     // Pegar os usuários desses setores que fazem parte dessa hierarquia
@@ -103,11 +103,11 @@ class SummaryDepartmentEmployeeController {
     let trueLeaders = [];
     // Superintendente = 1 || Gerentes = 2 ||
     if (leaderLevelLength === 1) {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 3);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 3);
     } else if (leaderLevelLength === 2) {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 2);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 2);
     } else {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 1);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 1);
     }
     return trueLeaders;
   }

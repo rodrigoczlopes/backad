@@ -181,6 +181,8 @@ Route.group(() => {
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));
 
+  Route.resource('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show');
+
   Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();
 
   Route.resource('usergroups', 'UserGroupController')

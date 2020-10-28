@@ -35,6 +35,10 @@ class EvaluationCycleAnswer extends Model {
     return this.belongsTo('App/Models/User');
   }
 
+  conciliators() {
+    return this.belongsTo('App/Models/User');
+  }
+
   forms() {
     return this.belongsTo('App/Models/Form');
   }

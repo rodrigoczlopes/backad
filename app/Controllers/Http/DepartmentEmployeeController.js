@@ -103,11 +103,11 @@ class DepartmentEmployeeController {
     let trueLeaders = [];
     // Superintendente = 1 || Gerentes = 2 ||
     if (leaderLevelLength === 1) {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 3);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 3);
     } else if (leaderLevelLength === 2) {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 2);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 2);
     } else {
-      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies.level.split('.').length <= leaderLevelLength + 1);
+      trueLeaders = leadersWithoutNulls.filter((item) => item.hierarchies?.level.split('.').length <= leaderLevelLength + 1);
     }
 
     return trueLeaders;

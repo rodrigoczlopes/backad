@@ -23,9 +23,9 @@ class Department extends Model {
     return this.belongsTo('App/Models/User', 'updated_by', 'id');
   }
 
-  leader() {
-    return this.belongsTo('App/Models/User', 'leader_id', 'id');
-  }
+  // leader() {
+  //   return this.belongsTo('App/Models/User', 'level', 'hierarchies.level');
+  // }
 
   companies() {
     return this.belongsTo('App/Models/Company', 'company_id', 'id');

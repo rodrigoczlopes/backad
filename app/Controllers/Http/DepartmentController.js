@@ -17,7 +17,7 @@ class DepartmentController {
       const departmentsSearched = await Department.query()
         .where(searchBy, 'ilike', `%${searchSentence}%`)
         .with('companies')
-        .with('leader')
+        // .with('leader')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
       return departmentsSearched;
@@ -28,7 +28,7 @@ class DepartmentController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      .with('leader')
+      // .with('leader')
       .orderBy('level')
       .paginate(page, itemsPerPage);
 
