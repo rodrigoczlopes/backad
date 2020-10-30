@@ -21,6 +21,8 @@ const providers = [
   '@adonisjs/validator/providers/ValidatorProvider',
   '@adonisjs/antl/providers/AntlProvider',
   '@adonisjs/websocket/providers/WsProvider',
+  '@adonisjs/redis/providers/RedisProvider',
+  'adonis-kue/providers/KueProvider',
 
   path.join(__dirname, '..', 'providers', 'CustomValidationProvider'),
 ];
@@ -34,7 +36,11 @@ const providers = [
 | Providers for migrations, tests etc.
 |
 */
-const aceProviders = ['@adonisjs/lucid/providers/MigrationsProvider', '@adonisjs/vow/providers/VowProvider'];
+const aceProviders = [
+  '@adonisjs/lucid/providers/MigrationsProvider',
+  '@adonisjs/vow/providers/VowProvider',
+  'adonis-kue/providers/CommandsProvider',
+];
 
 /*
 |--------------------------------------------------------------------------
@@ -60,4 +66,14 @@ const aliases = {};
 */
 const commands = [];
 
-module.exports = { providers, aceProviders, aliases, commands };
+/*
+|--------------------------------------------------------------------------
+| Jobs
+|--------------------------------------------------------------------------
+|
+| Here you store queue jobs
+|
+*/
+const jobs = ['App/Jobs/NewPasswordMail'];
+
+module.exports = { providers, aceProviders, aliases, commands, jobs };

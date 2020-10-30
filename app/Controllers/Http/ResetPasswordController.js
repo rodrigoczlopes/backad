@@ -26,11 +26,17 @@ class ResetPasswordController {
 
   async update({ request }) {
     const data = request.all();
-    data.forEach(async (user) => {
-      const userToAlter = await User.find(user.id);
-      userToAlter.password = user.password;
-      userToAlter.save();
-    });
+    if (data.users) {
+      data.users.forEach(async (user) => {
+        const userToAlter = await User.find(user.id);
+        userToAlter.password = user.password;
+        userToAlter.save();
+      });
+    }
+
+    const userToUpdate = await User.find(data.id);
+    userToUpdate.password = data.password;
+    userToUpdate.save();
     return true;
   }
 }

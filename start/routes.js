@@ -23,6 +23,7 @@ Route.group(() => {
   Route.put('/profile', 'ProfileController.update').validator('Profile');
   Route.post('/register', 'AuthController.register').validator('RegisterUser');
   Route.put('/resetall', 'ResetPasswordController.update');
+  Route.put('/resetone', 'ResetPasswordController.update');
 
   Route.resource('behaviors', 'BehaviorController')
     .apiOnly()
