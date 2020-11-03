@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 |--------------------------------------------------------------------------
 | Redis Subscribers
@@ -9,15 +7,12 @@
 | your listeners are stored inside `app/Listeners` directory.
 |
 */
-
 // const Redis = use('Redis')
-
 /**
  * Inline subscriber
  */
 // Redis.subscribe('news', async () => {
 // })
-
 /**
  * Binding method from a module saved inside `app/Listeners/News`
  */

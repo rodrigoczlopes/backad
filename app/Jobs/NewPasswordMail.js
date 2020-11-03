@@ -14,7 +14,7 @@ class NewPasswordMail {
       message
         .to(email)
         .from('avaliacao.desempenho@unimedvarginha.coop.br', 'Recursos Humanos | Unimed Varginha')
-        .subject('Avaliação de Desempenho - Recuperação de Senha');
+        .subject('Avaliação de Desempenho - Senha de acesso ao sistema');
     });
   }
 }
