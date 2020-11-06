@@ -1,5 +1,5 @@
 const Env = use('Env');
-const Youch = use('Youch');
+const Youch = use('youch');
 const BaseExceptionHandler = use('BaseExceptionHandler');
 
 /**
