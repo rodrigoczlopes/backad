@@ -6,13 +6,13 @@ class DepartmentSchema extends Schema {
   up() {
     this.create('departments', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
-      table.uuid('company_id').unsigned().references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
       table.string('name', 250).notNullable();
       table.string('level', 80);
       table.integer('area_code');
       table.boolean('active');
-      table.uuid('created_by').unsigned().references('id').inTable('users');
-      table.uuid('updated_by').unsigned().references('id').inTable('users');
+      table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

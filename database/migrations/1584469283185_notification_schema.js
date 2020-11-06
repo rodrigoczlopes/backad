@@ -8,7 +8,7 @@ class NotificationSchema extends Schema {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.boolean('read');
       table.string('content', 250);
-      table.uuid('user').unsigned().references('id').inTable('users');
+      table.uuid('user').references('id').inTable('users');
       table.timestamps();
     });
   }

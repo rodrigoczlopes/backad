@@ -9,8 +9,8 @@ class CompanySchema extends Schema {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.string('name', 80).unique().notNullable();
       table.integer('code');
-      table.uuid('created_by').unsigned().references('id').inTable('users');
-      table.uuid('updated_by').unsigned().references('id').inTable('users');
+      table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

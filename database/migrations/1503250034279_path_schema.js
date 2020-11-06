@@ -8,9 +8,9 @@ class PathSchema extends Schema {
     this.create('paths', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.string('description', 250);
-      table.uuid('company_id').unsigned().references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('created_by').unsigned().references('id').inTable('users').onDelete('SET NULL');
-      table.uuid('updated_by').unsigned().references('id').inTable('users').onDelete('SET NULL');
+      table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('created_by').references('id').inTable('users').onDelete('SET NULL');
+      table.uuid('updated_by').references('id').inTable('users').onDelete('SET NULL');
       table.timestamps();
     });
   }

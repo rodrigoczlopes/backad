@@ -10,7 +10,7 @@ class RatingScalesSchema extends Schema {
 
   down() {
     this.table('rating_scales', (table) => {
-      // reverse alternations
+      table.dropColumn('score');
     });
   }
 }
