@@ -59,6 +59,7 @@ class DepartmentEmployeeController {
           builder.with('paths');
         })
         .with('hierarchies')
+        .with('evaluationCycleAnswers')
         .withCount('evaluationCycleAnswers', (builder) => {
           builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })
@@ -83,6 +84,7 @@ class DepartmentEmployeeController {
           builder.with('paths');
         })
         .with('hierarchies')
+        .with('evaluationCycleAnswers')
         .withCount('evaluationCycleAnswers', (builder) => {
           builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
         })

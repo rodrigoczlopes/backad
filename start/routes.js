@@ -178,6 +178,7 @@ Route.group(() => {
       ])
     );
   Route.get('skillbehaviors/:id', 'SkillBehaviorController.index');
+
   Route.resource('users', 'UserController')
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));

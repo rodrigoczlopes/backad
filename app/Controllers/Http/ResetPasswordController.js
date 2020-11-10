@@ -22,31 +22,35 @@ class ResetPasswordController {
   }
 
   async update({ request, response }) {
-    const data = request.all();
-    if (data.allUsers) {
-      const allActiveUsers = await User.query()
-        .where('active', true)
-        .with('userAccessProfiles', (builder) => {
-          builder.with('user_groups', (builderr) => {
-            builderr.where('name', '<>', 'Administrador');
-          });
-        })
-        .fetch();
+    try {
+      const data = request.all();
+      if (data.allUsers) {
+        const allActiveUsers = await User.query()
+          .where('active', true)
+          .with('userAccessProfiles', (builder) => {
+            builder.with('user_groups', (builderr) => {
+              builderr.where('name', '<>', 'Administrador');
+            });
+          })
+          .fetch();
 
-      const allUsersJson = allActiveUsers.toJSON();
-      allUsersJson.forEach(async (user) => {
-        const userToAlter = await User.find(user.id);
-        const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l'] });
-        userToAlter.password = password;
-        userToAlter.save();
-      });
-      return response.status(200).json({ status: true, message: 'Todos as senhas foram trocadas com sucesso!' });
+        const allUsersJson = allActiveUsers.toJSON();
+        allUsersJson.forEach(async (user) => {
+          const userToAlter = await User.find(user.id);
+          const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l'] });
+          userToAlter.password = password;
+          userToAlter.save();
+        });
+        return response.status(200).json({ status: true, message: 'Todos as senhas foram trocadas com sucesso!' });
+      }
+
+      const userToUpdate = await User.find(data.id);
+      userToUpdate.password = data.password;
+      userToUpdate.save();
+      return response.status(200).json({ status: true, message: 'Senha alterada com sucesso' });
+    } catch (error) {
+      return response.status(500).json({ message: error.message });
     }
-
-    const userToUpdate = await User.find(data.id);
-    userToUpdate.password = data.password;
-    userToUpdate.save();
-    return response.status(200).json({ status: true, message: 'Senha alterada com sucesso' });
   }
 }
 

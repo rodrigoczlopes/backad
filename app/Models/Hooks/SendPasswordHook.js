@@ -5,9 +5,13 @@ const Job = use('App/Jobs/NewPasswordMail');
 const SendPasswordHook = (exports = module.exports = {});
 
 SendPasswordHook.sendNewPasswordMail = async (passwordInstance) => {
-  if (!passwordInstance.password && !passwordInstance.dirty.password) return;
-  const { email, name, username, password } = await passwordInstance;
+  try {
+    if (!passwordInstance.dirty.password) return;
+    const { email, name, username, password } = await passwordInstance;
 
-  Kue.listen();
-  Kue.dispatch(Job.key, { email, name, username, password }, { attempts: 3 });
+    Kue.listen();
+    Kue.dispatch(Job.key, { email, name, username, password }, { attempts: 3 });
+  } catch (error) {
+    return error.message;
+  }
 };
