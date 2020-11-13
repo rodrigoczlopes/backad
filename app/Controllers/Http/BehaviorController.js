@@ -25,6 +25,15 @@ class BehaviorController {
 
   async store({ request, response, auth }) {
     const data = request.all();
+
+    if (data.behaviors?.length > 0) {
+      data.behaviors?.forEach((userToAdd) => {
+        Behavior.create(userToAdd);
+      });
+
+      return response.status(201).json({ message: 'Bulk data created successfully!' });
+    }
+
     const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
     const behaviorReturn = await this.show({ params: { id: behavior.id } });
     return response.status(201).json(behaviorReturn);

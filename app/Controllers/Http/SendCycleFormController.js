@@ -101,13 +101,16 @@ class SendCycleFormController {
         }
       });
 
+      if (userQuestions?.length === 0) return;
+
       const userQuestionsAwait = await Promise.all(userQuestions);
-      const removeUserWithoutForm = userQuestionsAwait.filter((userQ) => userQ.length > 0);
+
+      const removeUserWithoutForm = userQuestionsAwait.filter((userQ) => userQ?.length > 0);
 
       // Clonando esta variável para não alaterar o clone quando excluir o skill_id
       const userJustificative = JSON.parse(JSON.stringify(removeUserWithoutForm));
 
-      removeUserWithoutForm.forEach(async (questions) => {
+      await removeUserWithoutForm.forEach(async (questions) => {
         questions.forEach(async (question) => {
           delete question.skill_id;
           await EvaluationCycleAnswer.findOrCreate(
@@ -131,11 +134,15 @@ class SendCycleFormController {
         }, []);
       });
 
-      userJustificativeUniques.forEach(async (questions) => {
+      await userJustificativeUniques.forEach(async (questions) => {
         questions.forEach(async (question) => {
           delete question.behavior_id;
           await EvaluationCycleJustificative.findOrCreate(
-            { employee_id: question.employee_id, evaluation_cycle_id: question.evaluation_cycle_id, skill_id: question.skill_id },
+            {
+              employee_id: question.employee_id,
+              evaluation_cycle_id: question.evaluation_cycle_id,
+              skill_id: question.skill_id,
+            },
             question
           );
         });
@@ -170,7 +177,7 @@ class SendCycleFormController {
         return acc;
       }, []);
 
-      commentAwaitFlatUnique.forEach(async (com) => {
+      await commentAwaitFlatUnique.forEach(async (com) => {
         await EvaluationCycleComment.findOrCreate(
           { employee_id: com.employee_id, evaluation_cycle_id: com.evaluation_cycle_id, comment_id: com.comment_id },
           com

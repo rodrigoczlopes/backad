@@ -55,6 +55,16 @@ module.exports = {
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'adonis'),
     },
+    pool: {
+      min: 2,
+      max: 80,
+      createTimeoutMillis: 300000,
+      acquireTimeoutMillis: 300000,
+      idleTimeoutMillis: 300000,
+      reapIntervalMillis: 1000,
+      createRetryIntervalMillis: 100,
+      propagateCreateError: false,
+    },
     debug: Env.get('DB_DEBUG', false),
   },
 

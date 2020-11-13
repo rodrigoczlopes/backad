@@ -34,7 +34,7 @@ class FormController {
       .with('companies')
       .with('paths')
       .with('behaviorForms')
-      // .orderBy('name')
+      .orderBy('name')
       .paginate(page, itemsPerPage);
 
     return forms;

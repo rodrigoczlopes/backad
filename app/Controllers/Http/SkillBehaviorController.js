@@ -15,15 +15,15 @@ class SkillBehaviorController {
       .fetch();
     const behaviorJson = behaviorSkills.toJSON();
     const skills = behaviorJson.map((beh) => {
-      return { id: beh.skills.id, name: beh.skills.name };
+      return { id: beh.skills.id, name: beh.skills.name, path_id: beh.path_id };
     });
 
     const uniqueSkills = Array.from(skills.reduce((a, o) => a.set(o.name, o), new Map()).values());
-    // const skills = await Skill.query('company_id', auth.user.company_id).fetch();
+
     if (!skills) return null;
 
     const treeNode = uniqueSkills.map(async (skill) => {
-      const behaviors = await Behavior.query().where('skill_id', skill.id).fetch();
+      const behaviors = await Behavior.query().where('skill_id', skill.id).where('path_id', skill.path_id).fetch();
       const childrens =
         behaviors.toJSON().map((behavior) => ({ value: behavior.id, label: behavior.description, leaf: true, children: [] })) ||
         [];
