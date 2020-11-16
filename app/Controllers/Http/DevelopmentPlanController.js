@@ -16,7 +16,7 @@ class DevelopmentPlanController {
 
     if (searchSentence) {
       const ratingScales = await DevelopmentPlan.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);

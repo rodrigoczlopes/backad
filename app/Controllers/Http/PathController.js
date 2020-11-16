@@ -15,7 +15,7 @@ class PathController {
 
     if (searchSentence) {
       const pathsList = await Path.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);

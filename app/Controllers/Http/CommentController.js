@@ -16,7 +16,7 @@ class CommentController {
 
     if (searchSentence) {
       const comments = await Comment.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
       return comments;

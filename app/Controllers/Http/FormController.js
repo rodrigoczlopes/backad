@@ -18,7 +18,7 @@ class FormController {
 
     if (searchSentence) {
       const formList = await Form.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .with('paths')
         .with('behaviorForms')

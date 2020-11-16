@@ -16,7 +16,7 @@ class RatingScaleController {
 
     if (searchSentence) {
       const ratingScales = await RatingScale.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .orderBy('score')
         .paginate(page, itemsPerPage);
       return ratingScales;

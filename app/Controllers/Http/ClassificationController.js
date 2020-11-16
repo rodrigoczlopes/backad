@@ -16,7 +16,7 @@ class ClassificationController {
 
     if (searchSentence) {
       const classifications = await Classification.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);

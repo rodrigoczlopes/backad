@@ -15,7 +15,7 @@ class SkillController {
 
     if (searchSentence) {
       const skillList = await Skill.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);

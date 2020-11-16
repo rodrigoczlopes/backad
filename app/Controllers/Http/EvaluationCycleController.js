@@ -19,7 +19,7 @@ class EvaluationCycleController {
     if (!company_id) {
       if (searchSentence) {
         const evaluationCyclesSearched = await EvaluationCycle.query()
-          .where(searchBy, 'ilike', `%${searchSentence}%`)
+          .where(searchBy, 'like', `%${searchSentence}%`)
           .orderBy(searchBy)
           .paginate(page, itemsPerPage);
         return evaluationCyclesSearched;

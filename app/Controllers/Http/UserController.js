@@ -20,7 +20,7 @@ class UserController {
 
     if (searchSentence) {
       const usersList = await User.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('userAccessProfiles')
         .with('companies')
         .with('departments')

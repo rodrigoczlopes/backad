@@ -15,7 +15,7 @@ class HierarchyController {
 
     if (searchSentence) {
       const ratingScales = await Hierarchy.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);

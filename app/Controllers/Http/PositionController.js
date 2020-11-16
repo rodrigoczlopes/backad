@@ -15,7 +15,7 @@ class PositionController {
 
     if (searchSentence) {
       const positionList = await Position.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .with('paths')
         .orderBy(searchBy)

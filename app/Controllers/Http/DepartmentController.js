@@ -15,7 +15,7 @@ class DepartmentController {
 
     if (searchSentence) {
       const departmentsSearched = await Department.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         // .with('leader')
         .orderBy(searchBy)

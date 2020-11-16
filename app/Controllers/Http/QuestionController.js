@@ -16,7 +16,7 @@ class QuestionController {
 
     if (searchSentence) {
       const questions = await Question.query()
-        .where(searchBy, 'ilike', `%${searchSentence}%`)
+        .where(searchBy, 'like', `%${searchSentence}%`)
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
       return questions;
