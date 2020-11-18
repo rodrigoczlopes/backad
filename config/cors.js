@@ -1,3 +1,4 @@
+const Env = use('Env');
 module.exports = {
   /*
   |--------------------------------------------------------------------------
@@ -14,7 +15,13 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: ['crescer.unimedvarginha.coop.br', 'http://localhost:3000'],
+  origin: (currentOrigin) => {
+    console.log(currentOrigin);
+    if (Env.get('NODE_ENV​') === 'production') {
+      return currentOrigin === 'crescer.unimedvarginha.coop.br';
+    }
+    return true;
+  },
 
   /*
   |--------------------------------------------------------------------------
