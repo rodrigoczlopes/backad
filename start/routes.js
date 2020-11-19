@@ -184,6 +184,7 @@ Route.group(() => {
     .validator(new Map([[['users.update'], ['User']]]));
 
   Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show');
+  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show');
 
   Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();
 
