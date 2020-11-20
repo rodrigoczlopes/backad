@@ -27,7 +27,7 @@ class UserAccessProfile extends Model {
     return this.belongsTo('App/Models/User', 'user_id', 'id');
   }
 
-  user_groups() {
+  userGroups() {
     return this.belongsTo('App/Models/UserGroup', 'user_group_id', 'id');
   }
 

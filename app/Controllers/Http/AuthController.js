@@ -38,7 +38,14 @@ class AuthController {
     const { username, password } = request.all();
     const { token } = await auth.attempt(username, password);
 
-    const { id, name, registry, email, avatar, user_group_id, active, company_id } = await User.findBy('username', username);
+    const result = await User.query()
+      .where('username', username)
+      .with('userAccessProfiles', (builder) => {
+        builder.with('userGroups');
+      })
+      .fetch();
+    const { id, name, registry, email, avatar, userAccessProfiles, active, company_id } = result.toJSON()[0];
+
     const user = {
       id,
       username,
@@ -46,7 +53,7 @@ class AuthController {
       registry,
       email,
       avatar,
-      user_group_id,
+      userAccessProfiles,
       active,
       company_id,
     };

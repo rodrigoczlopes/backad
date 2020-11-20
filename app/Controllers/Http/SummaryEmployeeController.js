@@ -17,7 +17,9 @@ class SummaryEmployeeController {
       })
       .with('hierarchies')
       .with('evaluationCycleAnswers', (builder) => {
-        builder.where({ evaluation_cycle_id }).with('behaviors');
+        builder.where({ evaluation_cycle_id }).with('behaviors', (childBuilder) => {
+          childBuilder.with('skills');
+        });
       })
       .with('evaluationCycleJustificatives', (builder) => {
         builder.where({ evaluation_cycle_id }).with('skills');
