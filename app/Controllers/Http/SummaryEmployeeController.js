@@ -25,7 +25,7 @@ class SummaryEmployeeController {
         builder.where({ evaluation_cycle_id }).with('skills');
       })
       .with('evaluationCycleComments', (builder) => {
-        builder.where({ evaluation_cycle_id });
+        builder.where({ evaluation_cycle_id }).with('comments');
       })
       .orderBy('name', 'asc')
       .fetch();
