@@ -26,6 +26,7 @@ class DepartmentEmployeeController {
 
     /* TODO:
     - Verificar os usuário que não tiveram o ciclo criado
+    - Verificar se o setor possui um coordenador ou lider
     */
 
     // Verificando a hierarquia do líder que está acessando
@@ -33,6 +34,9 @@ class DepartmentEmployeeController {
     const hierarchyjson = hierarchy.toJSON();
     const leaderLevel = hierarchyjson.level;
     const leaderLevelLength = leaderLevel.split('.').length;
+
+    // Se ele for Administrativo/Operacional já retornar imediatamente
+    if (leaderLevelLength === 6) return [];
 
     // Pegando o departamento do líder que está acessando
     const leaderDepartment = await Department.find(auth.user.department_id);
@@ -100,6 +104,7 @@ class DepartmentEmployeeController {
     });
 
     const leadersAwait = await Promise.all(leaders);
+
     const leadersWithoutNulls = leadersAwait.filter((item) => item.length > 0).flat();
 
     let trueLeaders = [];
