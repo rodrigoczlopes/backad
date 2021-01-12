@@ -43,8 +43,23 @@ class AuthController {
       .with('userAccessProfiles', (builder) => {
         builder.with('userGroups');
       })
+      .with('positions')
+      .with('hierarchies')
+      .with('departments')
       .fetch();
-    const { id, name, registry, email, avatar, userAccessProfiles, active, company_id } = result.toJSON()[0];
+    const {
+      id,
+      name,
+      registry,
+      email,
+      avatar,
+      userAccessProfiles,
+      active,
+      company_id,
+      hierarchies: { description: hierarchy },
+      positions: { description: position },
+      departments: { name: department },
+    } = result.toJSON()[0];
 
     const user = {
       id,
@@ -56,6 +71,9 @@ class AuthController {
       userAccessProfiles,
       active,
       company_id,
+      hierarchy,
+      position,
+      department,
     };
 
     // Logout the other sessions if theres's any

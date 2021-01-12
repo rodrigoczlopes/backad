@@ -16,6 +16,7 @@ class EvaluationCycleController {
       page = 1;
       itemsPerPage = 20000;
     }
+
     if (!company_id) {
       if (searchSentence) {
         const evaluationCyclesSearched = await EvaluationCycle.query()
