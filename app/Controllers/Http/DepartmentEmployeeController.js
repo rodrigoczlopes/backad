@@ -18,7 +18,7 @@ class DepartmentEmployeeController {
     // exemplo: 01 -> 01.01 (todos gerentes)
     // exemplo: 01.01 -> 01.01.01 (todos coordenadores)
     // exemplo: 01.01.01 -> 01.01.01.01(todos lideres)
-    // exemplo: 01.01.01.01 -> 01.01.01.01 (todos lideres tecnicos)
+    // exemplo: 01.01.01.01 -> 01.01.01.01.01 (todos lideres tecnicos)
     // exemplo: 01.01.01.01.01 -> último nível só será avaliado
     // esses acima vão avaliar, e serão avaliados
 
@@ -26,7 +26,6 @@ class DepartmentEmployeeController {
 
     /* TODO:
     - Verificar os usuário que não tiveram o ciclo criado
-    - Verificar se o setor possui um coordenador ou lider
     */
 
     // Verificando a hierarquia do líder que está acessando
@@ -47,122 +46,105 @@ class DepartmentEmployeeController {
     // Listando as áreas que fazem parte do fluxo de análise do líder
     const department = await Department.all();
     const departmentjson = department.toJSON();
-    const childrenDepartments = departmentjson.filter(
-      (dep) =>
-        (dep.level.split('.').length === leaderDepartmentLevelLength + 1 &&
-          dep.level.split('.')[dep.level.split('.').length - 2] ===
-            leaderDepartmentLevel.split('.')[leaderDepartmentLevelLength - 1] &&
-          dep.level.split('.')[dep.level.split('.').length - 3] ===
-            leaderDepartmentLevel.split('.')[leaderDepartmentLevelLength - 2]) ||
-        dep.id === auth.user.department_id
-    );
 
-    let trueLeaders = [];
-
-    // Quando o coordenador não tem outros setores abaixo
-    // if (childrenDepartments.length === 0 && leaderLevelLength !== 6) {
-    //   // Pegando todos os colaboradores do setor
-    //   const employees = await User.query()
-    //     .where({ department_id: auth.user.department_id })
-    //     .where('id', '<>', auth.user.id)
-    //     .where({ active: true })
-    //     .with('departments')
-    //     .with('positions', (builder) => {
-    //       builder.with('paths');
-    //     })
-    //     .with('hierarchies')
-    //     .with('evaluationCycleAnswers')
-    //     .withCount('evaluationCycleAnswers', (builder) => {
-    //       builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-    //     })
-    //     .withCount('evaluationCycleJustificatives', (builder) => {
-    //       builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-    //     })
-    //     .withCount('evaluationCycleComments', (builder) => {
-    //       builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-    //     })
-    //     .orderBy('name', 'asc')
-    //     .fetch();
-    //   trueLeaders.push(employees);
-    // }
+    const childrenDepartments = departmentjson
+      .filter(
+        (dep) =>
+          (dep.level.split('.').length >= leaderDepartmentLevelLength + 1 &&
+            dep.level.split('.')[
+              dep.level.split('.').length - (dep.level.split('.').length - (leaderDepartmentLevelLength + 1) + 2)
+            ] === leaderDepartmentLevel.split('.')[leaderDepartmentLevelLength - 1] &&
+            dep.level.split('.')[
+              dep.level.split('.').length - (dep.level.split('.').length - (leaderDepartmentLevelLength + 1) + 3)
+            ] === leaderDepartmentLevel.split('.')[leaderDepartmentLevelLength - 2]) ||
+          dep.id === auth.user.department_id
+      )
+      .flat();
 
     // Pegando todos os gerente, ou coordenadores, ou lideres dos setores de acordo com o fluxo
-    const departmentEmployees = childrenDepartments.map(async (children) => {
-      const employees = await User.query()
-        .where({ department_id: children.id })
-        .where('id', '<>', auth.user.id)
-        .where({ active: true })
-        .with('departments')
-        .with('positions', (builder) => {
-          builder.with('paths');
-        })
-        .with('hierarchies')
-        .with('evaluationCycleAnswers')
-        .withCount('evaluationCycleAnswers', (builder) => {
-          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-        })
-        .withCount('evaluationCycleJustificatives', (builder) => {
-          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-        })
-        .withCount('evaluationCycleComments', (builder) => {
-          builder.orWhere('leader_finished', false).orWhere('leader_finished', null);
-        })
-        .orderBy('name', 'asc')
-        .fetch();
-      return employees.toJSON();
-    });
+    let employeeList = [];
+    const departmentEmployees = await Promise.all(
+      childrenDepartments.map(async (departmentChildren) => {
+        const employees = await User.query()
+          .where({ department_id: departmentChildren.id })
+          .where('id', '<>', auth.user.id)
+          .where({ active: true })
+          .with('departments')
+          .with('positions', (builder) => {
+            builder.with('paths');
+          })
+          .with('hierarchies')
+          .with('evaluationCycleAnswers')
+          .withCount('evaluationCycleAnswers', (builder) => {
+            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          })
+          .withCount('evaluationCycleJustificatives', (builder) => {
+            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          })
+          .withCount('evaluationCycleComments', (builder) => {
+            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          })
+          .orderBy('name', 'asc')
+          .fetch();
+        return employees.toJSON();
+      })
+    );
 
-    const departmentoEmployeesAwait = await Promise.all(departmentEmployees);
+    const departmentoEmployeesWithoutNulls = departmentEmployees.filter((item) => item.length > 0).flat();
 
-    const departmentoEmployeesWithoutNulls = departmentoEmployeesAwait.filter((item) => item.length > 0).flat();
-
+    // Talvez seja interessante aqui verificar se há coordenador, lider e lider técnico no setor
+    const leaders = [3, 4, 5];
     const departmentsWithLeader = departmentoEmployeesWithoutNulls
-      .filter((employee) => employee.hierarchies?.level.split('.').length === 4)
-      .map((obj) => obj.departments.id);
+      .filter(
+        (employee) =>
+          leaders.includes(employee.hierarchies.level.split('.').length) && employee.department_id !== auth.user.department_id
+      )
+      .map((obj) => obj.departments);
 
-    // Superintendente = 1 || Gerentes = 2 || Coordenadores 3 || Lider 4 || Líder Técnico 5 || Operacional 6
+    const childrenWithLeader = childrenDepartments
+      .filter(
+        (depart) =>
+          departmentsWithLeader.filter((dep) => dep.level === depart.level.substring(0, depart.level.length - 3)).length > 0
+      )
+      .map((depart) => depart.id);
+
+    const parentWithLeader = departmentsWithLeader.map((depart) => depart.id);
 
     switch (leaderLevelLength) {
       case 1:
-        trueLeaders = departmentoEmployeesWithoutNulls.filter(
+        employeeList = departmentoEmployeesWithoutNulls.filter(
           (item) =>
-            item.hierarchies?.level.split('.').length > 1 &&
-            item.hierarchies?.level.split('.').length <= 3 &&
-            item.id !== auth.user.id
+            item.id !== auth.user.id &&
+            item.departments.level.split('.').length === 2 &&
+            ((!childrenWithLeader.includes(item.departments.id) && !parentWithLeader.includes(item.departments.id)) ||
+              leaders.includes(item.hierarchies?.level.split('.').length))
         );
         break;
       case 2:
-        trueLeaders = departmentoEmployeesWithoutNulls.filter(
+        employeeList = departmentoEmployeesWithoutNulls.filter(
           (item) =>
-            (item.hierarchies?.level.split('.').length === 3 || item.hierarchies?.level.split('.').length === 4) &&
-            item.id !== auth.user.id
+            item.id !== auth.user.id &&
+            item.departments.level.split('.').length === 3 &&
+            ((!childrenWithLeader.includes(item.departments.id) && !parentWithLeader.includes(item.departments.id)) ||
+              leaders.includes(item.hierarchies?.level.split('.').length))
         );
         break;
       case 3:
-        trueLeaders = departmentoEmployeesWithoutNulls.filter(
+        employeeList = departmentoEmployeesWithoutNulls.filter(
           (item) =>
-            (item.hierarchies?.level.split('.').length === 4 || item.hierarchies?.level.split('.').length === 6) &&
             item.id !== auth.user.id &&
-            (!departmentsWithLeader.includes(item.departments.id) || item.hierarchies?.level.split('.').length === 4)
-        );
-        break;
-      case 4:
-        trueLeaders = departmentoEmployeesWithoutNulls.filter(
-          (item) =>
-            (item.hierarchies?.level.split('.').length === 5 || item.hierarchies?.level.split('.').length === 6) &&
-            item.id !== auth.user.id
-        );
-        break;
-      case 5:
-        trueLeaders = departmentoEmployeesWithoutNulls.filter(
-          (item) => item.hierarchies?.level.split('.').length === 6 && item.id !== auth.user.id
+            ((!childrenWithLeader.includes(item.departments.id) && !parentWithLeader.includes(item.departments.id)) ||
+              item.hierarchies?.level.split('.').length === 4)
         );
         break;
       default:
+        employeeList = departmentoEmployeesWithoutNulls.filter(
+          (item) => item.id !== auth.user.id && item.departments.level.split('.').length >= leaderDepartmentLevelLength
+        );
         break;
     }
 
-    return trueLeaders;
+    return employeeList;
   }
 }
 
