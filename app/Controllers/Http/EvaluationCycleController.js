@@ -39,7 +39,16 @@ class EvaluationCycleController {
       .where({ company_id })
       .where('initial_evaluation_period', '<=', new Date())
       .where('final_evaluation_period', '>=', new Date())
-      .select('id', 'company_id')
+      .select(
+        'id',
+        'company_id',
+        'initial_evaluation_period',
+        'final_evaluation_period',
+        'initial_manager_feedback',
+        'final_manager_feedback',
+        'initial_employee_evaluation',
+        'final_employee_evaluation'
+      )
       .first();
     return evaluationCycle;
   }
