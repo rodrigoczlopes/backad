@@ -12,13 +12,12 @@ class NewPasswordMail {
   }
 
   async handle({ email, name, username, password }) {
-    console.log(email, name, username, password);
     await Mail.send(['emails.resetPassword'], { email, name, username, password }, (message) => {
       message
         .to(email)
         .from('avaliacao.desempenho@unimedvarginha.coop.br', 'Recursos Humanos | Unimed Varginha')
         .subject(`Senha de acesso ao sistema - ${fixName.toCamelCase(name)}`);
-    });
+    }).catch((error) => console.log(error));
   }
 }
 
