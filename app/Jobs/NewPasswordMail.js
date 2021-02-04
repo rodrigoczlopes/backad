@@ -13,7 +13,7 @@ class NewPasswordMail {
 
   async handle({ email, name, username, password }) {
     try {
-      await Mail.send(['emails.resetPassword'], { email, name, username, password }, (message) => {
+      await Mail.send(['emails.resetpassword'], { email, name, username, password }, (message) => {
         message
           .to(email)
           .from('avaliacao.desempenho@unimedvarginha.coop.br', 'Recursos Humanos | Unimed Varginha')
