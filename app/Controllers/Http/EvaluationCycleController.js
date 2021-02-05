@@ -47,7 +47,9 @@ class EvaluationCycleController {
         'initial_manager_feedback',
         'final_manager_feedback',
         'initial_employee_evaluation',
-        'final_employee_evaluation'
+        'final_employee_evaluation',
+        'initial_manager_evaluation',
+        'final_manager_evaluation'
       )
       .first();
     return evaluationCycle;
