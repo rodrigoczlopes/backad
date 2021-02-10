@@ -19,6 +19,7 @@ class AuthController {
 
     const accessProfile = request.only('user_access_profile');
     delete data.user_access_profile;
+
     const user = await User.create(data);
 
     if (accessProfile) {
