@@ -94,6 +94,7 @@ Route.group(() => {
   Route.resource('evaluationcycleanswers', 'EvaluationCycleAnswerController').apiOnly();
   Route.resource('evaluationcyclejustificatives', 'EvaluationCycleJustificativeController').apiOnly();
   Route.resource('evaluationcyclecomments', 'EvaluationCycleCommentController').apiOnly();
+  Route.resource('evaluationcycledevelopmentplan', 'EvaluationCycleDevelopmentPlanController').apiOnly();
   Route.resource('evaluationcycles', 'EvaluationCycleController')
     .apiOnly()
     .validator(
