@@ -79,8 +79,8 @@ Route.group(() => {
     .apiOnly()
     .validator(
       new Map([
-        [['developmentplans.store'], ['Development']],
-        [['developmentplans.update'], ['Development']],
+        [['developmentplans.store'], ['DevelopmentPlan']],
+        [['developmentplans.update'], ['DevelopmentPlan']],
       ])
     );
   Route.resource('evaluationcycleareas', 'EvaluationCycleAreaController')
