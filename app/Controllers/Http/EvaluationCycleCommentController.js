@@ -5,6 +5,9 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const EvaluationCycleDevelopmentPlan = use('App/Models/EvaluationCycleDevelopmentPlan');
+
 class EvaluationCycleCommentController {
   async index({ request }) {
     const { evaluation_cycle_id, employee_id } = request.all();
@@ -24,12 +27,31 @@ class EvaluationCycleCommentController {
   }
 
   async update({ request, response }) {
-    const { data } = request.only('data');
+    const { comments } = request.only('comments');
+    const { developmentPlans } = request.only('developmentPlans');
 
-    data.forEach(async (comment) => {
+    comments.forEach(async (comment) => {
       const evaluationCycleComment = await EvaluationCycleComment.find(comment.id);
       evaluationCycleComment.merge(comment);
       await evaluationCycleComment.save();
+    });
+
+    developmentPlans.forEach(async (plan) => {
+      if (plan.id) {
+        const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
+        evaluationCycleDevelopmentPlan.merge(plan);
+        await evaluationCycleDevelopmentPlan.save();
+      } else {
+        delete plan.id;
+        const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.findBy('fake_id', plan.fake_id);
+
+        if (evaluationCycleDevelopmentPlan) {
+          evaluationCycleDevelopmentPlan.merge(plan);
+          await evaluationCycleDevelopmentPlan.save();
+        } else {
+          EvaluationCycleDevelopmentPlan.create({ ...plan });
+        }
+      }
     });
 
     return response.json({ status: 'ok' });
