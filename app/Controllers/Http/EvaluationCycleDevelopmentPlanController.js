@@ -35,10 +35,16 @@ class EvaluationCycleDevelopmentPlanController {
     return response.json({ status: 'ok' });
   }
 
-  async destroy({ params }) {
-    const classification = await EvaluationCycleDevelopmentPlan.find(params.id);
-
-    await classification.delete();
+  async destroy({ params, response }) {
+    let classification = await EvaluationCycleDevelopmentPlan.find(params.id);
+    if (!classification) {
+      classification = await EvaluationCycleDevelopmentPlan.findBy('fake_id', params.id);
+    }
+    if (classification) {
+      await classification.delete();
+    } else {
+      return response.status(204).json({ message: 'Não foi encontrado item para ser excluido na base' });
+    }
   }
 }
 

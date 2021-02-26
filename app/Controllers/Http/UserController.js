@@ -4,7 +4,7 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
-const Helpers = use('Helpers');
+// const Helpers = use('Helpers');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const UserAccessProfile = use('App/Models/UserAccessProfile');
@@ -70,20 +70,20 @@ class UserController {
       'updated_by',
     ]);
 
-    const avatar = request.file('avatar');
+    // const avatar = request.file('avatar');
+    // if (avatar) {
+    //   await avatar.move(Helpers.tmpPath('uploads'), {
+    //     name: `${new Date().getTime()}.${avatar.subtype}`,
+    //   });
+
+    //   if (!avatar.moved()) {
+    //     return avatar.error();
+    //   }
+
+    //   user.avatar = avatar.fileName;
+    // }
 
     const user = await User.find(params.id);
-    if (avatar) {
-      await avatar.move(Helpers.tmpPath('uploads'), {
-        name: `${new Date().getTime()}.${avatar.subtype}`,
-      });
-
-      if (!avatar.moved()) {
-        return avatar.error();
-      }
-
-      user.avatar = avatar.fileName;
-    }
     user.merge(data);
 
     const password = request.input('password');
@@ -111,7 +111,6 @@ class UserController {
 
   async destroy({ params }) {
     const user = await User.find(params.id);
-
     await user.delete();
   }
 }
