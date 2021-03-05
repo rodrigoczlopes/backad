@@ -6,38 +6,40 @@
 const Notification = use('App/Models/Notification');
 
 class NotificationController {
-  async index() {
+  async index({ auth }) {
     const notification = await Notification.query()
+      .where('user', auth.user.id)
       .with('users', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
+      .orderBy('created_at', 'desc')
       .fetch();
     return notification;
   }
 
-  async store({ request, response, auth }) {
+  async store({ request, response }) {
     const data = request.all();
-    const notification = await Notification.create({ ...data, created_by: auth.user.id });
+    const notification = await Notification.create(data);
     return response.status(201).json(notification);
   }
 
   async show({ params }) {
-    const notification = await Notification.find(params.id);
+    const notification = await Notification.findOrFail(params.id);
     await notification.loadMany({ users: (builder) => builder.select(['id', 'name', 'email', 'avatar']) });
     return notification;
   }
 
-  async update({ params, request, auth }) {
-    const data = request.only(['content', 'user', 'read']);
-    data.read = true;
-    const notification = await Notification.find(params.id);
-    notification.merge({ ...data, updated_by: auth.user.id });
+  async update({ params, request }) {
+    const data = request.only(['content', 'user', 'read', 'hidden']);
+
+    const notification = await Notification.findOrFail(params.id);
+    notification.merge(data);
     await notification.save();
     return notification;
   }
 
   async destroy({ params }) {
-    const notification = await Notification.find(params.id);
+    const notification = await Notification.findOrFail(params.id);
 
     await notification.delete();
   }

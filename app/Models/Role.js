@@ -1,12 +1,10 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class Notification extends Model {
+class Role extends Model {
   static boot() {
     super.boot();
-
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
-    this.addHook('afterCreate', 'NotificationHook.sendWs');
   }
 
   static get primaryKey() {
@@ -17,9 +15,9 @@ class Notification extends Model {
     return false;
   }
 
-  users() {
-    return this.belongsTo('App/Models/User', 'user', 'id');
+  permissions() {
+    return this.hasMany('App/Models/PermissionRole', 'role_id', 'id');
   }
 }
 
-module.exports = Notification;
+module.exports = Role;

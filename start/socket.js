@@ -15,3 +15,4 @@ const Ws = use('Ws');
 
 Ws.channel('user:*', 'UserController');
 Ws.channel('progress', 'ProgressController');
+Ws.channel('notification:*', 'NotificationController'); // .middleware('auth');

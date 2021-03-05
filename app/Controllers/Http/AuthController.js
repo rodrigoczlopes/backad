@@ -1,13 +1,11 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const UserAccessProfile = use('App/Models/UserAccessProfile');
 const Ws = use('Ws');
 
 class AuthController {
-  async register({ request, response, auth }) {
-    const data = request.all();
+  async register({ request, response }) {
+    const { permissions, roles, ...data } = request.all();
 
     if (data.employees?.length > 0) {
       data.employees?.forEach((userToAdd) => {
@@ -17,37 +15,28 @@ class AuthController {
       return response.status(201).json({ message: 'ok' });
     }
 
-    const accessProfile = request.only('user_access_profile');
-    delete data.user_access_profile;
-
     const user = await User.create(data);
 
-    if (accessProfile) {
-      await accessProfile?.user_access_profile?.forEach((profile) => {
-        UserAccessProfile.create({
-          user_id: user.id,
-          user_group_id: profile,
-          created_by: auth.user.id,
-          updated_by: auth.user.id,
-        });
-      });
+    if (roles) {
+      await user.roles().attach(roles);
     }
-    return response.status(201).json(user);
+
+    if (permissions) {
+      await user.permissions().attach(permissions);
+    }
+
+    await user.loadMany(['roles', 'permissions']);
+
+    return user;
   }
 
   async authenticate({ request, auth }) {
     const { username, password } = request.all();
     const { token } = await auth.attempt(username, password);
 
-    const result = await User.query()
-      .where('username', username)
-      .with('userAccessProfiles', (builder) => {
-        builder.with('userGroups');
-      })
-      .with('positions')
-      .with('hierarchies')
-      .with('departments')
-      .fetch();
+    const userData = await User.findByOrFail('username', username);
+    await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions']);
+
     const {
       id,
       name,
@@ -60,7 +49,9 @@ class AuthController {
       hierarchies: { description: hierarchy },
       positions: { description: position },
       departments: { name: department },
-    } = result.toJSON()[0];
+      roles,
+      permissions,
+    } = userData.toJSON();
 
     const user = {
       id,
@@ -75,6 +66,8 @@ class AuthController {
       hierarchy,
       position,
       department,
+      roles: roles?.map((rls) => rls.slug),
+      permissions: permissions?.map((rls) => rls.slug),
     };
 
     // Logout the other sessions if theres's any

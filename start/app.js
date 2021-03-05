@@ -23,6 +23,7 @@ const providers = [
   '@adonisjs/websocket/providers/WsProvider',
   '@adonisjs/redis/providers/RedisProvider',
   'adonis-kue/providers/KueProvider',
+  'adonis-acl/providers/AclProvider',
 
   path.join(__dirname, '..', 'providers', 'CustomValidationProvider'),
 ];
@@ -40,6 +41,7 @@ const aceProviders = [
   '@adonisjs/lucid/providers/MigrationsProvider',
   '@adonisjs/vow/providers/VowProvider',
   'adonis-kue/providers/CommandsProvider',
+  'adonis-acl/providers/CommandsProvider',
 ];
 
 /*
@@ -54,7 +56,10 @@ const aceProviders = [
 |   { Route: 'Adonis/Src/Route' }
 |
 */
-const aliases = {};
+const aliases = {
+  Role: 'Adonis/Acl/Role',
+  Permission: 'Adonis/Acl/Permission',
+};
 
 /*
 |--------------------------------------------------------------------------

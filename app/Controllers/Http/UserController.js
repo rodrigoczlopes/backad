@@ -4,10 +4,6 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
-// const Helpers = use('Helpers');
-
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const UserAccessProfile = use('App/Models/UserAccessProfile');
 
 class UserController {
   async index({ request }) {
@@ -21,7 +17,7 @@ class UserController {
     if (searchSentence) {
       const usersList = await User.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
-        .with('userAccessProfiles')
+        .with('roles')
         .with('companies')
         .with('departments')
         .with('positions')
@@ -32,7 +28,7 @@ class UserController {
     }
 
     const users = await User.query()
-      .with('userAccessProfiles')
+      .with('roles')
       .with('companies')
       .with('departments')
       .with('positions')
@@ -44,16 +40,18 @@ class UserController {
   }
 
   async show({ params }) {
-    const user = await User.find(params.id);
+    const user = await User.findOrFail(params.id);
     await user.load('companies');
     await user.load('positions');
     await user.load('userAccessProfiles');
+    await user.load('roles');
+    await user.load('permissions');
 
     return user;
   }
 
-  async update({ params, request, auth }) {
-    const data = request.only([
+  async update({ params, request }) {
+    const { permissions, roles, ...data } = request.only([
       'name',
       'user_group_id',
       'company_id',
@@ -68,22 +66,11 @@ class UserController {
       'admitted_at',
       'fired_at',
       'updated_by',
+      'permissions',
+      'roles',
     ]);
 
-    // const avatar = request.file('avatar');
-    // if (avatar) {
-    //   await avatar.move(Helpers.tmpPath('uploads'), {
-    //     name: `${new Date().getTime()}.${avatar.subtype}`,
-    //   });
-
-    //   if (!avatar.moved()) {
-    //     return avatar.error();
-    //   }
-
-    //   user.avatar = avatar.fileName;
-    // }
-
-    const user = await User.find(params.id);
+    const user = await User.findOrFail(params.id);
     user.merge(data);
 
     const password = request.input('password');
@@ -93,24 +80,21 @@ class UserController {
 
     await user.save();
 
-    const accessProfile = request.only('user_access_profile');
-    if (accessProfile) {
-      await UserAccessProfile.query().where({ user_id: user.id }).delete();
-
-      await accessProfile?.user_access_profile?.forEach((profile) => {
-        UserAccessProfile.create({
-          user_id: user.id,
-          user_group_id: profile,
-          created_by: auth.user.id,
-          updated_by: auth.user.id,
-        });
-      });
+    if (roles) {
+      await user.roles().sync(roles);
     }
+
+    if (permissions) {
+      await user.permissions().sync(permissions);
+    }
+
+    await user.loadMany(['roles', 'permissions']);
+
     return user;
   }
 
   async destroy({ params }) {
-    const user = await User.find(params.id);
+    const user = await User.findOrFail(params.id);
     await user.delete();
   }
 }

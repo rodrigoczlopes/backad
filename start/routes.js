@@ -21,9 +21,9 @@ Route.get('/files/:file', 'FileController.show');
 
 Route.group(() => {
   Route.put('/profile', 'ProfileController.update').validator('Profile');
-  Route.post('/register', 'AuthController.register').validator('RegisterUser');
-  Route.put('/resetall', 'ResetPasswordController.update');
-  Route.put('/resetone', 'ResetPasswordController.update');
+  Route.post('/register', 'AuthController.register').middleware(['is:(administrator)']).validator('RegisterUser');
+  Route.put('/resetall', 'ResetPasswordController.update').middleware(['is:(administrator)']);
+  Route.put('/resetone', 'ResetPasswordController.update').middleware(['is:(administrator)']);
 
   Route.resource('behaviors', 'BehaviorController')
     .apiOnly()
@@ -130,14 +130,8 @@ Route.group(() => {
       ])
     );
   Route.get('leaders', 'LeaderController.index');
-  Route.resource('notifications', 'NotificationController')
-    .apiOnly()
-    .validator(
-      new Map([
-        [['notifications.store'], ['Notification']],
-        [['notifications.update'], ['Notification']],
-      ])
-    );
+  Route.resource('notifications', 'NotificationController').apiOnly();
+
   Route.get('pathforms/:id', 'PathFormController.show');
   Route.resource('paths', 'PathController')
     .apiOnly()
@@ -186,8 +180,12 @@ Route.group(() => {
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));
 
-  Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show');
-  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show');
+  Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show').middleware([
+    'is:(administrator || evaluator)',
+  ]);
+  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show').middleware([
+    'is:(administrator || evaluator)',
+  ]);
 
   Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();
 
@@ -199,6 +197,9 @@ Route.group(() => {
         [['usergroups.update'], ['UserGroup']],
       ])
     );
+
+  Route.resource('permissions', 'PermissionController').apiOnly();
+  Route.resource('roles', 'RoleController').apiOnly();
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
