@@ -5,7 +5,7 @@ class EvaluationCycleAnswer extends Model {
   static boot() {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
-    this.addHook('afterUpdate', 'EmployeeFilledQuestionsHook.notifyUser');
+    this.addHook('afterUpdate', 'EvaluationCycleAnswer.notifyUser');
   }
 
   static get primaryKey() {
