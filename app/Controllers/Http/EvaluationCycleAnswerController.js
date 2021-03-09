@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
@@ -61,14 +63,15 @@ class EvaluationCycleAnswerController {
     return response.status(201).json(evaluationCycleAnswerReturn);
   }
 
-  async update({ request, response }) {
+  async update({ request, response, auth }) {
     const { data } = request.only('data');
 
-    data.forEach(async (answer) => {
+    for (const answer of data) {
       const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
+      evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleAnswer.merge(answer);
       await evaluationCycleAnswer.save();
-    });
+    }
 
     return response.json({ status: 'ok' });
   }

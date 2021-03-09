@@ -5,9 +5,9 @@ const Notification = use('App/Models/Notification');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
-const EmployeeFilledQuestionsHook = (exports = module.exports = {});
+const EvaluationCycleAnswerHook = (exports = module.exports = {});
 
-EmployeeFilledQuestionsHook.notifyUser = async (modelInstance) => {
+EvaluationCycleAnswerHook.notifyUser = async (modelInstance) => {
   const user = await User.findOrFail(modelInstance.employee_id);
 
   const leader = await User.query()
@@ -24,7 +24,7 @@ EmployeeFilledQuestionsHook.notifyUser = async (modelInstance) => {
     content: `${user.name} iniciou o preenchimento da sua autoavaliação`,
   };
 
-  if (modelInstance.employee_id !== leader.id) {
+  if (modelInstance.employee_id !== leader.id && modelInstance.employee_id === modelInstance.$sideLoaded.logged_user_id) {
     Notification.findOrCreate(newNotification);
   }
 };
