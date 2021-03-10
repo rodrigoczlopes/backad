@@ -19,12 +19,14 @@ EvaluationCycleAnswerHook.notifyUser = async (modelInstance) => {
 
   const leaderJson = await leader?.toJSON();
 
-  const newNotification = {
-    user: leaderJson.id,
-    content: `${user.name} iniciou o preenchimento da sua autoavaliação`,
-  };
+  if (leaderJson) {
+    const newNotification = {
+      user: leaderJson.id,
+      content: `${user.name} iniciou o preenchimento da sua autoavaliação`,
+    };
 
-  if (modelInstance.employee_id !== leader.id && modelInstance.employee_id === modelInstance.$sideLoaded.logged_user_id) {
-    Notification.findOrCreate(newNotification);
+    if (modelInstance.employee_id !== leader.id && modelInstance.employee_id === modelInstance.$sideLoaded.logged_user_id) {
+      Notification.findOrCreate(newNotification);
+    }
   }
 };
