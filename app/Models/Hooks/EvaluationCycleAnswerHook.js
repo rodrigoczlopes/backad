@@ -17,7 +17,7 @@ EvaluationCycleAnswerHook.notifyUser = async (modelInstance) => {
     })
     .first();
 
-  const leaderJson = await leader.toJSON();
+  const leaderJson = await leader?.toJSON();
 
   const newNotification = {
     user: leaderJson.id,
