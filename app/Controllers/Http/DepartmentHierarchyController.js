@@ -37,7 +37,14 @@ class DepartmentHierarchyController {
       .fetch();
     let treeNode = [];
     let parentId = {};
-    departments.toJSON().forEach((department) => {
+
+    let deparmentJson = departments.toJSON();
+
+    if (auth.user.id !== 'f468fc5d-904f-460a-8df8-055dbbcf4e5b') {
+      deparmentJson = deparmentJson.filter((depart) => depart.name.toLowerCase() !== 'recursos humanos');
+    }
+
+    deparmentJson.forEach((department) => {
       const level = department.level.split('.');
       const unUnUnPreviousLevel = level[level.length - 5];
       const unUnPreviousLevel = level[level.length - 4];
