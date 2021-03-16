@@ -43,6 +43,7 @@ class DepartmentHierarchyController {
     // Adicionado essa regra, para somente a Patrícia ter acesso ao relatório do RH
     // Podemos pensar numa forma de parametrizar isso no sistema, fazendo com seja possível configurar que um
     // determinado setor só vai poder ser visível por um usuário ou role
+
     if (auth.user.id !== 'f468fc5d-904f-460a-8df8-055dbbcf4e5b') {
       deparmentJson = deparmentJson.filter((depart) => depart.name.toLowerCase() !== 'recursos humanos');
     }
