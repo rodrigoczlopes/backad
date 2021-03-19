@@ -65,6 +65,9 @@ Route.group(() => {
         [['companies.update'], ['Company']],
       ])
     );
+
+  Route.get('dashboardsummaries', 'DashboardSummaryController.index').middleware(['is:(administrator)']);
+
   Route.resource('departments', 'DepartmentController')
     .apiOnly()
     .validator(
