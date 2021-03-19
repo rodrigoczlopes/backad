@@ -75,14 +75,14 @@ class DepartmentEmployeeController {
           })
           .with('hierarchies')
           .with('evaluationCycleAnswers')
-          .withCount('evaluationCycleAnswers', (builder) => {
-            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          .withCount('evaluationCycleAnswers as leaderAnswers', (evacyan) => {
+            evacyan.orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
-          .withCount('evaluationCycleJustificatives', (builder) => {
-            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          .withCount('evaluationCycleJustificatives as leaderJustificatives', (evacyju) => {
+            evacyju.orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
-          .withCount('evaluationCycleComments', (builder) => {
-            builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+          .withCount('evaluationCycleComments as leaderFeedback', (evacyco) => {
+            evacyco.orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .orderBy('name', 'asc')
           .fetch();

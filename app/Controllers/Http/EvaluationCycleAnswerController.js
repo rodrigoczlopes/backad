@@ -6,9 +6,14 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
 class EvaluationCycleAnswerController {
   async index({ request }) {
     const { employeeId, leaderId, evaluation_cycle_id } = request.get();
+    const user = await User.find(employeeId);
+    const position = await user.positions().fetch();
 
     if (leaderId !== 'undefined') {
       const answers = await EvaluationCycleAnswer.query()
@@ -16,6 +21,9 @@ class EvaluationCycleAnswerController {
         .where('employee_id', employeeId)
         .with('behaviors', (builder) => {
           builder.with('skills');
+        })
+        .whereHas('behaviors', (builder) => {
+          builder.where('path_id', position.path_id);
         })
         .leftJoin('behaviors', 'behaviors.id', 'evaluation_cycle_answers.behavior_id')
         .select(
@@ -38,6 +46,9 @@ class EvaluationCycleAnswerController {
       .where('employee_id', employeeId)
       .with('behaviors', (builder) => {
         builder.with('skills');
+      })
+      .whereHas('behaviors', (builder) => {
+        builder.where('path_id', position.path_id);
       })
       .leftJoin('behaviors', 'behaviors.id', 'evaluation_cycle_answers.behavior_id')
       .select(
