@@ -58,7 +58,7 @@ class EvaluationCycleJustificativeController {
   async update({ request, response }) {
     const { data } = request.only('data');
 
-    data.forEach(async (justificative) => {
+    data?.forEach(async (justificative) => {
       const evaluationCycleJustificative = await EvaluationCycleJustificative.find(justificative.id);
       evaluationCycleJustificative.merge(justificative);
       await evaluationCycleJustificative.save();
