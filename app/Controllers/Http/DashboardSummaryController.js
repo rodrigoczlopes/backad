@@ -9,8 +9,6 @@ class DashboardSummary {
     const employees = await User.query()
       .where({ active: true })
       .with('departments')
-      .with('positions')
-      .with('evaluationCycleAnswers')
       .withCount('evaluationCycleAnswers as employeeEvaluationAnswers', (builder) => {
         builder.orWhere({ user_finished: false }).orWhere({ user_finished: null });
       })
