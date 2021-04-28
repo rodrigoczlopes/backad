@@ -35,6 +35,7 @@ class AuthController {
     const { token } = await auth.attempt(username, password);
 
     const userData = await User.findByOrFail('username', username);
+
     await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions']);
 
     const {
