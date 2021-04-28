@@ -25,6 +25,10 @@ const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Behavior = use('App/Models/Behavior');
 
+// TODO:
+// Quando o colaborador mudar de cargo e te muma nova trajetório/path ele precisa apagar o formulário atual do ciclo e criar novamente
+// Para que ele não crie questões das duas trajetórias juntas
+
 class SendCycleFormController {
   async store({ request, response, auth }) {
     const departments = request.all();
