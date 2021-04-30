@@ -203,6 +203,7 @@ Route.group(() => {
 
   Route.resource('permissions', 'PermissionController').apiOnly();
   Route.resource('roles', 'RoleController').apiOnly();
+  Route.delete('clearemployeeanswers/:id', 'ClearUserQuestionsController.destroy').middleware(['is:(administrator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
