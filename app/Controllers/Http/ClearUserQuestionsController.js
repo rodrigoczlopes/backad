@@ -17,22 +17,26 @@ class ClearUserQuestionsController {
     const { id: employeeId } = await User.find(params.id);
     const { id: evaluationCycleId } = await EvaluationCycle.query().last();
 
-    console.log(employeeId, evaluationCycleId);
+    const employeeAnswer = await EvaluationCycleAnswers.query()
+      .where('employee_id', employeeId)
+      .where('evaluation_cycle_id', evaluationCycleId)
+      .fetch();
+    const employeeAnswerToDelete = await EvaluationCycleAnswers.find(employeeAnswer.id);
+    await employeeAnswerToDelete.delete();
 
-    // const employeeAnswer = await EvaluationCycleAnswers.query()
-    //   .where('employee_id', employeeId)
-    //   .where('evaluation_cycle_id', evaluationCycleId);
-    // await employeeAnswer.delete();
+    const employeeJustificative = await EvaluationCycleJustificative.query()
+      .where('employee_id', employeeId)
+      .where('evaluation_cycle_id', evaluationCycleId)
+      .fetch();
+    const employeeJustificativeToDelete = await EvaluationCycleAnswers.find(employeeJustificative.id);
+    await employeeJustificativeToDelete.delete();
 
-    // const employeeJustificative = await EvaluationCycleJustificative.query()
-    //   .where('employee_id', employeeId)
-    //   .where('evaluation_cycle_id', evaluationCycleId);
-    // await employeeJustificative.delete();
-
-    // const employeeComment = await EvaluationCycleComment.query()
-    //   .where('employee_id', employeeId)
-    //   .where('evaluation_cycle_id', evaluationCycleId);
-    // await employeeComment.delete();
+    const employeeComment = await EvaluationCycleComment.query()
+      .where('employee_id', employeeId)
+      .where('evaluation_cycle_id', evaluationCycleId)
+      .fetch();
+    const employeeCommentToDelete = await EvaluationCycleAnswers.find(employeeComment.id);
+    await employeeCommentToDelete.delete();
   }
 }
 
