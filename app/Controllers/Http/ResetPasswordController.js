@@ -1,5 +1,6 @@
 const { parseISO, isBefore, subHours } = require('date-fns');
 const { generate } = require('generate-password');
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Token = use('App/Models/Token');
@@ -22,23 +23,26 @@ class ResetPasswordController {
   }
 
   async update({ request, response }) {
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 60);
+
     try {
       const data = request.all();
       if (data.allUsers) {
         const allActiveUsers = await User.query()
           .where('active', true)
-          .with('userAccessProfiles', (builder) => {
-            builder.with('user_groups', (builderr) => {
-              builderr.where('name', '<>', 'Administrador');
-            });
+          .whereRaw('password_updated_at <= ? or password_updated_at is null', currentDate)
+          .with('roles', (builder) => {
+            builder.where('slug', '<>', 'administrator');
           })
           .fetch();
 
         const allUsersJson = allActiveUsers.toJSON();
         allUsersJson.forEach(async (user) => {
           const userToAlter = await User.find(user.id);
-          const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l'] });
+          const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l', 'o'] });
           userToAlter.password = password;
+          userToAlter.password_updated_at = new Date();
           userToAlter.save();
         });
         return response.status(200).json({ status: true, message: 'Todos as senhas foram trocadas com sucesso!' });
@@ -46,6 +50,7 @@ class ResetPasswordController {
 
       const userToUpdate = await User.find(data.id);
       userToUpdate.password = data.password;
+      userToUpdate.password_updated_at = new Date();
       userToUpdate.save();
       return response.status(200).json({ status: true, message: 'Senha alterada com sucesso' });
     } catch (error) {
