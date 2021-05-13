@@ -15,7 +15,7 @@ const EvaluationCycle = use('App/Models/EvaluationCycle');
 class ClearUserQuestionsController {
   async destroy({ params }) {
     const { id: employeeId } = await User.find(params.id);
-    const { id: evaluationCycleId } = await EvaluationCycle.query().where().last();
+    const { id: evaluationCycleId } = await EvaluationCycle.query().last();
 
     const employeeAnswer = await EvaluationCycleAnswers.query()
       .where('employee_id', employeeId)

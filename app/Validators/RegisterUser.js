@@ -10,7 +10,6 @@ class RegisterUser {
     return {
       registry: [rule('required', 'users'), rule('unique_combination', ['users', 'company_id'])],
       username: [rule('required'), rule('unique_combination', ['users', 'company_id'])],
-      user_access_profile: [rule('required')],
       company_id: [rule('exists', ['companies', 'id'])],
       name: [rule('required')],
       email: [rule('required'), rule('email')],
