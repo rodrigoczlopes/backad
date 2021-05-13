@@ -11,7 +11,7 @@ class BehaviorController {
       page = 1;
       itemsPerPage = 20000;
     }
-    const behaviors = Behavior.query()
+    return Behavior.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
@@ -19,8 +19,6 @@ class BehaviorController {
       .with('paths')
       .with('skills')
       .paginate(page, itemsPerPage);
-
-    return behaviors;
   }
 
   async store({ request, response, auth }) {
@@ -35,7 +33,7 @@ class BehaviorController {
     }
 
     const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
-    const behaviorReturn = await this.show({ params: { id: behavior.id } });
+    const behaviorReturn = this.show({ params: { id: behavior.id } });
     return response.status(201).json(behaviorReturn);
   }
 
