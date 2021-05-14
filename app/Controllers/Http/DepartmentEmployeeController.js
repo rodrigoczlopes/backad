@@ -123,10 +123,11 @@ class DepartmentEmployeeController {
       case 2:
         employeeList = departmentoEmployeesWithoutNulls.filter(
           (item) =>
-            item.id !== auth.user.id &&
-            item.departments.level.split('.').length === 3 &&
-            ((!childrenWithLeader.includes(item.departments.id) && !parentWithLeader.includes(item.departments.id)) ||
-              leaders.includes(item.hierarchies?.level.split('.').length))
+            (item.id !== auth.user.id &&
+              item.departments.level.split('.').length === 3 &&
+              !childrenWithLeader.includes(item.departments.id) &&
+              !parentWithLeader.includes(item.departments.id)) ||
+            leaders.includes(item.hierarchies?.level.split('.').length)
         );
         break;
       case 3:

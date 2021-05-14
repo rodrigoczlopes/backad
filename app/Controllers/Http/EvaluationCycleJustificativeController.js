@@ -3,6 +3,7 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleJustificative = use('App/Models/EvaluationCycleJustificative');
+const Redis = use('Redis');
 
 class EvaluationCycleJustificativeController {
   async index({ request }) {
@@ -61,6 +62,7 @@ class EvaluationCycleJustificativeController {
     data?.forEach(async (justificative) => {
       const evaluationCycleJustificative = await EvaluationCycleJustificative.find(justificative.id);
       evaluationCycleJustificative.merge(justificative);
+      await Redis.del('dashboard-summary');
       await evaluationCycleJustificative.save();
     });
 

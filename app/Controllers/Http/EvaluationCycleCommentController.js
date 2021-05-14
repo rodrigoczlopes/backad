@@ -8,6 +8,8 @@ const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleDevelopmentPlan = use('App/Models/EvaluationCycleDevelopmentPlan');
 
+const Redis = use('Redis');
+
 class EvaluationCycleCommentController {
   async index({ request }) {
     const { evaluation_cycle_id, employee_id } = request.all();
@@ -53,6 +55,8 @@ class EvaluationCycleCommentController {
         }
       }
     });
+
+    await Redis.del('dashboard-summary');
 
     return response.json({ status: 'ok' });
   }
