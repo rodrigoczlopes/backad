@@ -4,13 +4,28 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Position = use('App/Models/Position');
 
+const Redis = use('Redis');
+
 class PositionController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedPositions = await Redis.get('positions');
+      if (cachedPositions) {
+        return JSON.parse(cachedPositions);
+      }
+      const allPositions = await Position.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .with('paths')
+        .orderBy('description')
+        .fetch();
+
+      await Redis.set('positions', JSON.stringify(allPositions));
+      return allPositions;
     }
 
     if (searchSentence) {
@@ -47,6 +62,7 @@ class PositionController {
 
     const position = await Position.create({ ...data, created_by: auth.user.id });
     const positionReturn = await this.show({ params: { id: position.id } });
+    await Redis.del('positions');
     return response.status(201).json(positionReturn);
   }
 
@@ -65,12 +81,13 @@ class PositionController {
     const position = await Position.find(params.id);
     position.merge({ ...data, updated_by: auth.user.id });
     await position.save();
+    await Redis.del('positions');
     return position;
   }
 
   async destroy({ params }) {
     const position = await Position.find(params.id);
-
+    await Redis.del('positions');
     await position.delete();
   }
 }

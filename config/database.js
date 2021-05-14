@@ -57,7 +57,7 @@ module.exports = {
     },
     pool: {
       min: 2,
-      max: 80,
+      max: 100000,
       createTimeoutMillis: 300000,
       acquireTimeoutMillis: 300000,
       idleTimeoutMillis: 300000,
@@ -65,6 +65,7 @@ module.exports = {
       createRetryIntervalMillis: 100,
       propagateCreateError: false,
     },
+    acquireConnectionTimeout: 60000,
     debug: Env.get('DB_DEBUG', false),
   },
 

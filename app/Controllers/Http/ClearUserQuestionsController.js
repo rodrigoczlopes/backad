@@ -3,12 +3,16 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleAnswers = use('App/Models/EvaluationCycleAnswer');
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleJustificative = use('App/Models/EvaluationCycleJustificative');
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycle = use('App/Models/EvaluationCycle');
 

@@ -9,6 +9,8 @@ const EvaluationCycleAnswer = use('App/Models/EvaluationCycleAnswer');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
+const Redis = use('Redis');
+
 class EvaluationCycleAnswerController {
   async index({ request }) {
     const { employeeId, leaderId, evaluation_cycle_id } = request.get();
@@ -81,6 +83,8 @@ class EvaluationCycleAnswerController {
       const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
       evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleAnswer.merge(answer);
+
+      await Redis.del('dashboard-summary');
       await evaluationCycleAnswer.save();
     }
 

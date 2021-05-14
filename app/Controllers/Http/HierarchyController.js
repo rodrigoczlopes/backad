@@ -4,13 +4,26 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
+const Redis = use('Redis');
+
 class HierarchyController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedHierarchies = await Redis.get('hierarchies');
+      if (cachedHierarchies) {
+        return JSON.parse(cachedHierarchies);
+      }
+      const allHierarchies = await Hierarchy.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .orderBy('level')
+        .fetch();
+      await Redis.set('hierarchies', JSON.stringify(allHierarchies));
+      return allHierarchies;
     }
 
     if (searchSentence) {
@@ -36,6 +49,7 @@ class HierarchyController {
   async store({ request, response, auth }) {
     const data = request.all();
     const hierarchy = await Hierarchy.create({ ...data, created_by: auth.user.id });
+    await Redis.del('hierarchies');
     return response.status(201).json(hierarchy);
   }
 
@@ -50,12 +64,13 @@ class HierarchyController {
     const hierarchy = await Hierarchy.find(params.id);
     hierarchy.merge({ ...data, updated_by: auth.user.id });
     await hierarchy.save();
+    await Redis.del('hierarchies');
     return hierarchy;
   }
 
   async destroy({ params }) {
     const hierarchy = await Hierarchy.find(params.id);
-
+    await Redis.del('hierarchies');
     await hierarchy.delete();
   }
 }

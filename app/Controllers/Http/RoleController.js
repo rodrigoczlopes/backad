@@ -1,8 +1,15 @@
 const Role = use('Role');
 
+const Redis = use('Redis');
+
 class RoleController {
   async index() {
+    const cachedRoles = await Redis.get('roles');
+    if (cachedRoles) {
+      return JSON.parse(cachedRoles);
+    }
     const roles = await Role.query().with('permissions').orderBy('name', 'asc').fetch();
+    await Redis.set('roles', JSON.stringify(roles));
     return roles;
   }
 
@@ -22,6 +29,7 @@ class RoleController {
     }
 
     await role.load('permissions');
+    await Redis.del('roles');
 
     return role;
   }
@@ -39,12 +47,14 @@ class RoleController {
     }
 
     await role.load('permissions');
+    await Redis.del('roles');
 
     return role;
   }
 
   async destroy({ params }) {
     const role = await Role.findOrFail(params.id);
+    await Redis.del('roles');
     await role.delete();
   }
 }

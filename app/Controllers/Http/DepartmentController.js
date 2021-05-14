@@ -4,20 +4,35 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Department = use('App/Models/Department');
 
+const Redis = use('Redis');
+
 class DepartmentController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedDepartments = await Redis.get('departments');
+
+      if (cachedDepartments) {
+        return JSON.parse(cachedDepartments);
+      }
+
+      const allDepartments = await Department.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .orderBy('level')
+        .fetch();
+
+      await Redis.set('departments', JSON.stringify(allDepartments));
+      return allDepartments;
     }
 
     if (searchSentence) {
       const departmentsSearched = await Department.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
-        // .with('leader')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
       return departmentsSearched;
@@ -28,7 +43,6 @@ class DepartmentController {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
-      // .with('leader')
       .orderBy('level')
       .paginate(page, itemsPerPage);
 
@@ -39,6 +53,7 @@ class DepartmentController {
     const data = request.all();
     const department = await Department.create({ ...data, created_by: auth.user.id });
     const departmentReturn = await this.show({ params: { id: department.id } });
+    await Redis.del('departments');
     return response.status(201).json(departmentReturn);
   }
 
@@ -53,12 +68,13 @@ class DepartmentController {
     const department = await Department.find(params.id);
     department.merge({ ...data, updated_by: auth.user.id });
     await department.save();
+    await Redis.del('departments');
     return department;
   }
 
   async destroy({ params }) {
     const department = await Department.find(params.id);
-
+    await Redis.del('departments');
     await department.delete();
   }
 }

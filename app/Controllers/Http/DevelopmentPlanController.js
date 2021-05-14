@@ -5,13 +5,26 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const DevelopmentPlan = use('App/Models/DevelopmentPlan');
 
+const Redis = use('Redis');
+
 class DevelopmentPlanController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedDevelopmentPlan = await Redis.get('development-plans');
+      if (cachedDevelopmentPlan) {
+        return JSON.parse(cachedDevelopmentPlan);
+      }
+
+      const allDevelopmentPlans = await DevelopmentPlan.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .fetch();
+      await Redis.set('development-plans', JSON.stringify(allDevelopmentPlans));
+      return allDevelopmentPlans;
     }
 
     if (searchSentence) {
@@ -36,6 +49,7 @@ class DevelopmentPlanController {
     const data = request.all();
     const developmentPlan = await DevelopmentPlan.create({ ...data, created_by: auth.user.id });
     const developmentPlanReturn = await this.show({ params: { id: developmentPlan.id } });
+    await Redis.del('development-plans');
     return response.status(201).json(developmentPlanReturn);
   }
 
@@ -53,6 +67,7 @@ class DevelopmentPlanController {
     const developmentPlan = await DevelopmentPlan.find(params.id);
     developmentPlan.merge({ ...data, updated_by: auth.user.id });
     await developmentPlan.save();
+    await Redis.del('development-plans');
     return developmentPlan;
   }
 

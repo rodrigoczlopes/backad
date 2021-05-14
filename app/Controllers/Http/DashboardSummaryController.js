@@ -4,8 +4,15 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
+const Redis = use('Redis');
+
 class DashboardSummary {
   async index() {
+    const cachedSummary = await Redis.get('dashboard-summary');
+    if (cachedSummary) {
+      return JSON.parse(cachedSummary);
+    }
+
     const employees = await User.query()
       .where({ active: true })
       .with('departments')
@@ -26,6 +33,8 @@ class DashboardSummary {
       })
       .orderBy('name', 'asc')
       .fetch();
+
+    await Redis.set('dashboard-summary', JSON.stringify(employees));
     return employees;
   }
 }
