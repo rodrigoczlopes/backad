@@ -18,7 +18,7 @@ class EvaluationCycleAnswerController {
     const position = await user.positions().fetch();
 
     if (leaderId !== 'undefined') {
-      const answers = await EvaluationCycleAnswer.query()
+      return EvaluationCycleAnswer.query()
         .where('evaluation_cycle_id', evaluation_cycle_id)
         .where('employee_id', employeeId)
         .with('behaviors', (builder) => {
@@ -40,10 +40,9 @@ class EvaluationCycleAnswerController {
         )
         .orderBy('behaviors.description', 'asc')
         .fetch();
-      return answers;
     }
 
-    const answer = await EvaluationCycleAnswer.query()
+    return EvaluationCycleAnswer.query()
       .where('evaluation_cycle_id', evaluation_cycle_id)
       .where('employee_id', employeeId)
       .with('behaviors', (builder) => {
@@ -65,8 +64,6 @@ class EvaluationCycleAnswerController {
       )
       .orderBy('behaviors.description', 'asc')
       .fetch();
-
-    return answer;
   }
 
   async store({ request, response, auth }) {

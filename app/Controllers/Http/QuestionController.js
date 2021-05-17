@@ -15,21 +15,16 @@ class QuestionController {
     }
 
     if (searchSentence) {
-      const questions = await Question.query()
-        .where(searchBy, 'like', `%${searchSentence}%`)
-        .orderBy(searchBy)
-        .paginate(page, itemsPerPage);
-      return questions;
+      return Question.query().where(searchBy, 'like', `%${searchSentence}%`).orderBy(searchBy).paginate(page, itemsPerPage);
     }
 
-    const question = await Question.query()
+    return Question.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('description')
       .paginate(page, itemsPerPage);
-    return question;
   }
 
   async store({ request, response, auth }) {

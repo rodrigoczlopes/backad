@@ -5,23 +5,32 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const UserGroup = use('App/Models/UserGroup');
 
-/**
- * Resourceful controller for interacting with usergroups
- */
+const Redis = use('Redis');
+
 class UserGroupController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedUserGroups = await Redis.get('usergroups');
+      if (cachedUserGroups) {
+        return JSON.parse(cachedUserGroups);
+      }
+
+      const allUserGroups = await UserGroup.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .fetch();
+
+      await Redis.set('usergroups', JSON.stringify(allUserGroups));
+      return allUserGroups;
     }
-    const userGroups = await UserGroup.query()
+
+    return UserGroup.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .paginate(page, itemsPerPage);
-
-    return userGroups;
   }
 
   async show({ params }) {

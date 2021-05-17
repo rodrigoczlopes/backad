@@ -28,13 +28,12 @@ class SkillBehaviorController {
         behaviors.toJSON().map((behavior) => ({ value: behavior.id, label: behavior.description, leaf: true, children: [] })) ||
         [];
 
-      const item = {
+      return {
         value: skill.id,
         label: skill.name,
         leaf: false,
         children: childrens,
       };
-      return item;
     });
 
     const trees = await Promise.all(treeNode);

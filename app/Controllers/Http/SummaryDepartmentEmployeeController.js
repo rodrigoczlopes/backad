@@ -8,7 +8,7 @@ class SummaryDepartmentEmployeeController {
   async show({ params }) {
     const { id } = params;
 
-    const employees = await User.query()
+    return User.query()
       .where({ department_id: id })
       .where({ active: true })
       .with('departments')
@@ -28,7 +28,6 @@ class SummaryDepartmentEmployeeController {
       })
       .orderBy('name', 'asc')
       .fetch();
-    return employees;
   }
 }
 

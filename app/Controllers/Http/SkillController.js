@@ -4,38 +4,51 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Skill = use('App/Models/Skill');
 
+const Redis = use('Redis');
+
 class SkillController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedSkills = await Redis.get('skills');
+      if (cachedSkills) {
+        return JSON.parse(cachedSkills);
+      }
+
+      const allSkills = await Skill.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .orderBy('name')
+        .fecth();
+
+      await Redis.set('skills', JSON.stringify(allSkills));
+      return allSkills;
     }
 
     if (searchSentence) {
-      const skillList = await Skill.query()
+      return Skill.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return skillList;
     }
 
-    const skills = await Skill.query()
+    return Skill.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('name')
       .paginate(page, itemsPerPage);
-
-    return skills;
   }
 
   async store({ request, response, auth }) {
     const data = request.all();
     const skill = await Skill.create({ ...data, created_by: auth.user.id });
+    await Redis.del('skills');
     return response.status(201).json(skill);
   }
 
@@ -50,12 +63,13 @@ class SkillController {
     const skill = await Skill.find(params.id);
     skill.merge({ ...data, updated_by: auth.user.id });
     await skill.save();
+    await Redis.del('skills');
     return skill;
   }
 
   async destroy({ params }) {
     const skill = await Skill.find(params.id);
-
+    await Redis.del('skills');
     await skill.delete();
   }
 }

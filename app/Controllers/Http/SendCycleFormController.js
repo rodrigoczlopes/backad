@@ -31,15 +31,19 @@ const Behavior = use('App/Models/Behavior');
 
 class SendCycleFormController {
   async store({ request, response, auth }) {
-    const departments = request.all();
+    const { data: departments } = request.all();
     try {
-      const object = departments.data.map(async (department) => {
-        const users = await User.query().where('department_id', department.id).where('active', true).with('departments').fetch();
+      const listOfAllEmployees = departments.map(async (department) => {
+        const allEmployeesFromDepartments = await User.query()
+          .where('department_id', department.id)
+          .where('active', true)
+          .with('departments')
+          .fetch();
 
-        let items = [];
-        users.toJSON().forEach((user) => {
-          items = [
-            ...items,
+        let employeeListArray = [];
+        allEmployeesFromDepartments.toJSON().forEach((user) => {
+          employeeListArray = [
+            ...employeeListArray,
             {
               id: user.id,
               name: user.name,
@@ -50,11 +54,11 @@ class SendCycleFormController {
             },
           ];
         });
-        return items;
+        return employeeListArray;
       });
 
-      const objectAwait = await Promise.all(object);
-      const cleanedUserList = objectAwait.filter((value) => {
+      const listOfAllEmployeesAwait = await Promise.all(listOfAllEmployees);
+      const cleanedUserList = listOfAllEmployeesAwait.filter((value) => {
         return value.length > 0;
       });
 

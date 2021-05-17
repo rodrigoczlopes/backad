@@ -29,16 +29,15 @@ class PositionController {
     }
 
     if (searchSentence) {
-      const positionList = await Position.query()
+      return Position.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .with('paths')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return positionList;
     }
 
-    const positions = await Position.query()
+    return Position.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
@@ -46,8 +45,6 @@ class PositionController {
       .with('paths')
       .orderBy('description')
       .paginate(page, itemsPerPage);
-
-    return positions;
   }
 
   async store({ request, response, auth }) {

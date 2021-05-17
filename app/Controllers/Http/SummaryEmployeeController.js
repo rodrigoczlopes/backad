@@ -40,7 +40,7 @@ class SummaryEmployeeController {
       })
       .orderBy('name', 'asc')
       .fetch();
-    console.log('opa');
+
     return employees.first();
   }
 }
