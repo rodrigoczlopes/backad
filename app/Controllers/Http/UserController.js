@@ -15,7 +15,7 @@ class UserController {
     }
 
     if (searchSentence) {
-      const usersList = await User.query()
+      return User.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('roles')
         .with('companies')
@@ -24,10 +24,9 @@ class UserController {
         .with('hierarchies')
         .orderBy(searchBy, 'asc')
         .paginate(page, itemsPerPage);
-      return usersList;
     }
 
-    const users = await User.query()
+    return User.query()
       .with('roles')
       .with('companies')
       .with('departments')
@@ -35,8 +34,6 @@ class UserController {
       .with('hierarchies')
       .orderBy('name', 'asc')
       .paginate(page, itemsPerPage);
-
-    return users;
   }
 
   async show({ params }) {

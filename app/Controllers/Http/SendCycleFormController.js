@@ -156,18 +156,14 @@ class SendCycleFormController {
         const comments = await Comment.all();
         const commentsJson = comments.toJSON();
 
-        const createdComment = commentsJson.map((comment) => {
-          const eachUserComment = userF.map((usf) => {
-            return {
-              employee_id: usf.employee_id,
-              form_id: formId,
-              evaluation_cycle_id: usf.evaluation_cycle_id,
-              comment_id: comment.id,
-            };
-          });
-          return eachUserComment;
+        return commentsJson.map((comment) => {
+          return userF.map((usf) => ({
+            employee_id: usf.employee_id,
+            form_id: formId,
+            evaluation_cycle_id: usf.evaluation_cycle_id,
+            comment_id: comment.id,
+          }));
         });
-        return createdComment;
       });
 
       const commentAwait = await Promise.all(commentUser);
