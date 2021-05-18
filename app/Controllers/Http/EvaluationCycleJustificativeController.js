@@ -3,6 +3,7 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleJustificative = use('App/Models/EvaluationCycleJustificative');
+
 const Redis = use('Redis');
 
 class EvaluationCycleJustificativeController {
@@ -51,22 +52,29 @@ class EvaluationCycleJustificativeController {
     return response.status(201).json(evaluationCycleJustificativeReturn);
   }
 
-  // async show({ params, request, response }) {}
-
-  async update({ request, response }) {
+  async update({ request, response, auth }) {
     const { data } = request.only('data');
 
-    data?.forEach(async (justificative) => {
+    const promises = data?.map(async (justificative) => {
       const evaluationCycleJustificative = await EvaluationCycleJustificative.find(justificative.id);
+      evaluationCycleJustificative.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleJustificative.merge(justificative);
       await Redis.del('dashboard-summary');
-      await evaluationCycleJustificative.save();
+      return evaluationCycleJustificative.save();
     });
+
+    await Promise.all(promises);
+
+    // for (const justificative of Object.values(data)) {
+    //   const evaluationCycleJustificative = await EvaluationCycleJustificative.find(justificative.id);
+    //   evaluationCycleJustificative.$sideLoaded = { logged_user_id: auth.user.id };
+    //   evaluationCycleJustificative.merge(justificative);
+    //   await Redis.del('dashboard-summary');
+    //   await evaluationCycleJustificative.save();
+    // }
 
     return response.json({ status: 'ok' });
   }
-
-  // async destroy({ params, request, response }) {}
 }
 
 module.exports = EvaluationCycleJustificativeController;

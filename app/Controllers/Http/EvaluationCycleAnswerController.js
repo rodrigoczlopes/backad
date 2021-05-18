@@ -76,14 +76,23 @@ class EvaluationCycleAnswerController {
   async update({ request, response, auth }) {
     const { data } = request.only('data');
 
-    data?.forEach(async (answer) => {
+    const promises = data?.map(async (answer) => {
       const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
       evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleAnswer.merge(answer);
-
       await Redis.del('dashboard-summary');
-      await evaluationCycleAnswer.save();
+      return evaluationCycleAnswer.save();
     });
+
+    await Promise.all(promises);
+
+    // for await (const answer of data) {
+    //   const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
+    //   evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
+    //   evaluationCycleAnswer.merge(answer);
+    //   await evaluationCycleAnswer.save();
+    //   await Redis.del('dashboard-summary');
+    // }
 
     return response.json({ status: 'ok' });
   }
