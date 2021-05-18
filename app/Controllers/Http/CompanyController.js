@@ -9,12 +9,11 @@ const Company = use('App/Models/Company');
  */
 class UserGroupController {
   async index() {
-    const companies = await Company.query()
+    return Company.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .fetch();
-    return companies;
   }
 
   async show({ params }) {
