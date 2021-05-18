@@ -10,7 +10,7 @@ class EvaluationCycleJustificativeController {
     const { employeeId, leaderId, evaluation_cycle_id } = request.get();
 
     if (leaderId !== 'undefined') {
-      const justificatives = await EvaluationCycleJustificative.query()
+      return EvaluationCycleJustificative.query()
         .where('evaluation_cycle_id', evaluation_cycle_id)
         .where('employee_id', employeeId)
         .with('skills')
@@ -25,10 +25,9 @@ class EvaluationCycleJustificativeController {
           'leader_finished'
         )
         .fetch();
-      return justificatives;
     }
 
-    const justificative = await EvaluationCycleJustificative.query()
+    return EvaluationCycleJustificative.query()
       .where('evaluation_cycle_id', evaluation_cycle_id)
       .where('employee_id', employeeId)
       .with('skills')
@@ -43,8 +42,6 @@ class EvaluationCycleJustificativeController {
         'user_finished'
       )
       .fetch();
-
-    return justificative;
   }
 
   async store({ request, response, auth }) {

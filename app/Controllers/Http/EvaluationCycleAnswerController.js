@@ -76,14 +76,14 @@ class EvaluationCycleAnswerController {
   async update({ request, response, auth }) {
     const { data } = request.only('data');
 
-    for (const answer of data) {
+    data?.forEach(async (answer) => {
       const evaluationCycleAnswer = await EvaluationCycleAnswer.find(answer.id);
       evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleAnswer.merge(answer);
 
       await Redis.del('dashboard-summary');
       await evaluationCycleAnswer.save();
-    }
+    });
 
     return response.json({ status: 'ok' });
   }
