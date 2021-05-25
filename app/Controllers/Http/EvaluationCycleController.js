@@ -19,23 +19,21 @@ class EvaluationCycleController {
 
     if (!company_id) {
       if (searchSentence) {
-        const evaluationCyclesSearched = await EvaluationCycle.query()
+        return EvaluationCycle.query()
           .where(searchBy, 'like', `%${searchSentence}%`)
           .orderBy(searchBy)
           .paginate(page, itemsPerPage);
-        return evaluationCyclesSearched;
       }
 
-      const evaluationCycles = await EvaluationCycle.query()
+      return EvaluationCycle.query()
         .with('createdBy', (builder) => {
           builder.select(['id', 'name', 'email', 'avatar']);
         })
         .orderBy('description')
         .paginate(page, itemsPerPage);
-      return evaluationCycles;
     }
 
-    const evaluationCycle = await EvaluationCycle.query()
+    return EvaluationCycle.query()
       .where({ company_id })
       .where('initial_evaluation_period', '<=', new Date())
       .where('final_evaluation_period', '>=', new Date())
@@ -52,14 +50,12 @@ class EvaluationCycleController {
         'final_manager_evaluation'
       )
       .first();
-    return evaluationCycle;
   }
 
   async store({ request, response, auth }) {
-    const data = request.all();
-    const { department_hierarchies } = data;
-    delete data.department_hierarchies;
-    delete data.companies;
+    const allData = request.all();
+    const { department_hierarchies, companies, ...data } = allData;
+
     const evaluationCycle = await EvaluationCycle.create({ ...data, created_by: auth.user.id });
 
     const evaluationCycleAreas = department_hierarchies.map((department) => ({
@@ -68,8 +64,9 @@ class EvaluationCycleController {
     }));
 
     await EvaluationCycleArea.createMany(evaluationCycleAreas);
-    const evaluationCycleReturn = await this.show({ params: { id: evaluationCycle.id } });
-    return response.status(201).json(evaluationCycleReturn);
+
+    await evaluationCycle.loadMany(['companies', 'evaluationCycleAreas']);
+    return response.status(201).json(evaluationCycle);
   }
 
   async show({ params }) {
@@ -83,13 +80,10 @@ class EvaluationCycleController {
   }
 
   async update({ params, response, request, auth }) {
-    const data = request.all();
-    const { department_hierarchies } = data;
-    delete data.department_hierarchies;
-    delete data.companies;
-    delete data.id;
+    const allData = request.all();
+    const { department_hierarchies, companies, id, ...data } = allData;
 
-    const evaluationCycle = await EvaluationCycle.find(params.id);
+    const evaluationCycle = await EvaluationCycle.findOrFail(params.id);
     evaluationCycle.merge({ ...data, updated_by: auth.user.id });
     await evaluationCycle.save();
 
@@ -100,9 +94,10 @@ class EvaluationCycleController {
     }));
 
     await EvaluationCycleArea.createMany(evaluationCycleAreas);
-    const evaluationCycleReturn = await this.show({ params: { id: evaluationCycle.id } });
 
-    return response.status(200).json(evaluationCycleReturn);
+    await evaluationCycle.loadMany(['companies', 'evaluationCycleAreas']);
+
+    return response.status(200).json(evaluationCycle);
   }
 
   async destroy({ params }) {
