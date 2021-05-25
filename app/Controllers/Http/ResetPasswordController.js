@@ -30,21 +30,26 @@ class ResetPasswordController {
       const data = request.all();
       if (data.allUsers) {
         const allActiveUsers = await User.query()
-          .where('active', true)
-          .whereRaw('password_updated_at <= ? or password_updated_at is null', currentDate)
-          .with('roles', (builder) => {
-            builder.where('slug', '<>', 'administrator');
-          })
+          .whereRaw('(password_updated_at <= ? or password_updated_at is null)', currentDate)
+          .where({ active: true })
+          .with('roles')
           .fetch();
 
-        const allUsersJson = allActiveUsers.toJSON();
-        allUsersJson.forEach(async (user) => {
-          const userToAlter = await User.find(user.id);
+        const allUsersJson = await allActiveUsers.toJSON();
+        const withoutAdministratos = allUsersJson.filter(
+          (user) => user.roles.filter((role) => role.slug === 'administrator').length === 0
+        );
+
+        const promises = withoutAdministratos.map(async (user) => {
+          const userToResetPassword = await User.find(user.id);
           const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l', 'o'] });
-          userToAlter.password = password;
-          userToAlter.password_updated_at = new Date();
-          userToAlter.save();
+          userToResetPassword.password = password;
+          userToResetPassword.password_updated_at = new Date();
+          userToResetPassword.save();
         });
+
+        await Promise.all(promises);
+
         return response.status(200).json({ status: true, message: 'Todos as senhas foram trocadas com sucesso!' });
       }
 
