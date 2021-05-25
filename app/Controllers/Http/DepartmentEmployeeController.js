@@ -66,15 +66,34 @@ class DepartmentEmployeeController {
     const departmentEmployees = await Promise.all(
       childrenDepartments.map(async (departmentChildren) => {
         const employees = await User.query()
+          // .select(['active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
           .where({ department_id: departmentChildren.id })
           .where('id', '<>', auth.user.id)
           .where({ active: true })
-          .with('departments')
-          .with('positions', (builder) => {
-            builder.with('paths');
+          .with('departments', (builder) => {
+            builder.select(['id', 'active', 'leader_id', 'level', 'name']);
           })
-          .with('hierarchies')
-          .with('evaluationCycleAnswers')
+          .with('positions', (builder) => {
+            builder.select(['id', 'path_id', 'description']);
+            builder.with('paths', (builderChildren) => {
+              builderChildren.select(['id', 'description']);
+            });
+          })
+          .with('hierarchies', (builder) => {
+            builder.select(['id', 'description', 'level', 'active']);
+          })
+          .with('evaluationCycleAnswers', (builder) => {
+            builder.select([
+              'behavior_id',
+              'employee_id',
+              'evaluation_cycle_id',
+              'form_id',
+              'id',
+              'leader_answer',
+              'leader_finished',
+              'leader_id',
+            ]);
+          })
           .withCount('evaluationCycleAnswers as leaderAnswers', (evacyan) => {
             evacyan.orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
@@ -145,7 +164,25 @@ class DepartmentEmployeeController {
         break;
     }
 
-    return employeeList;
+    return employeeList.map((employee) => {
+      const {
+        cpf,
+        admitted_at,
+        avatar,
+        avatar_url,
+        created_at,
+        email,
+        fired_at,
+        password,
+        password_updated_at,
+        registry,
+        updated_at,
+        user_group_id,
+        username,
+        ...data
+      } = employee;
+      return data;
+    });
   }
 }
 
