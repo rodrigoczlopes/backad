@@ -98,7 +98,6 @@ Route.group(() => {
   Route.resource('evaluationcyclejustificatives', 'EvaluationCycleJustificativeController').apiOnly();
   Route.resource('evaluationcyclecomments', 'EvaluationCycleCommentController').apiOnly();
   Route.resource('evaluationcycledevelopmentplans', 'EvaluationCycleDevelopmentPlanController').apiOnly();
-  // Route.get('evaluationcycledevelopmentplans/:evaluation_cycle_id/:employee_id', 'EvaluationCycleDevelopmentPlanController.show');
 
   Route.resource('evaluationcycles', 'EvaluationCycleController')
     .apiOnly()

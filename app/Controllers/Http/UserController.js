@@ -17,34 +17,56 @@ class UserController {
     if (searchSentence) {
       return User.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
-        .with('roles')
-        .with('companies')
-        .with('departments')
-        .with('positions')
-        .with('hierarchies')
+        .with('departments', (builder) => {
+          builder.select(['id', 'name', 'level']);
+        })
+        .with('positions', (builder) => {
+          builder.select(['id', 'path_id', 'position_code', 'description']);
+        })
         .orderBy(searchBy, 'asc')
         .paginate(page, itemsPerPage);
     }
 
     return User.query()
-      .with('roles')
-      .with('companies')
-      .with('departments')
-      .with('positions')
-      .with('hierarchies')
+      .with('departments', (builder) => {
+        builder.select(['id', 'name', 'level']);
+      })
+      .with('positions', (builder) => {
+        builder.select(['id', 'path_id', 'position_code', 'description']);
+      })
       .orderBy('name', 'asc')
       .paginate(page, itemsPerPage);
   }
 
   async show({ params }) {
     const user = await User.findOrFail(params.id);
-    await user.load('companies');
-    await user.load('positions');
-    await user.load('userAccessProfiles');
-    await user.load('roles');
+    await user.load('companies', (builder) => {
+      builder.select(['code', 'id', 'name']);
+    });
+    await user.load('departments', (builder) => {
+      builder.select(['id', 'name', 'level']);
+    });
+    await user.load('positions', (builder) => {
+      builder.select(['id', 'path_id', 'position_code', 'description']);
+    });
+    await user.load('roles', (builder) => {
+      builder.select(['id', 'name', 'slug']);
+    });
     await user.load('permissions');
 
-    return user;
+    const {
+      avatar,
+      avatar_url,
+      created_at,
+      deleted_at,
+      password,
+      password_updated_at,
+      updated_at,
+      user_group_id,
+      ...userData
+    } = await user.toJSON();
+
+    return userData;
   }
 
   async update({ params, request }) {
