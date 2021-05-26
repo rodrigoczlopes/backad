@@ -95,13 +95,13 @@ class DepartmentEmployeeController {
             ]);
           })
           .withCount('evaluationCycleAnswers as leaderAnswers', (evacyan) => {
-            evacyan.orWhere('leader_finished', 0).orWhere('leader_finished', null);
+            evacyan.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .withCount('evaluationCycleJustificatives as leaderJustificatives', (evacyju) => {
-            evacyju.orWhere('leader_finished', 0).orWhere('leader_finished', null);
+            evacyju.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .withCount('evaluationCycleComments as leaderFeedback', (evacyco) => {
-            evacyco.orWhere('leader_finished', 0).orWhere('leader_finished', null);
+            evacyco.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .orderBy('name', 'asc')
           .fetch();
