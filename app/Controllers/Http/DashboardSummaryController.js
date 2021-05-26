@@ -19,19 +19,19 @@ class DashboardSummary {
         builder.select(['active', 'id', 'name', 'level']);
       })
       .withCount('evaluationCycleAnswers as employeeEvaluationAnswers', (builder) => {
-        builder.orWhere({ user_finished: false }).orWhere({ user_finished: null });
+        builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
       })
       .withCount('evaluationCycleJustificatives as employeeEvaluationJustificatives', (builder) => {
-        builder.orWhere({ user_finished: false }).orWhere({ user_finished: null });
+        builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
       })
       .withCount('evaluationCycleAnswers as leaderEvaluationAnswers', (builder) => {
-        builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
       })
       .withCount('evaluationCycleJustificatives as leaderEvaluationJustificatives', (builder) => {
-        builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
       })
       .withCount('evaluationCycleComments as leaderEvaluationComments', (builder) => {
-        builder.orWhere({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
       })
       .orderBy('name', 'asc')
       .fetch();
