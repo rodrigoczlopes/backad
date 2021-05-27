@@ -13,12 +13,7 @@ const Redis = use('Redis');
 class EvaluationCycleCommentController {
   async index({ request }) {
     const { evaluation_cycle_id, employee_id } = request.all();
-    const evaluationCycleComment = await EvaluationCycleComment.query()
-      .where({ employee_id })
-      .where({ evaluation_cycle_id })
-      .with('comments')
-      .fetch();
-    return evaluationCycleComment;
+    return EvaluationCycleComment.query().where({ employee_id }).where({ evaluation_cycle_id }).with('comments').fetch();
   }
 
   async store({ request, response }) {
