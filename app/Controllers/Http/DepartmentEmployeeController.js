@@ -10,6 +10,8 @@ const Department = use('App/Models/Department');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
+const Redis = use('Redis');
+
 class DepartmentEmployeeController {
   async index({ auth }) {
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
@@ -24,9 +26,10 @@ class DepartmentEmployeeController {
 
     // Ir descendo o nível até achar um nível que tenha funcionários
 
-    /* TODO:
-    - Verificar os usuário que não tiveram o ciclo criado
-    */
+    const cachedDepartmentEmployeeList = await Redis.get(`department-employee-list-${auth.user.department_id}`);
+    if (cachedDepartmentEmployeeList) {
+      return JSON.parse(cachedDepartmentEmployeeList);
+    }
 
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
@@ -94,14 +97,20 @@ class DepartmentEmployeeController {
               'leader_id',
             ]);
           })
-          .withCount('evaluationCycleAnswers as leaderAnswers', (evacyan) => {
-            evacyan.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
+          .withCount('evaluationCycleAnswers as employeeEvaluationAnswers', (builder) => {
+            builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
           })
-          .withCount('evaluationCycleJustificatives as leaderJustificatives', (evacyju) => {
-            evacyju.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
+          .withCount('evaluationCycleJustificatives as employeeEvaluationJustificatives', (builder) => {
+            builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
           })
-          .withCount('evaluationCycleComments as leaderFeedback', (evacyco) => {
-            evacyco.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
+          .withCount('evaluationCycleAnswers as leaderAnswers', (builder) => {
+            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
+          })
+          .withCount('evaluationCycleJustificatives as leaderJustificatives', (builder) => {
+            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
+          })
+          .withCount('evaluationCycleComments as leaderFeedback', (builder) => {
+            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .orderBy('name', 'asc')
           .fetch();
@@ -164,7 +173,7 @@ class DepartmentEmployeeController {
         break;
     }
 
-    return employeeList.map((employee) => {
+    const departmentEmployeeList = employeeList.map((employee) => {
       const {
         cpf,
         admitted_at,
@@ -183,6 +192,10 @@ class DepartmentEmployeeController {
       } = employee;
       return data;
     });
+
+    await Redis.set(`department-employee-list-${auth.user.department_id}`, JSON.stringify(departmentEmployeeList));
+
+    return departmentEmployeeList;
   }
 }
 

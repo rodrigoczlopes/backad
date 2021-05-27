@@ -28,21 +28,19 @@ class DevelopmentPlanController {
     }
 
     if (searchSentence) {
-      const ratingScales = await DevelopmentPlan.query()
+      return DevelopmentPlan.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return ratingScales;
     }
 
-    const developmentPlans = await DevelopmentPlan.query()
+    return DevelopmentPlan.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .paginate(page, itemsPerPage);
-    return developmentPlans;
   }
 
   async store({ request, response, auth }) {
