@@ -2,6 +2,7 @@
 const User = use('App/Models/User');
 
 const Ws = use('Ws');
+const Redis = use('Redis');
 
 class AuthController {
   async register({ request, response }) {
@@ -26,6 +27,8 @@ class AuthController {
     }
 
     await user.loadMany(['roles', 'permissions']);
+
+    await Redis.del(`department-employee-list-${data.department_id}`);
 
     return user;
   }

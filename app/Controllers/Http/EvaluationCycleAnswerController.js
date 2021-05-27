@@ -81,6 +81,7 @@ class EvaluationCycleAnswerController {
       evaluationCycleAnswer.$sideLoaded = { logged_user_id: auth.user.id };
       evaluationCycleAnswer.merge(answer);
       await Redis.del('dashboard-summary');
+      await Redis.del(`department-employee-list-${auth.user.department_id}`);
       return evaluationCycleAnswer.save();
     });
 

@@ -23,7 +23,7 @@ class EvaluationCycleCommentController {
     return response.status(201).json(evaluationCycleComment);
   }
 
-  async update({ request, response }) {
+  async update({ request, response, auth }) {
     const { comments } = request.only('comments');
     const { developmentPlans } = request.only('developmentPlans');
 
@@ -52,6 +52,7 @@ class EvaluationCycleCommentController {
     });
 
     await Redis.del('dashboard-summary');
+    await Redis.del(`department-employee-list-${auth.user.department_id}`);
 
     return response.json({ status: 'ok' });
   }
