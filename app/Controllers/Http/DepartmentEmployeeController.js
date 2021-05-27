@@ -10,8 +10,6 @@ const Department = use('App/Models/Department');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
-const Redis = use('Redis');
-
 class DepartmentEmployeeController {
   async index({ auth }) {
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
@@ -25,11 +23,6 @@ class DepartmentEmployeeController {
     // esses acima vão avaliar, e serão avaliados
 
     // Ir descendo o nível até achar um nível que tenha funcionários
-
-    const cachedDepartmentEmployeeList = await Redis.get(`department-employee-list-${auth.user.department_id}`);
-    if (cachedDepartmentEmployeeList) {
-      return JSON.parse(cachedDepartmentEmployeeList);
-    }
 
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
@@ -173,7 +166,7 @@ class DepartmentEmployeeController {
         break;
     }
 
-    const departmentEmployeeList = employeeList.map((employee) => {
+    return employeeList.map((employee) => {
       const {
         cpf,
         admitted_at,
@@ -192,10 +185,6 @@ class DepartmentEmployeeController {
       } = employee;
       return data;
     });
-
-    await Redis.set(`department-employee-list-${auth.user.department_id}`, JSON.stringify(departmentEmployeeList));
-
-    return departmentEmployeeList;
   }
 }
 
