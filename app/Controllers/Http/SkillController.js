@@ -22,7 +22,7 @@ class SkillController {
         })
         .with('companies')
         .orderBy('name')
-        .fecth();
+        .fetch();
 
       await Redis.set('skills', JSON.stringify(allSkills));
       return allSkills;
