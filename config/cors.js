@@ -16,7 +16,6 @@ module.exports = {
   |
   */
   origin: (currentOrigin) => {
-    console.log(currentOrigin);
     if (Env.get('NODE_ENV​') === 'production') {
       return currentOrigin === 'avaliacaodesempenho.unimedvarginha.coop.br';
     }
