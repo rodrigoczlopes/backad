@@ -7,7 +7,7 @@ const Company = use('App/Models/Company');
 /**
  * Resourceful controller for interacting with companies
  */
-class UserGroupController {
+class CompanyController {
   async index() {
     return Company.query()
       .with('createdBy', (builder) => {
@@ -45,4 +45,4 @@ class UserGroupController {
   }
 }
 
-module.exports = UserGroupController;
+module.exports = CompanyController;

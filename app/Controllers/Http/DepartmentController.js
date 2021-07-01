@@ -30,23 +30,20 @@ class DepartmentController {
     }
 
     if (searchSentence) {
-      const departmentsSearched = await Department.query()
+      return Department.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return departmentsSearched;
     }
 
-    const departments = await Department.query()
+    return Department.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('level')
       .paginate(page, itemsPerPage);
-
-    return departments;
   }
 
   async store({ request, response, auth }) {
