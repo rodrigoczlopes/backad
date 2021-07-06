@@ -42,7 +42,13 @@ class ResetPasswordController {
 
         const promises = withoutAdministratos.map(async (user) => {
           const userToResetPassword = await User.find(user.id);
-          const password = generate({ length: 10, uppercase: false, symbols: false, numbers: true, exclude: ['l', 'o'] });
+          const password = generate({
+            length: 10,
+            uppercase: false,
+            symbols: false,
+            numbers: true,
+            exclude: ['l', 'o', '0', 'k', 'K'],
+          });
           userToResetPassword.password = password;
           userToResetPassword.password_updated_at = new Date();
           userToResetPassword.save();

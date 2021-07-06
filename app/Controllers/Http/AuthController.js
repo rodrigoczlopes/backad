@@ -10,7 +10,10 @@ class AuthController {
 
     if (data.employees?.length > 0) {
       data.employees?.forEach((userToAdd) => {
-        User.create(userToAdd);
+        const userAlreadyExists = User.findBy('register', userToAdd.register);
+        if (!userAlreadyExists) {
+          User.create(userToAdd);
+        }
       });
 
       return response.status(201).json({ message: 'ok' });
