@@ -172,9 +172,8 @@ Route.group(() => {
   Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show').middleware([
     'is:(administrator || evaluator)',
   ]);
-  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show').middleware([
-    'is:(administrator || evaluator)',
-  ]);
+  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show');
+  // .middleware(['is:(administrator || evaluator)']);
 
   Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();
 
