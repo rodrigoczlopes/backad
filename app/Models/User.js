@@ -177,6 +177,10 @@ class User extends Model {
     return this.hasMany('App/Models/EvaluationCycleComment', 'id', 'employee_id');
   }
 
+  evaluationCycleDevelopmentPlans() {
+    return this.hasMany('App/Models/EvaluationCycleDevelopmentPlan', 'id', 'employee_id');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

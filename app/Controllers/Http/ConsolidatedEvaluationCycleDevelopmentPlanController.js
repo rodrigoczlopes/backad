@@ -10,20 +10,8 @@ const Department = use('App/Models/Department');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
-class DepartmentEmployeeController {
+class ConsolidatedEvaluationCycleDevelopmentPlanController {
   async index({ auth }) {
-    // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
-    // Verificar as áreas que estão imediatamente sob essa hierarquia ou seja tenha o tamanho do array do split com ponto + 1
-    // Pegar os usuários desses setores que fazem parte dessa hierarquia
-    // exemplo: 01 -> 01.01 (todos gerentes)
-    // exemplo: 01.01 -> 01.01.01 (todos coordenadores)
-    // exemplo: 01.01.01 -> 01.01.01.01(todos lideres)
-    // exemplo: 01.01.01.01 -> 01.01.01.01.01 (todos lideres tecnicos)
-    // exemplo: 01.01.01.01.01 -> último nível só será avaliado
-    // esses acima vão avaliar, e serão avaliados
-
-    // Ir descendo o nível até achar um nível que tenha funcionários
-
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
     const hierarchyjson = hierarchy.toJSON();
@@ -69,44 +57,11 @@ class DepartmentEmployeeController {
           .with('departments', (builder) => {
             builder.select(['id', 'active', 'leader_id', 'level', 'name']);
           })
-          .with('positions', (builder) => {
-            builder.select(['id', 'path_id', 'description']);
-            builder.with('paths', (builderChildren) => {
-              builderChildren.select(['id', 'description']);
-            });
-          })
           .with('hierarchies', (builder) => {
             builder.select(['id', 'description', 'level', 'active']);
           })
-          .with('evaluationCycleAnswers', (builder) => {
-            builder.select([
-              'behavior_id',
-              'employee_id',
-              'evaluation_cycle_id',
-              'form_id',
-              'id',
-              'leader_answer',
-              'leader_finished',
-              'leader_id',
-            ]);
-          })
           .with('evaluationCycleDevelopmentPlans', (builder) => {
             builder.with('developmentPlans');
-          })
-          .withCount('evaluationCycleAnswers as employeeEvaluationAnswers', (builder) => {
-            builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
-          })
-          .withCount('evaluationCycleJustificatives as employeeEvaluationJustificatives', (builder) => {
-            builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
-          })
-          .withCount('evaluationCycleAnswers as leaderAnswers', (builder) => {
-            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
-          })
-          .withCount('evaluationCycleJustificatives as leaderJustificatives', (builder) => {
-            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
-          })
-          .withCount('evaluationCycleComments as leaderFeedback', (builder) => {
-            builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // orWhere('leader_finished', 0).orWhere('leader_finished', null);
           })
           .orderBy('name', 'asc')
           .fetch();
@@ -191,4 +146,4 @@ class DepartmentEmployeeController {
   }
 }
 
-module.exports = DepartmentEmployeeController;
+module.exports = ConsolidatedEvaluationCycleDevelopmentPlanController;

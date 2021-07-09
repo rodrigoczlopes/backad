@@ -36,6 +36,7 @@ Route.group(() => {
         [['classifications.update'], ['Classification']],
       ])
     );
+
   Route.resource('comments', 'CommentController')
     .apiOnly()
     .validator(
@@ -52,6 +53,8 @@ Route.group(() => {
         [['companies.update'], ['Company']],
       ])
     );
+
+  Route.resource('consolidatedevaluationcycledevelopmentplans', 'ConsolidatedEvaluationCycleDevelopmentPlanController').apiOnly();
 
   Route.get('dashboardsummaries', 'DashboardSummaryController.index').middleware(['is:(administrator)']);
 

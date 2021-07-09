@@ -8,12 +8,11 @@ const EvaluationCycleDevelopmentPlan = use('App/Models/EvaluationCycleDevelopmen
 class EvaluationCycleDevelopmentPlanController {
   async index({ request }) {
     const { evaluation_cycle_id, employee_id } = request.all();
-    const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.query()
+    return EvaluationCycleDevelopmentPlan.query()
       .where({ employee_id })
       .where({ evaluation_cycle_id })
       .with('developmentPlans')
       .fetch();
-    return evaluationCycleDevelopmentPlan;
   }
 
   async store({ request, response }) {
