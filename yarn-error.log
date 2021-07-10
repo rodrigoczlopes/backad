@@ -1,0 +1,93 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js install
+
+PATH: 
+  C:\Program Files (x86)\Siemens\Automation\SCADA-RT_V11\WinCC\Bin;C:\Program Files\Common Files\Siemens\Automation\Simatic OAM\bin;C:\Program Files (x86)\Common Files\Siemens\Bin;C:\Program Files (x86)\Common Files\Siemens\CommonArchiving;C:\Program Files (x86)\Common Files\Siemens\ACE\Bin;C:\ProgramData\Boxstarter;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\ProgramData\chocolatey\bin;C:\Users\Mateus Cabral\AppData\Roaming\npm;C:\Users\Mateus Cabral\AppData\Local\Yarn\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\120\DTS\Binn\;C:\Program Files (x86)\Siemens\Automation\SCADA-RT_V11\WinCC\Interfaces;C:\Program Files (x86)\Common Files\Siemens\;C:\Program Files (x86)\Common Files\Siemens\Interfaces;C:\Program Files (x86)\Common Files\Siemens\ACE\Interfaces;C:\Program Files (x86)\Yarn\bin\;C:\ProgramData\nvm;C:\Program Files\nodejs;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\mateus.silva\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\mateus.silva\AppData\Local\Programs\Python\Python39\;C:\Users\Mateus Cabral\AppData\Local\Microsoft\WindowsApps;C:\Program Files\heroku\bin;C:\Users\mateus.silva\AppData\Local\Microsoft\WindowsApps;C:\Users\mateus.silva\AppData\Local\Programs\Microsoft VS Code Insiders\bin;C:\Users\mateus.silva\.dotnet\tools;C:\Users\mateus.silva\AppData\Local\Programs\Microsoft VS Code Insiders\;C:\Program Files (x86)\GitHub CLI\
+
+Yarn version: 
+  1.22.0
+
+Node version: 
+  16.4.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.nlark.com/fast-safe-stringify/download/fast-safe-stringify-2.0.8.tgz?cache=0&sync_timestamp=1625837064844&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffast-safe-stringify%2Fdownload%2Ffast-safe-stringify-2.0.8.tgz: Request failed "503 Service Unavailable"
+      at ResponseError.ExtendableBuiltin (C:\Program Files (x86)\Yarn\lib\cli.js:696:66)
+      at new ResponseError (C:\Program Files (x86)\Yarn\lib\cli.js:802:124)
+      at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:66154:16)
+      at Request.emit (node:events:394:28)
+      at Request.module.exports.Request.onRequestResponse (C:\Program Files (x86)\Yarn\lib\cli.js:141604:10)
+      at ClientRequest.emit (node:events:394:28)
+      at HTTPParser.parserOnIncomingClient (node:_http_client:621:27)
+      at HTTPParser.parserOnHeadersComplete (node:_http_common:127:17)
+      at TLSSocket.socketOnData (node:_http_client:487:22)
+      at TLSSocket.emit (node:events:394:28)
+
+npm manifest: 
+  {
+    "name": "backend",
+    "version": "4.1.0",
+    "adonis-version": "4.1.0",
+    "description": "Adonisjs boilerplate for API server with pre-configured JWT",
+    "main": "index.js",
+    "scripts": {
+      "dev": "nodemon server.js",
+      "start": "ENV_SILENT=true node server.js",
+      "test": "node ace test"
+    },
+    "keywords": [
+      "adonisjs",
+      "adonis-app"
+    ],
+    "author": "Unimed Varginha Cooperativa de Trabalho Médico",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+      "@adonisjs/ace": "^5.0.8",
+      "@adonisjs/antl": "^2.0.7",
+      "@adonisjs/auth": "^3.1.0",
+      "@adonisjs/bodyparser": "2.0.9",
+      "@adonisjs/cors": "^1.0.7",
+      "@adonisjs/fold": "^4.0.9",
+      "@adonisjs/framework": "^5.0.13",
+      "@adonisjs/ignitor": "^2.0.8",
+      "@adonisjs/lucid": "^6.1.3",
+      "@adonisjs/mail": "^3.0.10",
+      "@adonisjs/redis": "2.0.7",
+      "@adonisjs/validator": "^5.0.6",
+      "@adonisjs/vow": "^1.0.17",
+      "@adonisjs/websocket": "^1.0.12",
+      "adonis-kue": "^5.0.1",
+      "date-fns": "^2.13.0",
+      "generate-password": "^1.5.1",
+      "mssql": "6.2.0",
+      "mysql": "^2.18.1",
+      "openssl": "^1.1.0",
+      "pem": "^1.14.4",
+      "pg": "^8.1.0",
+      "uuid": "^7.0.2",
+      "youch": "^2.1.1"
+    },
+    "devDependencies": {
+      "eslint": "^7.9.0",
+      "eslint-config-airbnb-base": "^14.1.0",
+      "eslint-config-prettier": "^6.11.0",
+      "eslint-plugin-import": "^2.20.2",
+      "eslint-plugin-prettier": "^3.1.4",
+      "nodemon": "^2.0.4",
+      "prettier": "^2.1.2",
+      "sqlite3": "^4.2.0"
+    },
+    "autoload": {
+      "App": "./app"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
