@@ -195,6 +195,7 @@ Route.group(() => {
   Route.delete('clearemployeeanswers/:id', 'ClearUserQuestionsController.destroy').middleware(['is:(administrator)']);
 
   Route.get('conciliationlist', 'ConciliationListController.index').middleware(['is:(administrator)']);
+  Route.post('results', 'ResultsController.index').middleware(['is:(evaluator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
