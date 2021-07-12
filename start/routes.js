@@ -11,6 +11,7 @@ Route.group(() => {
   Route.post('/register', 'AuthController.register').middleware(['is:(administrator)']).validator('RegisterUser');
   Route.put('/resetall', 'ResetPasswordController.update').middleware(['is:(administrator)']);
   Route.put('/resetone', 'ResetPasswordController.update').middleware(['is:(administrator)']);
+  Route.post('/confirmemployeefeedback', 'ConfirmEmployeeFeedbackController.show').middleware(['is:(evaluator)']);
 
   Route.resource('behaviors', 'BehaviorController')
     .apiOnly()
