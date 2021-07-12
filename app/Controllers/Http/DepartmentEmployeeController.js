@@ -78,6 +78,9 @@ class DepartmentEmployeeController {
           .with('hierarchies', (builder) => {
             builder.select(['id', 'description', 'level', 'active']);
           })
+          .with('evaluationCycleComments', (builder) => {
+            builder.select(['employee_id', 'evaluation_cycle_id', 'id', 'employee_receipt_confirmation_date']);
+          })
           .with('evaluationCycleAnswers', (builder) => {
             builder.select([
               'behavior_id',
