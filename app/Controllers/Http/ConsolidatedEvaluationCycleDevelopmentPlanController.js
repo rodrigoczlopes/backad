@@ -50,7 +50,7 @@ class ConsolidatedEvaluationCycleDevelopmentPlanController {
     const departmentEmployees = await Promise.all(
       childrenDepartments.map(async (departmentChildren) => {
         const employees = await User.query()
-          // .select(['active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
+          .select(['id', 'active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
           .where({ department_id: departmentChildren.id })
           .where('id', '<>', auth.user.id)
           .where({ active: true })

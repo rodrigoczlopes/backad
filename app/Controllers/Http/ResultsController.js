@@ -16,11 +16,14 @@ class ResultsController {
 
     if (type === 'all') {
       return User.query()
+        .select(['id', 'name', 'department_id'])
         .where({ active: true })
         .with('departments', (builder) => {
           builder.select(['id', 'name']);
         })
-        .with('evaluationCycleAnswers')
+        .with('evaluationCycleAnswers', (builder) => {
+          builder.select(['id', 'user_answer', 'leader_answer', 'employee_id']);
+        })
         .orderBy('name', 'asc')
         .fetch();
     }
@@ -63,7 +66,7 @@ class ResultsController {
     const departmentEmployees = await Promise.all(
       childrenDepartments.map(async (departmentChildren) => {
         const employees = await User.query()
-          // .select(['active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
+          .select(['id', 'active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
           .where({ department_id: departmentChildren.id })
           .where('id', '<>', auth.user.id)
           .where({ active: true })
@@ -73,7 +76,9 @@ class ResultsController {
           .with('hierarchies', (builder) => {
             builder.select(['id', 'description', 'level', 'active']);
           })
-          .with('evaluationCycleAnswers')
+          .with('evaluationCycleAnswers', (builder) => {
+            builder.select(['id', 'user_answer', 'leader_answer', 'employee_id']);
+          })
           .orderBy('name', 'asc')
           .fetch();
         return employees.toJSON();
