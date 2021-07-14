@@ -25,6 +25,9 @@ class UserFinishedController {
   async update({ params, response }) {
     try {
       const { employee_id, evaluation_cycle_id } = params;
+
+      if (!employee_id || !evaluation_cycle_id) throw Error('Dados necessários não foram informados');
+
       const evaluations = await EvaluationCycleAnswer.query().where({ employee_id, evaluation_cycle_id }).fetch();
 
       evaluations.toJSON().forEach(async (evaluation) => {
