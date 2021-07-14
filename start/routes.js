@@ -197,6 +197,7 @@ Route.group(() => {
   Route.get('conciliationlist', 'ConciliationListController.index').middleware(['is:(administrator)']);
   Route.post('results', 'ResultsController.index').middleware(['is:(evaluator)']);
   Route.get('mysituation/:employee_id/:evaluation_cycle_id', 'UserFinishedController.show');
+  Route.put('openautoevaluation/:employee_id/:evaluation_cycle_id', 'UserFinishedController.update');
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
