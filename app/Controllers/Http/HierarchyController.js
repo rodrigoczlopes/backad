@@ -27,23 +27,20 @@ class HierarchyController {
     }
 
     if (searchSentence) {
-      const ratingScales = await Hierarchy.query()
+      return Hierarchy.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return ratingScales;
     }
 
-    const hierarchies = await Hierarchy.query()
+    return Hierarchy.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('level')
       .paginate(page, itemsPerPage);
-
-    return hierarchies;
   }
 
   async store({ request, response, auth }) {

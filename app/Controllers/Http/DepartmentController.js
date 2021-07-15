@@ -21,7 +21,9 @@ class DepartmentController {
         .with('createdBy', (builder) => {
           builder.select(['id', 'name', 'email', 'avatar']);
         })
-        .with('companies')
+        .with('companies', (builder) => {
+          builder.select(['id', 'name']);
+        })
         .orderBy('level')
         .fetch();
 

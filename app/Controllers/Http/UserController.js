@@ -16,6 +16,7 @@ class UserController {
 
     if (searchSentence) {
       return User.query()
+        .select(['id', 'registry', 'email', 'active', 'name', 'department_id', 'position_id'])
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('departments', (builder) => {
           builder.select(['id', 'name', 'level']);
@@ -28,6 +29,7 @@ class UserController {
     }
 
     return User.query()
+      .select(['id', 'registry', 'email', 'active', 'name', 'department_id', 'position_id'])
       .with('departments', (builder) => {
         builder.select(['id', 'name', 'level']);
       })
