@@ -144,6 +144,18 @@ class ConsolidatedEvaluationCycleDevelopmentPlanController {
       return data;
     });
   }
+
+  async show({ auth }) {
+    return User.query()
+      .select(['id', 'active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
+      .where('id', auth.user.id)
+      .where({ active: true })
+      .with('evaluationCycleDevelopmentPlans', (builder) => {
+        builder.with('developmentPlans');
+      })
+      .orderBy('name', 'asc')
+      .fetch();
+  }
 }
 
 module.exports = ConsolidatedEvaluationCycleDevelopmentPlanController;
