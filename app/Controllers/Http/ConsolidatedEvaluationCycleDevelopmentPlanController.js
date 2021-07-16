@@ -154,7 +154,7 @@ class ConsolidatedEvaluationCycleDevelopmentPlanController {
         builder.with('developmentPlans');
       })
       .orderBy('name', 'asc')
-      .fetch();
+      .first();
   }
 }
 
