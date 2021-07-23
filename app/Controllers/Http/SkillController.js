@@ -10,13 +10,14 @@ class SkillController {
   async index({ request }) {
     const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
+
     if (!page) {
       const cachedSkills = await Redis.get('skills');
       if (cachedSkills) {
         return JSON.parse(cachedSkills);
       }
 
-      const allSkills = await Skill.query()
+      const skills = await Skill.query()
         .with('createdBy', (builder) => {
           builder.select(['id', 'name', 'email', 'avatar']);
         })
@@ -24,8 +25,8 @@ class SkillController {
         .orderBy('name')
         .fetch();
 
-      await Redis.set('skills', JSON.stringify(allSkills));
-      return allSkills;
+      await Redis.set('skills', JSON.stringify(skills));
+      return skills;
     }
 
     if (searchSentence) {

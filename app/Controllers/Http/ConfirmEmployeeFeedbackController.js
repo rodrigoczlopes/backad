@@ -7,6 +7,8 @@ const User = use('App/Models/User');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const EvaluationCycleComment = use('App/Models/EvaluationCycleComment');
 
+const Redis = use('Redis');
+
 class ConfirmEmployeeFeedbackController {
   async show({ request, response, auth }) {
     const { employee_id, password } = request.all();
@@ -25,6 +27,8 @@ class ConfirmEmployeeFeedbackController {
         feedbackToEdit.merge({ employee_receipt_confirmation_date: new Date() });
         feedbackToEdit.save();
       });
+
+      await Redis.del('dashboard-summary');
 
       return response.json({ status: true });
     } catch (err) {

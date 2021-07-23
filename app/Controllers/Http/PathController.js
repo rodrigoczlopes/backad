@@ -4,33 +4,46 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Path = use('App/Models/Path');
 
+const Redis = use('Redis');
+
 class PathController {
   async index({ request }) {
-    let { page, itemsPerPage } = request.get();
+    const { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy } = request.get();
     if (!page) {
-      page = 1;
-      itemsPerPage = 20000;
+      const cachedPaths = await Redis.get('paths');
+
+      if (cachedPaths) {
+        return JSON.parse(cachedPaths);
+      }
+
+      const paths = await Path.query()
+        .with('createdBy', (builder) => {
+          builder.select(['id', 'name', 'email', 'avatar']);
+        })
+        .with('companies')
+        .orderBy('description')
+        .fetch();
+
+      await Redis.set('paths', JSON.stringify(paths));
+      return paths;
     }
 
     if (searchSentence) {
-      const pathsList = await Path.query()
+      return Path.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return pathsList;
     }
 
-    const paths = await Path.query()
+    return Path.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('description')
       .paginate(page, itemsPerPage);
-
-    return paths;
   }
 
   async store({ request, response, auth }) {

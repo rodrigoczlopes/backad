@@ -17,7 +17,7 @@ class DepartmentController {
         return JSON.parse(cachedDepartments);
       }
 
-      const allDepartments = await Department.query()
+      const departments = await Department.query()
         .with('createdBy', (builder) => {
           builder.select(['id', 'name', 'email', 'avatar']);
         })
@@ -27,8 +27,8 @@ class DepartmentController {
         .orderBy('level')
         .fetch();
 
-      await Redis.set('departments', JSON.stringify(allDepartments));
-      return allDepartments;
+      await Redis.set('departments', JSON.stringify(departments));
+      return departments;
     }
 
     if (searchSentence) {

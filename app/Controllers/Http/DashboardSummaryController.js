@@ -14,24 +14,28 @@ class DashboardSummary {
     }
 
     const employees = await User.query()
+      .select(['id', 'name', 'username', 'registry', 'active', 'department_id', 'company_id', 'position_id', 'hierarchy_id'])
       .where({ active: true })
       .with('departments', (builder) => {
         builder.select(['active', 'id', 'name', 'level']);
       })
       .withCount('evaluationCycleAnswers as employeeEvaluationAnswers', (builder) => {
-        builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
+        builder.whereRaw('(user_finished = 0 or user_finished is null)');
       })
       .withCount('evaluationCycleJustificatives as employeeEvaluationJustificatives', (builder) => {
-        builder.whereRaw('(user_finished = 0 or user_finished is null)'); // ({ user_finished: false }).orWhere({ user_finished: null });
+        builder.whereRaw('(user_finished = 0 or user_finished is null)');
       })
       .withCount('evaluationCycleAnswers as leaderEvaluationAnswers', (builder) => {
-        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)');
       })
       .withCount('evaluationCycleJustificatives as leaderEvaluationJustificatives', (builder) => {
-        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)');
       })
       .withCount('evaluationCycleComments as leaderEvaluationComments', (builder) => {
-        builder.whereRaw('(leader_finished = 0 or leader_finished is null)'); // ({ leader_finished: false }).orWhere({ leader_finished: null });
+        builder.whereRaw('(leader_finished = 0 or leader_finished is null)');
+      })
+      .withCount('evaluationCycleComments as employeeConfirmFeedback', (builder) => {
+        builder.whereRaw('employee_receipt_confirmation_date is null');
       })
       .orderBy('name', 'asc')
       .fetch();

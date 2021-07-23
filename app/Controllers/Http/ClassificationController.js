@@ -15,22 +15,20 @@ class ClassificationController {
     }
 
     if (searchSentence) {
-      const classifications = await Classification.query()
+      return Classification.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return classifications;
     }
 
-    const classification = await Classification.query()
+    return Classification.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('initial_value')
       .paginate(page, itemsPerPage);
-    return classification;
   }
 
   async store({ request, response, auth }) {
