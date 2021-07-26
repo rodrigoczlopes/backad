@@ -9,10 +9,9 @@ class FormSchema extends Schema {
       table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
       table.string('name', 250).notNullable();
       table.string('observation', 250).notNullable();
-      table.uuid('path_id').references('id').inTable('paths').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('path_id').references('id').inTable('paths');
       table.boolean('active');
       table.uuid('created_by').references('id').inTable('users');
-      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

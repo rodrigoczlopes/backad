@@ -10,7 +10,7 @@ class PathSchema extends Schema {
       table.string('description', 250);
       table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
       table.uuid('created_by').references('id').inTable('users').onDelete('SET NULL');
-      table.uuid('updated_by').references('id').inTable('users').onDelete('SET NULL');
+
       table.timestamps();
     });
   }

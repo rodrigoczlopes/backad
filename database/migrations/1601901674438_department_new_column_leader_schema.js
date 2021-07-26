@@ -4,7 +4,7 @@ const Schema = use('Schema');
 class DepartmentNewColumnLeaderSchema extends Schema {
   up() {
     this.table('departments', (table) => {
-      table.uuid('leader_id').references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('leader_id').references('id').inTable('users');
     });
   }
 

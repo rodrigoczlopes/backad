@@ -12,7 +12,6 @@ class PositionSchema extends Schema {
       table.string('description', 250).notNullable();
       table.integer('position_code').notNullable();
       table.uuid('created_by').references('id').inTable('users').onDelete('SET NULL');
-      table.uuid('updated_by').references('id').inTable('users').onDelete('SET NULL');
       table.timestamps();
     });
   }

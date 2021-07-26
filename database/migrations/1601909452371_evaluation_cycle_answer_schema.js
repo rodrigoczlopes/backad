@@ -7,10 +7,10 @@ class EvaluationCycleAnswerSchema extends Schema {
     this.create('evaluation_cycle_answers', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.uuid('employee_id').references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('leader_id').references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('form_id').references('id').inTable('forms').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('evaluation_cycle_id').references('id').inTable('evaluation_cycles').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('behavior_id').references('id').inTable('behaviors').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('leader_id').references('id').inTable('users');
+      table.uuid('form_id').references('id').inTable('forms');
+      table.uuid('evaluation_cycle_id').references('id').inTable('evaluation_cycles');
+      table.uuid('behavior_id').references('id').inTable('behaviors');
       table.decimal('user_answer');
       table.string('user_justificative');
       table.boolean('user_finished');

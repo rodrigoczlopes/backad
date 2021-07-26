@@ -95,11 +95,16 @@ module.exports = {
   mssql: {
     client: 'mssql',
     connection: {
-      host: Env.get('DB_HOST', ''),
-      port: Env.get('DB_PORT', ''),
+      server: Env.get('DB_HOST', ''),
+      port: Env.get('DB_PORT', 1433),
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'wmdevs_unimed'),
     },
+    options: {
+      trustedConnection: true,
+    },
+    debug: true,
+    parseJSON: true,
   },
 };

@@ -7,7 +7,7 @@ class ContinuousFeedbackSchema extends Schema {
     this.create('continuous_feedbacks', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
-      table.uuid('employee_id').references('id').inTable('users').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('employee_id').references('id').inTable('users');
       table.integer('category');
       table.string('description');
       table.boolean('visible_to_employee');

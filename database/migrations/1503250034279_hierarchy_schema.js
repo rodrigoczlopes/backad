@@ -12,7 +12,6 @@ class HierarchySchema extends Schema {
       table.string('level', 250);
       table.boolean('active').notNullable();
       table.uuid('created_by').references('id').inTable('users').onDelete('SET NULL');
-      table.uuid('updated_by').references('id').inTable('users').onDelete('SET NULL');
       table.timestamps();
     });
   }

@@ -24,7 +24,6 @@ class EvaluationCycleSchema extends Schema {
       table.integer('quantity_inferior');
       table.integer('quantity_superior');
       table.uuid('created_by').references('id').inTable('users');
-      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

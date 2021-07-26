@@ -10,7 +10,6 @@ class RatingScaleSchema extends Schema {
       table.string('name', 250).notNullable();
       table.string('description', 250).notNullable();
       table.uuid('created_by').references('id').inTable('users');
-      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

@@ -4,7 +4,7 @@ const Schema = use('Schema');
 class EvaluationCycleCommentSchema extends Schema {
   up() {
     this.table('evaluation_cycle_comments', (table) => {
-      table.uuid('comment_id').references('id').inTable('comments').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('comment_id').references('id').inTable('comments');
     });
   }
 
