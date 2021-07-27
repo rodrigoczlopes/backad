@@ -102,9 +102,9 @@ module.exports = {
       database: Env.get('DB_DATABASE', 'wmdevs_unimed'),
     },
     options: {
-      trustedConnection: true,
+      enableArithAbort: true,
     },
-    debug: true,
+    debug: false,
     parseJSON: true,
   },
 };
