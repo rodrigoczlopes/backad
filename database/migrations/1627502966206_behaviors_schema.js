@@ -4,13 +4,13 @@ const Schema = use('Schema');
 class BehaviorsSchema extends Schema {
   up() {
     this.table('behaviors', (table) => {
-      table.uuid('updated_by').references('id').inTable('users');
+      table.date('deleted_at');
     });
   }
 
   down() {
     this.table('behaviors', (table) => {
-      table.dropColumn('updated_by');
+      table.dropColumn('deleted_at');
     });
   }
 }

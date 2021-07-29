@@ -80,7 +80,8 @@ class BehaviorController {
 
   async destroy({ params }) {
     const behavior = await Behavior.find(params.id);
-    await behavior.delete();
+    behavior.merge({ deleted_at: new Date() });
+    await behavior.save();
     await Redis.del('behaviors');
   }
 }

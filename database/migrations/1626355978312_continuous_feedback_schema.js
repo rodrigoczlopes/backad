@@ -6,7 +6,7 @@ class ContinuousFeedbackSchema extends Schema {
   up() {
     this.create('continuous_feedbacks', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
-      table.uuid('company_id').references('id').inTable('companies').onDelete('SET NULL').onUpdate('CASCADE');
+      table.uuid('company_id').references('id').inTable('companies');
       table.uuid('employee_id').references('id').inTable('users');
       table.integer('category');
       table.string('description');

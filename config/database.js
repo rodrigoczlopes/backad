@@ -105,6 +105,5 @@ module.exports = {
       enableArithAbort: true,
     },
     debug: false,
-    parseJSON: true,
   },
 };
