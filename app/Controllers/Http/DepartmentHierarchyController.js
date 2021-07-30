@@ -4,6 +4,9 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Department = use('App/Models/Department');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User');
+
 function list_to_tree(list) {
   const map = {};
   let node;
@@ -40,11 +43,20 @@ class DepartmentHierarchyController {
 
     let deparmentJson = departments.toJSON();
 
+    const users = await User.query()
+      .where({ id: auth.user.id })
+      .with('hierarchies', (builder) => builder.select(['id', 'level']))
+      .with('departments', (builder) => builder.select(['id', 'name']))
+      .first();
+
+    const userJson = users.toJSON();
+
     // Adicionado essa regra, para somente a Patrícia ter acesso ao relatório do RH
     // Podemos pensar numa forma de parametrizar isso no sistema, fazendo com seja possível configurar que um
     // determinado setor só vai poder ser visível por um usuário ou role
 
-    if (auth.user.id !== 'F468FC5D-904F-460A-8DF8-055DBBCF4E5B') {
+    // if (auth.user.id !== 'F468FC5D-904F-460A-8DF8-055DBBCF4E5B') {
+    if (userJson.hierarchies?.level !== '01.01.01' || userJson.departments.name.toLowerCase() !== 'recursos humanos') {
       deparmentJson = deparmentJson.filter((depart) => depart.name.toLowerCase() !== 'recursos humanos');
     }
 

@@ -27,11 +27,6 @@ class SummaryEmployeeController {
           childBuilder.with('skills');
         });
       })
-      // .whereHas('evaluationCycleAnswers', (builder) => {
-      //   builder.whereHas('behaviors', (builders) => {
-      //     builders.where('path_id', 'positions.path_id');
-      //   });
-      // })
       .with('evaluationCycleJustificatives', (builder) => {
         builder.where({ evaluation_cycle_id }).with('skills');
       })

@@ -54,8 +54,10 @@ class AuthController {
       active,
       company_id,
       hierarchies: { description: hierarchy },
+      hierarchies: { level: hierarchyLevel },
       positions: { description: position },
       departments: { name: department },
+      departments: { id: departmentId },
       roles,
       permissions,
     } = userData.toJSON();
@@ -71,8 +73,10 @@ class AuthController {
       active,
       company_id,
       hierarchy,
+      hierarchyLevel,
       position,
       department,
+      departmentId,
       roles: roles?.map((rls) => rls.slug),
       permissions: permissions?.map((rls) => rls.slug),
     };
