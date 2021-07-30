@@ -44,7 +44,7 @@ class DepartmentHierarchyController {
     // Podemos pensar numa forma de parametrizar isso no sistema, fazendo com seja possível configurar que um
     // determinado setor só vai poder ser visível por um usuário ou role
 
-    if (auth.user.id !== 'f468fc5d-904f-460a-8df8-055dbbcf4e5b') {
+    if (auth.user.id !== 'F468FC5D-904F-460A-8DF8-055DBBCF4E5B') {
       deparmentJson = deparmentJson.filter((depart) => depart.name.toLowerCase() !== 'recursos humanos');
     }
 
