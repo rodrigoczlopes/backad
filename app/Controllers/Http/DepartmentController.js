@@ -24,6 +24,7 @@ class DepartmentController {
         .with('companies', (builder) => {
           builder.select(['id', 'name']);
         })
+        .withCount('users', (builder) => builder.where({ active: true }))
         .orderBy('level')
         .fetch();
 

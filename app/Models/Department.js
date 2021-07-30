@@ -30,6 +30,10 @@ class Department extends Model {
   companies() {
     return this.belongsTo('App/Models/Company', 'company_id', 'id');
   }
+
+  users() {
+    return this.hasMany('App/models/User', 'id', 'department_id');
+  }
 }
 
 module.exports = Department;

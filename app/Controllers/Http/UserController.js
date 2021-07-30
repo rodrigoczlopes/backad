@@ -5,6 +5,8 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
 
+const Redis = use('Redis');
+
 class UserController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
@@ -56,17 +58,8 @@ class UserController {
     });
     await user.load('permissions');
 
-    const {
-      avatar,
-      avatar_url,
-      created_at,
-      deleted_at,
-      password,
-      password_updated_at,
-      updated_at,
-      user_group_id,
-      ...userData
-    } = await user.toJSON();
+    const { avatar, avatar_url, created_at, deleted_at, password, password_updated_at, updated_at, user_group_id, ...userData } =
+      await user.toJSON();
 
     return userData;
   }
@@ -110,6 +103,8 @@ class UserController {
     }
 
     await user.loadMany(['roles', 'permissions']);
+
+    await Redis.del('departments');
 
     return user;
   }
