@@ -36,58 +36,65 @@ class AuthController {
     return user;
   }
 
-  async authenticate({ request, auth }) {
-    const { username, password } = request.all();
-    const { token } = await auth.attempt(username, password);
+  async authenticate({ response, request, auth }) {
+    try {
+      const { username, password } = request.all();
+      const { token } = await auth.attempt(username, password);
 
-    const userData = await User.findByOrFail('username', username);
+      const userData = await User.findByOrFail('username', username);
 
-    await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions']);
+      await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions']);
 
-    const {
-      id,
-      name,
-      registry,
-      email,
-      avatar,
-      userAccessProfiles,
-      active,
-      company_id,
-      hierarchies: { description: hierarchy },
-      hierarchies: { level: hierarchyLevel },
-      positions: { description: position },
-      departments: { name: department },
-      departments: { id: departmentId },
-      roles,
-      permissions,
-    } = userData.toJSON();
+      const {
+        id,
+        name,
+        registry,
+        email,
+        avatar,
+        userAccessProfiles,
+        active,
+        company_id,
+        hierarchies: { description: hierarchy },
+        hierarchies: { level: hierarchyLevel },
+        positions: { description: position },
+        departments: { name: department },
+        departments: { id: departmentId },
+        roles,
+        permissions,
+      } = userData.toJSON();
 
-    const user = {
-      id,
-      username,
-      name,
-      registry,
-      email,
-      avatar,
-      userAccessProfiles,
-      active,
-      company_id,
-      hierarchy,
-      hierarchyLevel,
-      position,
-      department,
-      departmentId,
-      roles: roles?.map((rls) => rls.slug),
-      permissions: permissions?.map((rls) => rls.slug),
-    };
+      const user = {
+        id,
+        username,
+        name,
+        registry,
+        email,
+        avatar,
+        userAccessProfiles,
+        active,
+        company_id,
+        hierarchy,
+        hierarchyLevel,
+        position,
+        department,
+        departmentId,
+        roles: roles?.map((rls) => rls.slug),
+        permissions: permissions?.map((rls) => rls.slug),
+      };
 
-    // Logout the other sessions if theres's any
-    const userChannel = Ws.getChannel('user:*').topic(`user:${user.id}`);
-    if (userChannel) {
-      userChannel.broadcastToAll('logout');
+      // Logout the other sessions if theres's any
+      const userChannel = Ws.getChannel('user:*').topic(`user:${user.id}`);
+      if (userChannel) {
+        userChannel.broadcastToAll('logout');
+      }
+
+      return { token, user };
+    } catch (err) {
+      if (err.authScheme) {
+        return response.status(401).json({ message: 'PasswordMisMatchException' });
+      }
+      return err;
     }
-
-    return { token, user };
   }
 }
 
