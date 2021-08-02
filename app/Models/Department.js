@@ -28,7 +28,7 @@ class Department extends Model {
   }
 
   users() {
-    return this.hasMany('App/models/User', 'id', 'department_id');
+    return this.hasMany('App/Models/User', 'id', 'department_id');
   }
 }
 
