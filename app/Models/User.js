@@ -181,6 +181,30 @@ class User extends Model {
     return this.hasMany('App/Models/EvaluationCycleDevelopmentPlan', 'id', 'employee_id');
   }
 
+  continuousFeedbacks() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'employee_id');
+  }
+
+  createContinuousFeedback() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'created_by');
+  }
+
+  updateContinuousFeedback() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'updated_by');
+  }
+
+  continuousFeedbackDevelopmentPlan() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'employee_id');
+  }
+
+  createContinuousFeedbackDevelopmentPlan() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'created_by');
+  }
+
+  updateContinuousFeedbackDevelopmentPlan() {
+    return this.hasMany('App/Models/ContinuousFeedback', 'id', 'updated_by');
+  }
+
   tokens() {
     return this.hasMany('App/Models/Token');
   }

@@ -192,12 +192,24 @@ Route.group(() => {
 
   Route.resource('permissions', 'PermissionController').apiOnly();
   Route.resource('roles', 'RoleController').apiOnly();
+
   Route.delete('clearemployeeanswers/:id', 'ClearUserQuestionsController.destroy').middleware(['is:(administrator)']);
 
   Route.get('conciliationlist', 'ConciliationListController.index').middleware(['is:(administrator)']);
+
   Route.post('results', 'ResultsController.index').middleware(['is:(evaluator)']);
+
   Route.get('mysituation/:employee_id/:evaluation_cycle_id', 'UserFinishedController.show');
+
   Route.put('openautoevaluation/:employee_id/:evaluation_cycle_id', 'UserFinishedController.update');
+
+  Route.get('continuousfeedbackareaemployee', 'ContinousFeedbackAreaEmployeesController.index').middleware(['is:(evaluator)']);
+
+  Route.resource('continuousfeedback', 'ContinuousFeedbackController').apiOnly().middleware(['is:(evaluator)']);
+
+  Route.resource('continuousfeedbackdevelopmentplan', 'ContinuousFeedbackDevelopmentPlanController')
+    .apiOnly()
+    .middleware(['is:(evaluator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas

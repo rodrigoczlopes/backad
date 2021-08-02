@@ -1,7 +1,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class ContinousFeedback extends Model {
+class ContinuousFeedback extends Model {
   static boot() {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
@@ -23,6 +23,10 @@ class ContinousFeedback extends Model {
     return this.belongsTo('App/Models/Company');
   }
 
+  continuousFeedbackDevelopmentPlans() {
+    return this.hasMany('App/Models/ContinuousFeedbackDevelopmentPlans');
+  }
+
   createdBy() {
     return this.belongsTo('App/Models/User');
   }
@@ -32,4 +36,4 @@ class ContinousFeedback extends Model {
   }
 }
 
-module.exports = ContinousFeedback;
+module.exports = ContinuousFeedback;

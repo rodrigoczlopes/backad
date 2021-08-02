@@ -78,6 +78,17 @@ class ContinuousFeedbackController {
           .with('hierarchies', (builder) => {
             builder.select(['id', 'description', 'level', 'active']);
           })
+          .with('continuousFeedbacks', (continuousFeecback) => {
+            continuousFeecback
+              .select(['id', 'employee_id', 'category', 'description', 'visible_to_employee', 'insignia'])
+              .with('continuousFeedbackDevelopmentPlans', (continuousFeedbackDevelopmentPlan) => {
+                continuousFeedbackDevelopmentPlan
+                  .select(['id', 'employee_id', 'continuous_feedback_id', 'development_plan_id', 'action', 'status', 'fake_id'])
+                  .with('development_plans', (developmentPlan) =>
+                    developmentPlan.select(['id', 'action', 'description']).where({ active: true })
+                  );
+              });
+          })
           .orderBy('name', 'asc')
           .fetch();
         return employees.toJSON();

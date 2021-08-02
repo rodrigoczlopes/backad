@@ -15,6 +15,7 @@ class SummaryEmployeeController {
     const { evaluation_cycle_id, employee_id } = params;
 
     const employees = await User.query()
+      .select(['id', 'name', 'department_id', 'email', 'hierarchy_id', 'position_id', 'registry', 'username'])
       .where({ id: employee_id })
       .where({ active: true })
       .with('departments')
@@ -22,10 +23,26 @@ class SummaryEmployeeController {
         builder.with('paths');
       })
       .with('hierarchies')
-      .with('evaluationCycleAnswers', (builder) => {
-        builder.where({ evaluation_cycle_id }).with('behaviors', (childBuilder) => {
-          childBuilder.with('skills');
-        });
+      .with('evaluationCycleAnswers', (evaluationCycleAnswer) => {
+        evaluationCycleAnswer
+          .select([
+            'id',
+            'behavior_id',
+            'employee_id',
+            'evaluation_cycle_id',
+            'form_id',
+            'leader_answer',
+            'leader_finished',
+            'leader_id',
+            'user_answer',
+            'user_finished',
+          ])
+          .where({ evaluation_cycle_id })
+          .with('behaviors', (behavior) => {
+            behavior.select(['id', 'description', 'skill_id', 'path_id']).with('skills', (skill) => {
+              skill.select(['id', 'description', 'name']);
+            });
+          });
       })
       .with('evaluationCycleJustificatives', (builder) => {
         builder.where({ evaluation_cycle_id }).with('skills');

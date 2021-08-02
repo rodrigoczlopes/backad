@@ -15,7 +15,7 @@ class EvaluationCycleDevelopmentPlanSchema extends Schema {
       table.date('initial_date');
       table.date('final_date');
       table.boolean('leader_finished');
-      table.string('status');
+      table.integer('status').defaultTo(0);
       table.timestamps();
     });
   }

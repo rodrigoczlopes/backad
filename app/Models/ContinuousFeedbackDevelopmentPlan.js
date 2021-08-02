@@ -1,7 +1,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model');
 
-class ContinousFeedbackDevelopmentPlan extends Model {
+class ContinuousFeedbackDevelopmentPlan extends Model {
   static boot() {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
@@ -40,4 +40,4 @@ class ContinousFeedbackDevelopmentPlan extends Model {
   }
 }
 
-module.exports = ContinousFeedbackDevelopmentPlan;
+module.exports = ContinuousFeedbackDevelopmentPlan;
