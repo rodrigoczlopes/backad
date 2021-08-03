@@ -153,7 +153,6 @@ class ContinuousFeedbackController {
     return employeeList.map((employee) => {
       const {
         cpf,
-        admitted_at,
         avatar,
         avatar_url,
         created_at,
