@@ -35,14 +35,21 @@ class EvaluationCycleDevelopmentPlanController {
   }
 
   async destroy({ params, response }) {
-    let classification = await EvaluationCycleDevelopmentPlan.find(params.id);
-    if (!classification) {
-      classification = await EvaluationCycleDevelopmentPlan.findBy('fake_id', params.id);
-    }
-    if (classification) {
+    try {
+      if (params.id.length <= 20) {
+        const classificationFakeId = await EvaluationCycleDevelopmentPlan.findBy('fake_id', params.id);
+        if (classificationFakeId) {
+          await classificationFakeId.delete();
+          return response.status(204).json({ message: 'Item deletado com sucesso' });
+        }
+        return response.status(204).json({ message: 'Item temporário excluído com sucesso' });
+      }
+
+      const classification = await EvaluationCycleDevelopmentPlan.find(params.id);
       await classification.delete();
-    } else {
-      return response.status(204).json({ message: 'Não foi encontrado item para ser excluido na base' });
+      return response.status(204).json({ message: 'Item deletado com sucesso' });
+    } catch (error) {
+      response.status(500).json({ message: error.message });
     }
   }
 }
