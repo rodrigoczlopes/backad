@@ -34,7 +34,7 @@ class EvaluationCycleCommentController {
     });
 
     developmentPlans?.forEach(async (plan) => {
-      if (plan.id) {
+      if (plan.id && plan.id.length > 20) {
         const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
         evaluationCycleDevelopmentPlan.merge(plan);
         await evaluationCycleDevelopmentPlan.save();
