@@ -54,6 +54,8 @@ class EvaluationCycleCommentController {
       });
 
       await Redis.del('dashboard-summary');
+
+      return response.json({ status: 'ok' });
     } catch (err) {
       console.log(err);
       return response.status(500).json({ message: err.message });
