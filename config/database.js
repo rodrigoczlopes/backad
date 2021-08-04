@@ -100,9 +100,10 @@ module.exports = {
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'wmdevs_unimed'),
-    },
-    options: {
-      enableArithAbort: true,
+      options: {
+        encrypt: false,
+        enableArithAbort: true,
+      },
     },
     debug: false,
   },
