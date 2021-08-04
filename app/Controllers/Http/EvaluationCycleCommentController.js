@@ -24,36 +24,40 @@ class EvaluationCycleCommentController {
   }
 
   async update({ request, response }) {
-    const { comments } = request.only('comments');
-    const { developmentPlans } = request.only('developmentPlans');
+    try {
+      const { comments } = request.only('comments');
+      const { developmentPlans } = request.only('developmentPlans');
 
-    comments.forEach(async (comment) => {
-      const evaluationCycleComment = await EvaluationCycleComment.find(comment.id);
-      evaluationCycleComment.merge(comment);
-      await evaluationCycleComment.save();
-    });
+      comments.forEach(async (comment) => {
+        const evaluationCycleComment = await EvaluationCycleComment.find(comment.id);
+        evaluationCycleComment.merge(comment);
+        await evaluationCycleComment.save();
+      });
 
-    developmentPlans?.forEach(async (plan) => {
-      if (plan.id && plan.id.length > 20) {
-        const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
-        evaluationCycleDevelopmentPlan.merge(plan);
-        await evaluationCycleDevelopmentPlan.save();
-      } else {
-        delete plan.id;
-        const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.findBy('fake_id', plan.fake_id);
+      developmentPlans?.forEach(async (plan) => {
+        if (plan.id && plan.id.length > 20) {
+          const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
 
-        if (evaluationCycleDevelopmentPlan) {
           evaluationCycleDevelopmentPlan.merge(plan);
           await evaluationCycleDevelopmentPlan.save();
         } else {
-          EvaluationCycleDevelopmentPlan.create({ ...plan });
+          delete plan.id;
+          const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.findBy('fake_id', plan.fake_id);
+
+          if (evaluationCycleDevelopmentPlan) {
+            evaluationCycleDevelopmentPlan.merge(plan);
+            await evaluationCycleDevelopmentPlan.save();
+          } else {
+            EvaluationCycleDevelopmentPlan.create({ ...plan });
+          }
         }
-      }
-    });
+      });
 
-    await Redis.del('dashboard-summary');
-
-    return response.json({ status: 'ok' });
+      await Redis.del('dashboard-summary');
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({ message: err.message });
+    }
   }
 }
 
