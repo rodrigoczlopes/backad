@@ -42,7 +42,8 @@ class EvaluationCycleCommentController {
           await evaluationCycleDevelopmentPlan.save();
         } else {
           delete plan.id;
-          const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.findBy('fake_id', plan.fake_id);
+
+          const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.findBy({ fake_id: plan.fake_id || null });
 
           if (evaluationCycleDevelopmentPlan) {
             evaluationCycleDevelopmentPlan.merge(plan);
