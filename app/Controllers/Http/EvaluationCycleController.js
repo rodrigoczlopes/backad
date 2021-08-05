@@ -12,6 +12,7 @@ class EvaluationCycleController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
     const { searchSentence, searchBy, company_id } = request.get();
+
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
@@ -33,6 +34,7 @@ class EvaluationCycleController {
         .paginate(page, itemsPerPage);
     }
 
+    // TODO: Inserir no frontend uma opção para a pessoa selecionar o ciclo que quer visualizar
     return EvaluationCycle.query()
       .where({ company_id })
       .where('initial_evaluation_period', '<=', new Date())

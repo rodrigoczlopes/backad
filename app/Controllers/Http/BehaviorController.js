@@ -18,6 +18,7 @@ class BehaviorController {
       }
 
       const behaviors = await Behavior.query()
+        .where({ deleted_at: null })
         .with('createdBy', (builder) => {
           builder.select(['id', 'name', 'email', 'avatar']);
         })
@@ -31,6 +32,7 @@ class BehaviorController {
     }
 
     return Behavior.query()
+      .where({ deleted_at: null })
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
