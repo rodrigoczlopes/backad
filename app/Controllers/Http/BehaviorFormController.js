@@ -12,7 +12,7 @@ class BehaviorFormController {
       page = 1;
       itemsPerPage = 20000;
     }
-    const behaviorForms = await BehaviorForm.query()
+    return BehaviorForm.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
@@ -20,7 +20,6 @@ class BehaviorFormController {
       .with('forms')
       .with('behaviors')
       .paginate(page, itemsPerPage);
-    return behaviorForms;
   }
 
   async store({ request, response, auth }) {
