@@ -54,7 +54,7 @@ class BehaviorController {
     }
 
     const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
-    const behaviorReturn = this.show({ params: { id: behavior.id } });
+    const behaviorReturn = await this.show({ params: { id: behavior.id } });
     await Redis.del('behaviors');
     return response.json(behaviorReturn);
   }
