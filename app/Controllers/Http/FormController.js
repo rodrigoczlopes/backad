@@ -17,17 +17,16 @@ class FormController {
     }
 
     if (searchSentence) {
-      const formList = await Form.query()
+      return Form.query()
         .where(searchBy, 'like', `%${searchSentence}%`)
         .with('companies')
         .with('paths')
         .with('behaviorForms')
         .orderBy(searchBy)
         .paginate(page, itemsPerPage);
-      return formList;
     }
 
-    const forms = await Form.query()
+    return Form.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
@@ -36,8 +35,6 @@ class FormController {
       .with('behaviorForms')
       .orderBy('name')
       .paginate(page, itemsPerPage);
-
-    return forms;
   }
 
   async store({ request, response, auth }) {
