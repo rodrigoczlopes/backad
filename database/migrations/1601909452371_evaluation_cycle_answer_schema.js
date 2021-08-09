@@ -17,6 +17,8 @@ class EvaluationCycleAnswerSchema extends Schema {
       table.decimal('leader_answer');
       table.string('leader_justificative');
       table.boolean('leader_finished');
+      table.boolean('reconciliation_score');
+      table.uuid('conciliator_id').references('id').inTable('users');
       table.timestamps();
     });
   }

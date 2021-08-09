@@ -12,6 +12,7 @@ class UserGroupSchema extends Schema {
       table.text('description');
       table.string('color').notNullable().defaultTo('#00995d');
       table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

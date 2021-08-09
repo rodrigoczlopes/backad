@@ -61,9 +61,9 @@ test('it should be able to list classifications', async ({ assert, client }) => 
 
   response.assertStatus(200);
 
-  assert.equal(response.body[0].description, classification.description);
-  assert.equal(response.body[0].createdBy.id, user.id);
-  assert.equal(response.body[0].companies.name, 'OrangeDev');
+  assert.equal(response.body.description, classification.description);
+  assert.equal(response.body.createdBy.id, user.id);
+  assert.equal(response.body.companies.name, 'OrangeDev');
 });
 
 test('it should be able to show single classification', async ({ assert, client }) => {

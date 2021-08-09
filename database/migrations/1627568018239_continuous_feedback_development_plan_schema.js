@@ -16,6 +16,8 @@ class ContinuousFeedbackDevelopmentPlanSchema extends Schema {
       table.boolean('leader_finished');
       table.integer('status').defaultTo(0);
       table.string('fake_id');
+      table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

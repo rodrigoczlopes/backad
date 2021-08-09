@@ -11,6 +11,7 @@ class ClassificationSchema extends Schema {
       table.decimal('initial_value');
       table.decimal('final_value');
       table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

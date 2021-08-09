@@ -11,6 +11,8 @@ class EvaluationCycleCommentSchema extends Schema {
       table.uuid('form_id').references('id').inTable('forms');
       table.uuid('evaluation_cycle_id').references('id').inTable('evaluation_cycles');
       table.string('leader_comment');
+      table.uuid('comment_id').references('id').inTable('comments');
+      table.boolean('leader_finished');
       table.timestamps();
     });
   }

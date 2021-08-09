@@ -53,10 +53,14 @@ class BehaviorController {
       return response.status(201).json({ message: 'Bulk data created successfully!' });
     }
 
-    const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
-    const behaviorReturn = await this.show({ params: { id: behavior.id } });
-    await Redis.del('behaviors');
-    return response.json(behaviorReturn);
+    const existBehavior = await Behavior.query().where({ description: data.description });
+    if (!existBehavior) {
+      const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
+      const behaviorReturn = await this.show({ params: { id: behavior.id } });
+      await Redis.del('behaviors');
+      return response.status(201).json(behaviorReturn);
+    }
+    return response.status(400).json({ message: 'Já existe um comportamento com esta descrição' });
   }
 
   async show({ params }) {

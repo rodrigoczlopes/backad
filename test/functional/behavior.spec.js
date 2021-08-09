@@ -13,6 +13,7 @@ test('it should be able to create behavior', async ({ client }) => {
   const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ company_id: company.id, created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ company_id: company.id, created_by: user.id });
+
   const response = await client
     .post('/behaviors')
     .loginVia(user, 'jwt')
@@ -33,6 +34,7 @@ test('it should not be able to register a duplicate behavior', async ({ client }
   const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+
   const behavior = await Factory.model('App/Models/Behavior').make({
     description:
       'Comunicar informações relevantes de forma clara, objetiva e compreensivel, utilizando de forma eficaz as ferraqmentas de comunicação da organização',
@@ -64,6 +66,7 @@ test('it should be able to list behaviors', async ({ assert, client }) => {
   const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+
   const behavior = await Factory.model('App/Models/Behavior').make({
     path_id: path.id,
     skill_id: skill.id,
@@ -87,6 +90,7 @@ test('it should be able to show single behavior', async ({ assert, client }) => 
   const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+
   const behavior = await Factory.model('App/Models/Behavior').make({
     path_id: path.id,
     skill_id: skill.id,
@@ -135,6 +139,7 @@ test('it should be able to delete behavior', async ({ assert, client }) => {
   const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+
   const behavior = await Factory.model('App/Models/Behavior').make({
     path_id: path.id,
     skill_id: skill.id,
@@ -148,5 +153,5 @@ test('it should be able to delete behavior', async ({ assert, client }) => {
 
   response.assertStatus(204);
   const checkBehavior = await Behavior.find(behavior.id);
-  assert.isNull(checkBehavior);
+  assert.isNotNull(checkBehavior.deleted_at);
 });
