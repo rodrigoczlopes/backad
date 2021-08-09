@@ -51,19 +51,11 @@ test('it should not be able to register a duplicate behavior', async ({ client }
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/behaviors')
-    .loginVia(user, 'jwt')
-    .send(behavior.toJSON())
-    .end();
+  const response = await client.post('/behaviors').loginVia(user, 'jwt').send(behavior.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/behaviors')
-    .loginVia(user, 'jwt')
-    .send(behaviorDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/behaviors').loginVia(user, 'jwt').send(behaviorDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -81,10 +73,7 @@ test('it should be able to list behaviors', async ({ assert, client }) => {
 
   await company.behaviors().save(behavior);
 
-  const response = await client
-    .get('/behaviors')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/behaviors').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -107,10 +96,7 @@ test('it should be able to show single behavior', async ({ assert, client }) => 
 
   await company.behaviors().save(behavior);
 
-  const response = await client
-    .get(`/behaviors/${behavior.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/behaviors/${behavior.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -158,10 +144,7 @@ test('it should be able to delete behavior', async ({ assert, client }) => {
 
   await company.behaviors().save(behavior);
 
-  const response = await client
-    .delete(`/behaviors/${behavior.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/behaviors/${behavior.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkBehavior = await Behavior.find(behavior.id);

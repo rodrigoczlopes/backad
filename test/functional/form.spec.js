@@ -44,19 +44,11 @@ test('it cannot be able to register a duplicate form', async ({ client }) => {
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/forms')
-    .loginVia(user, 'jwt')
-    .send(form.toJSON())
-    .end();
+  const response = await client.post('/forms').loginVia(user, 'jwt').send(form.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/forms')
-    .loginVia(user, 'jwt')
-    .send(formDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/forms').loginVia(user, 'jwt').send(formDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -68,10 +60,7 @@ test('it should be able to list forms', async ({ assert, client }) => {
 
   await company.forms().save(form);
 
-  const response = await client
-    .get('/forms')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/forms').loginVia(user, 'jwt').end();
   response.assertStatus(200);
 
   assert.equal(response.body[0].name, form.name);
@@ -87,10 +76,7 @@ test('it should be able to show single form', async ({ assert, client }) => {
 
   await company.forms().save(form);
 
-  const response = await client
-    .get(`/forms/${form.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/forms/${form.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -152,10 +138,7 @@ test('it should be able to delete form', async ({ assert, client }) => {
 
   await company.forms().save(form);
 
-  const response = await client
-    .delete(`/forms/${form.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/forms/${form.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkForm = await Form.find(form.id);

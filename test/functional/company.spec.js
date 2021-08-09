@@ -40,19 +40,11 @@ test('it cannot be able to register a duplicate company', async ({ client }) => 
     updated_by: user.id,
   });
 
-  const response = await client
-    .post('/companies')
-    .loginVia(user, 'jwt')
-    .send(company.toJSON())
-    .end();
+  const response = await client.post('/companies').loginVia(user, 'jwt').send(company.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/companies')
-    .loginVia(user, 'jwt')
-    .send(companyDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/companies').loginVia(user, 'jwt').send(companyDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -62,10 +54,7 @@ test('it should be able to list companies', async ({ assert, client }) => {
 
   await user.createCompany().save(company);
 
-  const response = await client
-    .get('/companies')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/companies').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -79,10 +68,7 @@ test('it should be able to show single company', async ({ assert, client }) => {
 
   await user.createCompany().save(company);
 
-  const response = await client
-    .get(`/companies/${company.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/companies/${company.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -113,10 +99,7 @@ test('it should be able to delete company', async ({ assert, client }) => {
 
   await user.createCompany().save(company);
 
-  const response = await client
-    .delete(`/companies/${company.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/companies/${company.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkCompany = await Company.find(company.id);

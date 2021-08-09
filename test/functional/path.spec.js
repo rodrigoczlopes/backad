@@ -39,19 +39,11 @@ test('it cannot be able to register a duplicate path', async ({ client }) => {
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/paths')
-    .loginVia(user, 'jwt')
-    .send(path.toJSON())
-    .end();
+  const response = await client.post('/paths').loginVia(user, 'jwt').send(path.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/paths')
-    .loginVia(user, 'jwt')
-    .send(pathDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/paths').loginVia(user, 'jwt').send(pathDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -62,10 +54,7 @@ test('it should be able to list paths', async ({ assert, client }) => {
 
   await company.paths().save(path);
 
-  const response = await client
-    .get('/paths')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/paths').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -81,10 +70,7 @@ test('it should be able to show single path', async ({ assert, client }) => {
 
   await company.paths().save(path);
 
-  const response = await client
-    .get(`/paths/${path.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/paths/${path.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -137,10 +123,7 @@ test('it should be able to delete path', async ({ assert, client }) => {
 
   await company.paths().save(path);
 
-  const response = await client
-    .delete(`/paths/${path.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/paths/${path.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkPath = await Path.find(path.id);

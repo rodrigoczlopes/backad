@@ -44,19 +44,11 @@ test('it should not be able to register a duplicate department', async ({ client
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/departments')
-    .loginVia(user, 'jwt')
-    .send(department.toJSON())
-    .end();
+  const response = await client.post('/departments').loginVia(user, 'jwt').send(department.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/departments')
-    .loginVia(user, 'jwt')
-    .send(departmentDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/departments').loginVia(user, 'jwt').send(departmentDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -67,10 +59,7 @@ test('it should be able to list departments', async ({ assert, client }) => {
 
   await company.departments().save(department);
 
-  const response = await client
-    .get('/departments')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/departments').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -86,10 +75,7 @@ test('it should be able to show single department', async ({ assert, client }) =
 
   await company.departments().save(department);
 
-  const response = await client
-    .get(`/departments/${department.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/departments/${department.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -123,10 +109,7 @@ test('it should be able to delete department', async ({ assert, client }) => {
 
   await company.departments().save(department);
 
-  const response = await client
-    .delete(`/departments/${department.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/departments/${department.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkDepartment = await Department.find(department.id);

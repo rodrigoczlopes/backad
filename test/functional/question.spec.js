@@ -38,19 +38,11 @@ test('it should not be able to register a duplicate question', async ({ client }
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/questions')
-    .loginVia(user, 'jwt')
-    .send(question.toJSON())
-    .end();
+  const response = await client.post('/questions').loginVia(user, 'jwt').send(question.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/questions')
-    .loginVia(user, 'jwt')
-    .send(questionDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/questions').loginVia(user, 'jwt').send(questionDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -61,10 +53,7 @@ test('it should be able to list questions', async ({ assert, client }) => {
 
   await company.questions().save(question);
 
-  const response = await client
-    .get('/questions')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/questions').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -80,10 +69,7 @@ test('it should be able to show single question', async ({ assert, client }) => 
 
   await company.questions().save(question);
 
-  const response = await client
-    .get(`/questions/${question.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/questions/${question.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -117,10 +103,7 @@ test('it should be able to delete question', async ({ assert, client }) => {
 
   await company.questions().save(question);
 
-  const response = await client
-    .delete(`/questions/${question.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/questions/${question.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkQuestion = await Question.find(question.id);

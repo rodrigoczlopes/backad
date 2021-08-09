@@ -38,11 +38,7 @@ test('it should not be able to register a duplicate classification', async ({ cl
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/classifications')
-    .loginVia(user, 'jwt')
-    .send(classification.toJSON())
-    .end();
+  const response = await client.post('/classifications').loginVia(user, 'jwt').send(classification.toJSON()).end();
 
   response.assertStatus(201);
 
@@ -61,10 +57,7 @@ test('it should be able to list classifications', async ({ assert, client }) => 
 
   await company.classifications().save(classification);
 
-  const response = await client
-    .get('/classifications')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/classifications').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -80,10 +73,7 @@ test('it should be able to show single classification', async ({ assert, client 
 
   await company.classifications().save(classification);
 
-  const response = await client
-    .get(`/classifications/${classification.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/classifications/${classification.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -117,10 +107,7 @@ test('it should be able to delete classification', async ({ assert, client }) =>
 
   await company.classifications().save(classification);
 
-  const response = await client
-    .delete(`/classifications/${classification.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/classifications/${classification.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkClassification = await Classification.find(classification.id);

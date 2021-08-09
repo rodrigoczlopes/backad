@@ -27,10 +27,7 @@ test('it should be able to list notifications', async ({ assert, client }) => {
 
   await user.notifications().save(notification);
 
-  const response = await client
-    .get('/notifications')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/notifications').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
   assert.equal(response.body[0].content, notification.content);
@@ -43,10 +40,7 @@ test('it should be able to show single notification', async ({ assert, client })
 
   await user.notifications().save(notification);
 
-  const response = await client
-    .get(`/notifications/${notification.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/notifications/${notification.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -77,10 +71,7 @@ test('it should be able to delete a notification', async ({ assert, client }) =>
 
   await user.notifications().save(notification);
 
-  const response = await client
-    .delete(`/notifications/${notification.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/notifications/${notification.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkNotification = await Notification.find(notification.id);

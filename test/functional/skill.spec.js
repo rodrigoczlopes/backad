@@ -44,19 +44,11 @@ test('it should not be able to register a duplicate skill', async ({ client }) =
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/skills')
-    .loginVia(user, 'jwt')
-    .send(skill.toJSON())
-    .end();
+  const response = await client.post('/skills').loginVia(user, 'jwt').send(skill.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/skills')
-    .loginVia(user, 'jwt')
-    .send(skillDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/skills').loginVia(user, 'jwt').send(skillDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -67,10 +59,7 @@ test('it should be able to list skills', async ({ assert, client }) => {
 
   await company.skills().save(skill);
 
-  const response = await client
-    .get('/skills')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/skills').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -86,10 +75,7 @@ test('it should be able to show single skill', async ({ assert, client }) => {
 
   await company.skills().save(skill);
 
-  const response = await client
-    .get(`/skills/${skill.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/skills/${skill.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -123,10 +109,7 @@ test('it should be able to delete skill', async ({ assert, client }) => {
 
   await company.skills().save(skill);
 
-  const response = await client
-    .delete(`/skills/${skill.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/skills/${skill.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkSkill = await Skill.find(skill.id);

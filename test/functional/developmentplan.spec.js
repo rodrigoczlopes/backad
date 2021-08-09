@@ -44,11 +44,7 @@ test('it should not be able to register a duplicate development plan', async ({ 
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/developmentplans')
-    .loginVia(user, 'jwt')
-    .send(developmentPlan.toJSON())
-    .end();
+  const response = await client.post('/developmentplans').loginVia(user, 'jwt').send(developmentPlan.toJSON()).end();
 
   response.assertStatus(201);
 
@@ -67,10 +63,7 @@ test('it should be able to list development plans', async ({ assert, client }) =
 
   await company.developmentPlans().save(developmentPlan);
 
-  const response = await client
-    .get('/developmentplans')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/developmentplans').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -86,10 +79,7 @@ test('it should be able to show single development plan', async ({ assert, clien
 
   await company.developmentPlans().save(developmentPlan);
 
-  const response = await client
-    .get(`/developmentplans/${developmentPlan.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/developmentplans/${developmentPlan.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -123,10 +113,7 @@ test('it should be able to delete developmenPlan', async ({ assert, client }) =>
 
   await company.developmentPlans().save(developmentPlan);
 
-  const response = await client
-    .delete(`/developmentplans/${developmentPlan.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/developmentplans/${developmentPlan.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkDevelopmentPlan = await DevelopmentPlan.find(developmentPlan.id);
