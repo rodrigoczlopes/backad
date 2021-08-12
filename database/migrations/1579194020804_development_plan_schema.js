@@ -11,6 +11,7 @@ class DevelopmentPlanSchema extends Schema {
       table.string('description', 1000).notNullable();
       table.boolean('active');
       table.uuid('created_by').references('id').inTable('users');
+      table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
     });
   }

@@ -40,19 +40,11 @@ test('it cannot be able to register a duplicate user group', async ({ client }) 
     updated_by: user.id,
   });
 
-  const response = await client
-    .post('/usergroups')
-    .loginVia(user, 'jwt')
-    .send(userGroup.toJSON())
-    .end();
+  const response = await client.post('/usergroups').loginVia(user, 'jwt').send(userGroup.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/usergroups')
-    .loginVia(user, 'jwt')
-    .send(userGroupDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/usergroups').loginVia(user, 'jwt').send(userGroupDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -62,10 +54,7 @@ test('it should be able to list users groups', async ({ assert, client }) => {
 
   await user.createGroup().save(userGroup);
 
-  const response = await client
-    .get('/usergroups')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/usergroups').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -79,10 +68,7 @@ test('it should be able to show single user group', async ({ assert, client }) =
 
   await user.createGroup().save(userGroup);
 
-  const response = await client
-    .get(`/usergroups/${userGroup.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/usergroups/${userGroup.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -113,10 +99,7 @@ test('it should be able to delete user group', async ({ assert, client }) => {
 
   await user.createGroup().save(userGroup);
 
-  const response = await client
-    .delete(`/usergroups/${userGroup.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/usergroups/${userGroup.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkUserGroup = await UserGroup.find(userGroup.id);

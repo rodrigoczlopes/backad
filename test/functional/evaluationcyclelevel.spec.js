@@ -21,11 +21,7 @@ test('it should be able to create evaluation cycle level', async ({ client }) =>
     hierarchy_id: hierarchy.id,
     created_by: user.id,
   });
-  const response = await client
-    .post('/evaluationcyclelevels')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycleLevel.toJSON())
-    .end();
+  const response = await client.post('/evaluationcyclelevels').loginVia(user, 'jwt').send(evaluationCycleLevel.toJSON()).end();
   response.assertStatus(201);
 });
 
@@ -49,11 +45,7 @@ test('it should not be able to register a duplicate evaluation cycle level', asy
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/evaluationcycleLevels')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycleLevel.toJSON())
-    .end();
+  const response = await client.post('/evaluationcycleLevels').loginVia(user, 'jwt').send(evaluationCycleLevel.toJSON()).end();
 
   response.assertStatus(201);
 
@@ -81,10 +73,7 @@ test('it should be able to list evaluation cycle level', async ({ assert, client
 
   await evaluationCycle.evaluationCycleLevels().save(evaluationCycleLevel);
 
-  const response = await client
-    .get('/evaluationcycleLevels')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/evaluationcycleLevels').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -108,10 +97,7 @@ test('it should be able to show single evaluation cycle level', async ({ assert,
 
   await evaluationCycle.evaluationCycleLevels().save(evaluationCycleLevel);
 
-  const response = await client
-    .get(`/evaluationcycleLevels/${evaluationCycleLevel.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/evaluationcycleLevels/${evaluationCycleLevel.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -164,10 +150,7 @@ test('it should be able to delete evaluation cycle level', async ({ assert, clie
 
   await evaluationCycle.evaluationCycleLevels().save(evaluationCycleLevel);
 
-  const response = await client
-    .delete(`/evaluationcycleLevels/${evaluationCycleLevel.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/evaluationcycleLevels/${evaluationCycleLevel.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkEvaluationCycleLevel = await EvaluationCycleLevel.find(evaluationCycleLevel.id);

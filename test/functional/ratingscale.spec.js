@@ -44,19 +44,11 @@ test('it should not be able to register a duplicate rating scale', async ({ clie
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/ratingscales')
-    .loginVia(user, 'jwt')
-    .send(ratingScale.toJSON())
-    .end();
+  const response = await client.post('/ratingscales').loginVia(user, 'jwt').send(ratingScale.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/ratingscales')
-    .loginVia(user, 'jwt')
-    .send(ratingScaleDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/ratingscales').loginVia(user, 'jwt').send(ratingScaleDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -67,10 +59,7 @@ test('it should be able to list rating scales', async ({ assert, client }) => {
 
   await company.ratingScales().save(ratingScale);
 
-  const response = await client
-    .get('/ratingscales')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/ratingscales').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -86,10 +75,7 @@ test('it should be able to show single rating scale', async ({ assert, client })
 
   await company.ratingScales().save(ratingScale);
 
-  const response = await client
-    .get(`/ratingscales/${ratingScale.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/ratingscales/${ratingScale.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -123,10 +109,7 @@ test('it should be able to delete rating scale', async ({ assert, client }) => {
 
   await company.ratingScales().save(ratingScale);
 
-  const response = await client
-    .delete(`/ratingscales/${ratingScale.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/ratingscales/${ratingScale.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkRatingScale = await RatingScale.find(ratingScale.id);

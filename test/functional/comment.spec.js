@@ -38,19 +38,11 @@ test('it should not be able to register a duplicate comment', async ({ client })
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/comments')
-    .loginVia(user, 'jwt')
-    .send(comment.toJSON())
-    .end();
+  const response = await client.post('/comments').loginVia(user, 'jwt').send(comment.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/comments')
-    .loginVia(user, 'jwt')
-    .send(commentDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/comments').loginVia(user, 'jwt').send(commentDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -61,10 +53,7 @@ test('it should be able to list comments', async ({ assert, client }) => {
 
   await company.comments().save(comment);
 
-  const response = await client
-    .get('/comments')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/comments').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -80,10 +69,7 @@ test('it should be able to show single comment', async ({ assert, client }) => {
 
   await company.comments().save(comment);
 
-  const response = await client
-    .get(`/comments/${comment.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/comments/${comment.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -117,10 +103,7 @@ test('it should be able to delete comment', async ({ assert, client }) => {
 
   await company.comments().save(comment);
 
-  const response = await client
-    .delete(`/comments/${comment.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/comments/${comment.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkComment = await Comment.find(comment.id);

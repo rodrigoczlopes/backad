@@ -16,11 +16,7 @@ test('it should be able to create evaluation cycle', async ({ client }) => {
     company_id: company.id,
     created_by: user.id,
   });
-  const response = await client
-    .post('/evaluationcycles')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycle.toJSON())
-    .end();
+  const response = await client.post('/evaluationcycles').loginVia(user, 'jwt').send(evaluationCycle.toJSON()).end();
   response.assertStatus(201);
 });
 
@@ -39,11 +35,7 @@ test('it should not be able to register a duplicate evaluation cycle', async ({ 
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/evaluationcycles')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycle.toJSON())
-    .end();
+  const response = await client.post('/evaluationcycles').loginVia(user, 'jwt').send(evaluationCycle.toJSON()).end();
 
   response.assertStatus(201);
 
@@ -62,10 +54,7 @@ test('it should be able to list evaluation cycle', async ({ assert, client }) =>
 
   await company.evaluationCycles().save(evaluationCycle);
 
-  const response = await client
-    .get('/evaluationcycles')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/evaluationcycles').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -81,10 +70,7 @@ test('it should be able to show single evaluation cycle', async ({ assert, clien
 
   await company.evaluationCycles().save(evaluationCycle);
 
-  const response = await client
-    .get(`/evaluationcycles/${evaluationCycle.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/evaluationcycles/${evaluationCycle.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -118,10 +104,7 @@ test('it should be able to delete evaluation cycle', async ({ assert, client }) 
 
   await company.evaluationCycles().save(evaluationCycle);
 
-  const response = await client
-    .delete(`/evaluationcycles/${evaluationCycle.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/evaluationcycles/${evaluationCycle.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkEvaluationCycle = await EvaluationCycle.find(evaluationCycle.id);

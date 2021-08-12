@@ -13,6 +13,7 @@ class DepartmentSchema extends Schema {
       table.boolean('active');
       table.uuid('created_by').references('id').inTable('users');
       table.uuid('updated_by').references('id').inTable('users');
+      table.uuid('leader_id').references('id').inTable('users');
       table.timestamps();
     });
   }

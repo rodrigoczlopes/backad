@@ -23,6 +23,7 @@ class EvaluationCycleLevelController {
 
   async show({ params }) {
     const evaluationCycleLevel = await EvaluationCycleLevel.find(params.id);
+    console.log(params);
     await evaluationCycleLevel.loadMany({
       createdBy: (builder) => builder.select(['id', 'name', 'email', 'avatar']),
     });

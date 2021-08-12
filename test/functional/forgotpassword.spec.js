@@ -22,10 +22,7 @@ test('it should send an email with reset password instructions', async ({ assert
 
   const user = await Factory.model('App/Models/User').create(forgotPayload);
 
-  await client
-    .post('/forgot')
-    .send(forgotPayload)
-    .end();
+  await client.post('/forgot').send(forgotPayload).end();
 
   const recentEmail = Mail.pullRecent();
 
@@ -76,9 +73,7 @@ test('it cannot reset password after 2h of forgot password request', async ({ cl
   await user.tokens().save(userToken);
 
   const dateWithSub = format(subMinutes(subHours(new Date(), 2), 10), 'yyyy-MM-dd HH:ii:ss');
-  await Database.table('tokens')
-    .where('token', userToken.token)
-    .update('created_at', dateWithSub);
+  await Database.table('tokens').where('token', userToken.token).update('created_at', dateWithSub);
 
   await userToken.reload();
 

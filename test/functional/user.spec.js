@@ -91,10 +91,7 @@ test('it should be able to list users', async ({ assert, client }) => {
 
   const user = await Factory.model('App/Models/User').create({ user_group_id: userGroup.id });
 
-  const response = await client
-    .get('/users')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/users').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
   assert.equal(response.body[0].name, user.name);
@@ -106,10 +103,7 @@ test('it should be able to show single user', async ({ assert, client }) => {
 
   const user = await Factory.model('App/Models/User').create({ user_group_id: userGroup.id });
 
-  const response = await client
-    .get(`/users/${user.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/users/${user.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -120,10 +114,7 @@ test('it should be able to show single user', async ({ assert, client }) => {
 test('it should be able to delete user', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').create();
 
-  const response = await client
-    .delete(`/users/${user.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/users/${user.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkUser = await User.find(user.id);

@@ -9,10 +9,12 @@ class SkillBehaviorController {
   async index({ auth, params }) {
     if (params.id === 'undefined' || params.id === 'null') return [];
     const behaviorSkills = await Behavior.query()
+      .where({ deleted_at: null })
       .where('path_id', params.id)
       .where('company_id', auth.user.company_id)
       .with('skills')
       .fetch();
+
     const behaviorJson = behaviorSkills.toJSON();
     const skills = behaviorJson.map((beh) => {
       return { id: beh.skills.id, name: beh.skills.name, path_id: beh.path_id };
@@ -23,7 +25,11 @@ class SkillBehaviorController {
     if (!skills) return null;
 
     const treeNode = uniqueSkills.map(async (skill) => {
-      const behaviors = await Behavior.query().where('skill_id', skill.id).where('path_id', skill.path_id).fetch();
+      const behaviors = await Behavior.query()
+        .where({ deleted_at: null })
+        .where('skill_id', skill.id)
+        .where('path_id', skill.path_id)
+        .fetch();
       const childrens =
         behaviors.toJSON().map((behavior) => ({ value: behavior.id, label: behavior.description, leaf: true, children: [] })) ||
         [];

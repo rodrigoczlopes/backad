@@ -34,7 +34,13 @@ class EvaluationCycleCommentController {
         await evaluationCycleComment.save();
       });
 
+      const errors = [];
+
       developmentPlans?.forEach(async (plan) => {
+        if (!plan.development_plan_id) {
+          errors.push('Preencha o campo Tipo de Plano para todos os PDI`s');
+          return;
+        }
         if (plan.id && plan.id.length > 20) {
           const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
 
@@ -56,9 +62,11 @@ class EvaluationCycleCommentController {
 
       await Redis.del('dashboard-summary');
 
+      if (errors.length > 0) {
+        return response.status(500).json({ message: errors });
+      }
       return response.json({ status: 'ok' });
     } catch (err) {
-      console.log(err);
       return response.status(500).json({ message: err.message });
     }
   }

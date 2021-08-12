@@ -21,11 +21,7 @@ test('it should be able to create evaluation cycle area', async ({ client }) => 
     department_id: department.id,
     created_by: user.id,
   });
-  const response = await client
-    .post('/evaluationcycleareas')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycleArea.toJSON())
-    .end();
+  const response = await client.post('/evaluationcycleareas').loginVia(user, 'jwt').send(evaluationCycleArea.toJSON()).end();
   response.assertStatus(201);
 });
 
@@ -49,11 +45,7 @@ test('it should not be able to register a duplicate evaluation cycle area', asyn
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/evaluationcycleareas')
-    .loginVia(user, 'jwt')
-    .send(evaluationCycleArea.toJSON())
-    .end();
+  const response = await client.post('/evaluationcycleareas').loginVia(user, 'jwt').send(evaluationCycleArea.toJSON()).end();
 
   response.assertStatus(201);
 
@@ -81,10 +73,7 @@ test('it should be able to list evaluation cycle area', async ({ assert, client 
 
   await evaluationCycle.evaluationCycleAreas().save(evaluationCycleArea);
 
-  const response = await client
-    .get('/evaluationcycleareas')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/evaluationcycleareas').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -108,10 +97,7 @@ test('it should be able to show single evaluation cycle area', async ({ assert, 
 
   await evaluationCycle.evaluationCycleAreas().save(evaluationCycleArea);
 
-  const response = await client
-    .get(`/evaluationcycleareas/${evaluationCycleArea.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/evaluationcycleareas/${evaluationCycleArea.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -164,10 +150,7 @@ test('it should be able to delete evaluation cycle area', async ({ assert, clien
 
   await evaluationCycle.evaluationCycleAreas().save(evaluationCycleArea);
 
-  const response = await client
-    .delete(`/evaluationcycleareas/${evaluationCycleArea.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/evaluationcycleareas/${evaluationCycleArea.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkEvaluationCycleArea = await EvaluationCycleArea.find(evaluationCycleArea.id);

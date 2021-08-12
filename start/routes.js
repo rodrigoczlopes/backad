@@ -98,6 +98,7 @@ Route.group(() => {
         [['evaluationcycles.update'], ['EvaluationCycle']],
       ])
     );
+
   Route.resource('evaluationcyclelevels', 'EvaluationCycleLevelController')
     .apiOnly()
     .validator(

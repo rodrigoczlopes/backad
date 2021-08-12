@@ -45,19 +45,11 @@ test('it cannot be able to register a duplicate hierarchy', async ({ client }) =
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/hierarchies')
-    .loginVia(user, 'jwt')
-    .send(hierarchy.toJSON())
-    .end();
+  const response = await client.post('/hierarchies').loginVia(user, 'jwt').send(hierarchy.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/hierarchies')
-    .loginVia(user, 'jwt')
-    .send(hierarchyDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/hierarchies').loginVia(user, 'jwt').send(hierarchyDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -68,10 +60,7 @@ test('it should be able to list hierarchies', async ({ assert, client }) => {
 
   await company.hierarchies().save(hierarchy);
 
-  const response = await client
-    .get('/hierarchies')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/hierarchies').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -87,10 +76,7 @@ test('it should be able to show single hierarchy', async ({ assert, client }) =>
 
   await company.hierarchies().save(hierarchy);
 
-  const response = await client
-    .get(`/hierarchies/${hierarchy.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/hierarchies/${hierarchy.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -145,10 +131,7 @@ test('it should be able to delete hierarchy', async ({ assert, client }) => {
 
   await company.hierarchies().save(hierarchy);
 
-  const response = await client
-    .delete(`/hierarchies/${hierarchy.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/hierarchies/${hierarchy.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkHierarchy = await Hierarchy.find(hierarchy.id);

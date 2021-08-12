@@ -47,19 +47,11 @@ test('it should not be able to register a duplicate position', async ({ client }
     created_by: user.id,
   });
 
-  const response = await client
-    .post('/positions')
-    .loginVia(user, 'jwt')
-    .send(position.toJSON())
-    .end();
+  const response = await client.post('/positions').loginVia(user, 'jwt').send(position.toJSON()).end();
 
   response.assertStatus(201);
 
-  const responseDuplicate = await client
-    .post('/positions')
-    .loginVia(user, 'jwt')
-    .send(positionDuplicated.toJSON())
-    .end();
+  const responseDuplicate = await client.post('/positions').loginVia(user, 'jwt').send(positionDuplicated.toJSON()).end();
   responseDuplicate.assertStatus(400);
 });
 
@@ -75,10 +67,7 @@ test('it should be able to list positions', async ({ assert, client }) => {
 
   await company.positions().save(position);
 
-  const response = await client
-    .get('/positions')
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get('/positions').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -99,10 +88,7 @@ test('it should be able to show single position', async ({ assert, client }) => 
 
   await company.positions().save(position);
 
-  const response = await client
-    .get(`/positions/${position.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.get(`/positions/${position.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
@@ -172,10 +158,7 @@ test('it should be able to delete position', async ({ assert, client }) => {
 
   await company.positions().save(position);
 
-  const response = await client
-    .delete(`/positions/${position.id}`)
-    .loginVia(user, 'jwt')
-    .end();
+  const response = await client.delete(`/positions/${position.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
   const checkPosition = await Position.find(position.id);
