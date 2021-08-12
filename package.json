@@ -31,9 +31,11 @@
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/vow": "^1.0.17",
     "@adonisjs/websocket": "^1.0.12",
+    "adonis-acl": "^1.1.1",
     "adonis-kue": "^5.0.1",
     "date-fns": "^2.13.0",
     "generate-password": "^1.5.1",
+    "lodash": "^4.17.21",
     "mssql": "6.2.0",
     "mysql": "^2.18.1",
     "openssl": "^1.1.0",
@@ -50,7 +52,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "nodemon": "^2.0.4",
     "prettier": "^2.1.2",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^5.0.2"
   },
   "autoload": {
     "App": "./app"
