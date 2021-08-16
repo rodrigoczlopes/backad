@@ -10,7 +10,35 @@ const Department = use('App/Models/Department');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Hierarchy = use('App/Models/Hierarchy');
 
-class ContinuousFeedbackController {
+class ContinuousFeedbackAreaEmployeesController {
+  async show({ params, response }) {
+    try {
+      const employeeContinuousFeedback = await User.query().where({ id: params.id }).select('id', 'name', 'admitted_at').first();
+
+      await employeeContinuousFeedback.loadMany({
+        continuousFeedbacks: (continuousFeedback) =>
+          continuousFeedback
+            .select(['id', 'employee_id', 'category', 'description', 'visible_to_employee', 'created_at'])
+            .with('continuousFeedbackDevelopmentPlans', (builder) =>
+              builder.select([
+                'id',
+                'continuous_feedback_id',
+                'employee_id',
+                'leader_id',
+                'action',
+                'initial_date',
+                'final_date',
+                'fake_id',
+              ])
+            ),
+      });
+
+      return employeeContinuousFeedback;
+    } catch (err) {
+      return response.status(500).json({ message: err });
+    }
+  }
+
   async index({ auth }) {
     // Identificar a hierarquia do usuário que está acessando no momento, isso também no dashboard
     // Verificar as áreas que estão imediatamente sob essa hierarquia ou seja tenha o tamanho do array do split com ponto + 1
@@ -82,11 +110,14 @@ class ContinuousFeedbackController {
             continuousFeecback
               .select(['id', 'employee_id', 'category', 'description', 'visible_to_employee', 'insignia'])
               .with('continuousFeedbackDevelopmentPlans', (continuousFeedbackDevelopmentPlan) => {
-                continuousFeedbackDevelopmentPlan
-                  .select(['id', 'employee_id', 'continuous_feedback_id', 'development_plan_id', 'action', 'status', 'fake_id'])
-                  .with('development_plans', (developmentPlan) =>
-                    developmentPlan.select(['id', 'action', 'description']).where({ active: true })
-                  );
+                continuousFeedbackDevelopmentPlan.select([
+                  'id',
+                  'employee_id',
+                  'continuous_feedback_id',
+                  'action',
+                  'status',
+                  'fake_id',
+                ]);
               });
           })
           .orderBy('name', 'asc')
@@ -171,4 +202,4 @@ class ContinuousFeedbackController {
   }
 }
 
-module.exports = ContinuousFeedbackController;
+module.exports = ContinuousFeedbackAreaEmployeesController;
