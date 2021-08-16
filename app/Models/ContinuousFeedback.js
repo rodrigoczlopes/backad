@@ -16,7 +16,7 @@ class ContinuousFeedback extends Model {
   }
 
   employees() {
-    return this.belongsTo('App/Models/User');
+    return this.belongsTo('App/Models/User', 'employee_id', 'id');
   }
 
   companies() {
@@ -24,15 +24,15 @@ class ContinuousFeedback extends Model {
   }
 
   continuousFeedbackDevelopmentPlans() {
-    return this.hasMany('App/Models/ContinuousFeedbackDevelopmentPlans');
+    return this.hasMany('App/Models/ContinuousFeedbackDevelopmentPlan');
   }
 
   createdBy() {
-    return this.belongsTo('App/Models/User');
+    return this.belongsTo('App/Models/User', 'created_by', 'id');
   }
 
   updatedBy() {
-    return this.belongsTo('App/Models/User');
+    return this.belongsTo('App/Models/User', 'updated_by', 'id');
   }
 }
 
