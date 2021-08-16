@@ -30,7 +30,8 @@ class ContinuousFeedbackAreaEmployeesController {
                 'final_date',
                 'fake_id',
               ])
-            ),
+            )
+            .orderBy('created_at', 'desc'),
       });
 
       return employeeContinuousFeedback;
