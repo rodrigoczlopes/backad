@@ -39,13 +39,13 @@ class ContinuousFeedbackController {
   }
 
   async store({ request, response, auth }) {
-    const { action_plans, ...data } = request.all();
+    const { continuousFeedbackDevelopmentPlans, ...data } = request.all();
 
     try {
       const continuousFeedback = await ContinuousFeedback.create({ ...data, created_by: auth.user.id });
 
-      if (action_plans && action_plans.length > 0) {
-        action_plans.forEach(async (actionPlan) => {
+      if (continuousFeedbackDevelopmentPlans && continuousFeedbackDevelopmentPlans.length > 0) {
+        continuousFeedbackDevelopmentPlans.forEach(async (actionPlan) => {
           delete actionPlan.id;
           await ContinuousFeedbackDevelopmentPlan.create({
             ...actionPlan,
@@ -64,16 +64,40 @@ class ContinuousFeedbackController {
 
   async update({ params, request, response, auth }) {
     try {
-      const data = request.only('description', 'category', 'visible_to_employee');
+      const { continuousFeedbackDevelopmentPlans, ...data } = request.only([
+        'description',
+        'category',
+        'visible_to_employee',
+        'continuousFeedbackDevelopmentPlans',
+      ]);
       const continuousFeedback = await ContinuousFeedback.find(params.id);
       await continuousFeedback.merge({ ...data, updated_by: auth.user.id });
       await continuousFeedback.save();
+
+      if (continuousFeedbackDevelopmentPlans && continuousFeedbackDevelopmentPlans.length > 0) {
+        continuousFeedbackDevelopmentPlans.forEach(async (actionPlan) => {
+          const actionPlanToEdit = await ContinuousFeedbackDevelopmentPlan.find(actionPlan.id);
+          await actionPlanToEdit.merge({
+            ...actionPlan,
+            updated_by: auth.user.id,
+            leader_id: auth.user.id,
+          });
+          actionPlanToEdit.save();
+        });
+      }
+
+      response.status(200).json({ message: 'Atualizado com sucesso' });
     } catch (error) {
       response.status(500).json({ message: error.message });
     }
   }
 
   async destroy({ params }) {
+    const continuousFeedbackDevelopmentPlans = await ContinuousFeedbackDevelopmentPlan.findBy({
+      continuous_feedback_id: params.id,
+    });
+    await continuousFeedbackDevelopmentPlans.delete();
+
     const continuousFeedback = await ContinuousFeedback.find(params.id);
     await continuousFeedback.delete();
   }
