@@ -76,13 +76,22 @@ class ContinuousFeedbackController {
 
       if (continuousFeedbackDevelopmentPlans && continuousFeedbackDevelopmentPlans.length > 0) {
         continuousFeedbackDevelopmentPlans.forEach(async (actionPlan) => {
-          const actionPlanToEdit = await ContinuousFeedbackDevelopmentPlan.find(actionPlan.id);
-          await actionPlanToEdit.merge({
-            ...actionPlan,
-            updated_by: auth.user.id,
-            leader_id: auth.user.id,
-          });
-          actionPlanToEdit.save();
+          if (actionPlan.id) {
+            const actionPlanToEdit = await ContinuousFeedbackDevelopmentPlan.find(actionPlan.id);
+            await actionPlanToEdit.merge({
+              ...actionPlan,
+              updated_by: auth.user.id,
+              leader_id: auth.user.id,
+            });
+            actionPlanToEdit.save();
+          } else {
+            await ContinuousFeedbackDevelopmentPlan.create({
+              ...actionPlan,
+              continuous_feedback_id: continuousFeedback.id,
+              created_by: auth.user.id,
+              leader_id: auth.user.id,
+            });
+          }
         });
       }
 
@@ -92,14 +101,24 @@ class ContinuousFeedbackController {
     }
   }
 
-  async destroy({ params }) {
-    const continuousFeedbackDevelopmentPlans = await ContinuousFeedbackDevelopmentPlan.findBy({
-      continuous_feedback_id: params.id,
-    });
-    await continuousFeedbackDevelopmentPlans.delete();
+  async destroy({ params, response }) {
+    try {
+      const continuousFeedbackDevelopmentPlans = await ContinuousFeedbackDevelopmentPlan.query()
+        .where({
+          continuous_feedback_id: params.id,
+        })
+        .fetch();
 
-    const continuousFeedback = await ContinuousFeedback.find(params.id);
-    await continuousFeedback.delete();
+      continuousFeedbackDevelopmentPlans.toJSON().forEach(async (continuousFeedback) => {
+        const itemToDelete = await ContinuousFeedbackDevelopmentPlan.find(continuousFeedback.id);
+        await itemToDelete.delete();
+      });
+
+      const continuousFeedback = await ContinuousFeedback.find(params.id);
+      await continuousFeedback.delete();
+    } catch (err) {
+      return response.status(500).json({ message: err.message });
+    }
   }
 }
 
