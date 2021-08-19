@@ -13,7 +13,10 @@ const Hierarchy = use('App/Models/Hierarchy');
 class ContinuousFeedbackAreaEmployeesController {
   async show({ params, response }) {
     try {
-      const employeeContinuousFeedback = await User.query().where({ id: params.id }).select('id', 'name', 'admitted_at').first();
+      const employeeContinuousFeedback = await User.query()
+        .where({ id: params.id })
+        .select('id', 'name', 'admitted_at', 'position_id', 'hierarchy_id', 'department_id')
+        .first();
 
       await employeeContinuousFeedback.loadMany({
         continuousFeedbacks: (continuousFeedback) =>
@@ -32,11 +35,15 @@ class ContinuousFeedbackAreaEmployeesController {
               ])
             )
             .orderBy('created_at', 'desc'),
+        positions: (position) =>
+          position.select(['id', 'description', 'path_id']).with('paths', (path) => path.select(['id', 'description'])),
+        hierarchies: (hierarchy) => hierarchy.select(['id', 'description', 'level']),
+        departments: (department) => department.select(['id', 'name']),
       });
 
       return employeeContinuousFeedback;
     } catch (err) {
-      return response.status(500).json({ message: err });
+      return response.status(500).json({ message: err.message });
     }
   }
 
