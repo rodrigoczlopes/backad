@@ -13,6 +13,15 @@ class ContinuousFeedbackDevelopmentPlanController {
       .fetch();
   }
 
+  async show({ params, response }) {
+    const { id } = params;
+    try {
+      return ContinuousFeedbackDevelopmentPlan.query().where({ employee_id: id }).fetch();
+    } catch (err) {
+      return response.status(500).json({ message: err.message });
+    }
+  }
+
   async store({ request, response, auth }) {
     const data = request.all();
 
