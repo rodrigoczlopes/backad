@@ -213,6 +213,8 @@ Route.group(() => {
   Route.resource('continuousfeedbackdevelopmentplan', 'ContinuousFeedbackDevelopmentPlanController')
     .apiOnly()
     .middleware(['is:(evaluator)']);
+
+  Route.post('confirmemployeecontinuousfeedback', 'ContinuousFeedbackController.handle').middleware(['is:(evaluator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
