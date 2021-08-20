@@ -21,7 +21,7 @@ class ContinuousFeedbackAreaEmployeesController {
       await employeeContinuousFeedback.loadMany({
         continuousFeedbacks: (continuousFeedback) =>
           continuousFeedback
-            .select(['id', 'employee_id', 'category', 'description', 'visible_to_employee', 'created_at'])
+            .select(['id', 'employee_id', 'category', 'description', 'visible_to_employee', 'created_at', 'employee_confirmed'])
             .with('continuousFeedbackDevelopmentPlans', (builder) =>
               builder.select([
                 'id',
