@@ -15,21 +15,16 @@ class CommentController {
     }
 
     if (searchSentence) {
-      const comments = await Comment.query()
-        .where(searchBy, 'like', `%${searchSentence}%`)
-        .orderBy(searchBy)
-        .paginate(page, itemsPerPage);
-      return comments;
+      return Comment.query().where(searchBy, 'like', `%${searchSentence}%`).orderBy(searchBy).paginate(page, itemsPerPage);
     }
 
-    const comment = await Comment.query()
+    return Comment.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('description')
       .paginate(page, itemsPerPage);
-    return comment;
   }
 
   async store({ request, response, auth }) {

@@ -204,13 +204,19 @@ Route.group(() => {
 
   Route.put('openautoevaluation/:employee_id/:evaluation_cycle_id', 'UserFinishedController.update');
 
-  Route.get('continuousfeedbackareaemployee', 'ContinousFeedbackAreaEmployeesController.index').middleware(['is:(evaluator)']);
+  Route.resource('continuousfeedbackareaemployee', 'ContinousFeedbackAreaEmployeesController')
+    .apiOnly()
+    .middleware(['is:(evaluator)']);
 
   Route.resource('continuousfeedback', 'ContinuousFeedbackController').apiOnly().middleware(['is:(evaluator)']);
 
   Route.resource('continuousfeedbackdevelopmentplan', 'ContinuousFeedbackDevelopmentPlanController')
     .apiOnly()
     .middleware(['is:(evaluator)']);
+
+  Route.post('confirmemployeecontinuousfeedback', 'ConfirmEmployeeContinuousFeedbackController.handle').middleware([
+    'is:(evaluator)',
+  ]);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
