@@ -6,6 +6,7 @@ class EvaluationCycleAnswer extends Model {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
     this.addHook('afterUpdate', 'EvaluationCycleAnswerHook.notifyUser');
+    this.addHook('beforeUpdate', 'RemoveCreatedAtFieldOnUpdateHook.removeCreatedAt');
   }
 
   static get primaryKey() {

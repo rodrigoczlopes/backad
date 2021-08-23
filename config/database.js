@@ -99,12 +99,13 @@ module.exports = {
       port: Env.get('DB_PORT', 1433),
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
-      database: Env.get('DB_DATABASE', 'wmdevs_unimed'),
+      database: Env.get('DB_DATABASE', 'AvaliacaoDesempenhoDev'),
       options: {
         encrypt: false,
         enableArithAbort: true,
       },
     },
     debug: false,
+    healthCheck: false,
   },
 };

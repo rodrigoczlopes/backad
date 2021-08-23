@@ -7,6 +7,7 @@ class Notification extends Model {
 
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
     this.addHook('afterCreate', 'NotificationHook.sendWs');
+    this.addHook('beforeUpdate', 'RemoveCreatedAtFieldOnUpdateHook.removeCreatedAt');
   }
 
   static get primaryKey() {
