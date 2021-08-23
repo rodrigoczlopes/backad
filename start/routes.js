@@ -210,9 +210,7 @@ Route.group(() => {
 
   Route.resource('continuousfeedback', 'ContinuousFeedbackController').apiOnly().middleware(['is:(evaluator)']);
 
-  Route.resource('continuousfeedbackdevelopmentplan', 'ContinuousFeedbackDevelopmentPlanController')
-    .apiOnly()
-    .middleware(['is:(evaluator)']);
+  Route.resource('continuousfeedbackdevelopmentplan', 'ContinuousFeedbackDevelopmentPlanController').apiOnly();
 
   Route.post('confirmemployeecontinuousfeedback', 'ConfirmEmployeeContinuousFeedbackController.handle').middleware([
     'is:(evaluator)',
