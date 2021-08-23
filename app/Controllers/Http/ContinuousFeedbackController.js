@@ -74,7 +74,7 @@ class ContinuousFeedbackController {
       await continuousFeedback.merge({ ...data, updated_by: auth.user.id });
       await continuousFeedback.save();
 
-      if (Number(data.category[0]) === 1) {
+      if (data.category && Number(data.category[0]) === 1) {
         const actionPlansOfFeedback = await ContinuousFeedbackDevelopmentPlan.query()
           .where({ continuous_feedback_id: params.id })
           .fetch();
