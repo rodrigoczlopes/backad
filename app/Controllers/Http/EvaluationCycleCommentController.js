@@ -44,8 +44,10 @@ class EvaluationCycleCommentController {
         if (plan.id && plan.id.length > 20) {
           const evaluationCycleDevelopmentPlan = await EvaluationCycleDevelopmentPlan.find(plan.id);
 
-          evaluationCycleDevelopmentPlan.merge(plan);
-          await evaluationCycleDevelopmentPlan.save();
+          if (evaluationCycleDevelopmentPlan) {
+            evaluationCycleDevelopmentPlan.merge(plan);
+            await evaluationCycleDevelopmentPlan.save();
+          }
         } else {
           delete plan.id;
 
