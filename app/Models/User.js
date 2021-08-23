@@ -19,6 +19,7 @@ class User extends Model {
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
     this.addHook('beforeSave', 'EncryptPasswordHook.encrypt');
     this.addHook('beforeUpdate', 'SendPasswordHook.sendNewPasswordMail');
+    this.addHook('beforeUpdate', 'RemoveCreatedAtFieldOnUpdateHook.removeCreatedAt');
   }
 
   static get incrementing() {

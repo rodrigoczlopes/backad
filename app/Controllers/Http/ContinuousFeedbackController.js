@@ -71,7 +71,7 @@ class ContinuousFeedbackController {
         'continuousFeedbackDevelopmentPlans',
       ]);
       const continuousFeedback = await ContinuousFeedback.find(params.id);
-      await continuousFeedback.merge({ ...data, updated_by: auth.user.id });
+      continuousFeedback.merge({ ...data, updated_by: auth.user.id });
       await continuousFeedback.save();
 
       if (data.category && Number(data.category[0]) === 1) {
@@ -122,7 +122,7 @@ class ContinuousFeedbackController {
         })
         .fetch();
 
-      continuousFeedbackDevelopmentPlans.toJSON().forEach(async (continuousFeedback) => {
+      continuousFeedbackDevelopmentPlans.toJSON()?.forEach(async (continuousFeedback) => {
         const itemToDelete = await ContinuousFeedbackDevelopmentPlan.find(continuousFeedback.id);
         await itemToDelete.delete();
       });

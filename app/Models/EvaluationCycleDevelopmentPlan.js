@@ -5,6 +5,7 @@ class EvaluationCycleDevelopmentPlan extends Model {
   static boot() {
     super.boot();
     this.addHook('beforeCreate', 'UuidGeneratorHook.uuid');
+    this.addHook('beforeUpdate', 'RemoveCreatedAtFieldOnUpdateHook.removeCreatedAt');
   }
 
   static get primaryKey() {
