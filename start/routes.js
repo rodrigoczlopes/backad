@@ -215,6 +215,8 @@ Route.group(() => {
   Route.post('confirmemployeecontinuousfeedback', 'ConfirmEmployeeContinuousFeedbackController.handle').middleware([
     'is:(evaluator)',
   ]);
+
+  Route.get('continuousfeedbackemployeelist/:id', 'ContinuousFeedbackEmployeeListController.show');
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
