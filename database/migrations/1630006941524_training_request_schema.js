@@ -14,6 +14,7 @@ class TrainingRequestSchema extends Schema {
       table.string('expected_outcome');
       table.date('completion_forecast');
       table.integer('human_resources_seem');
+      table.string('description');
       table.uuid('created_by').references('id').inTable('users');
       table.uuid('updated_by').references('id').inTable('users');
       table.timestamps();
