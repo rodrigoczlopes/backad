@@ -16,6 +16,18 @@ class Training extends Model {
     return false;
   }
 
+  requests() {
+    return this.hasMany('App/Models/TrainingRequest');
+  }
+
+  schedules() {
+    return this.hasMany('App/Models/TrainingSchedule');
+  }
+
+  evaluations() {
+    return this.hasMany('App/Models/TrainingEvaluation');
+  }
+
   createdBy() {
     return this.belongsTo('App/Models/User', 'created_by', 'id');
   }
