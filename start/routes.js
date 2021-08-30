@@ -217,6 +217,9 @@ Route.group(() => {
   ]);
 
   Route.get('continuousfeedbackemployeelist/:id', 'ContinuousFeedbackEmployeeListController.show');
+
+  Route.resource('trainings', 'TrainingController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
+  Route.resource('trainingRequests', 'TrainingRequestController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas

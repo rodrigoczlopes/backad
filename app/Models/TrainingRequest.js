@@ -24,6 +24,10 @@ class TrainingRequest extends Model {
     return this.belongsTo('App/Models/Department', 'department_id', 'id');
   }
 
+  trainingRequestEmployees() {
+    return this.hasMany('App/Models/TrainingRequestEmployee');
+  }
+
   trainings() {
     return this.belongsTo('App/Models/Training', 'training_id', 'id');
   }

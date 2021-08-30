@@ -7,7 +7,7 @@ class TrainingScheduleUserSectionVideoLogSchema extends Schema {
     this.create('training_schedule_user_section_video_logs', (table) => {
       table.uuid('id').primary().defaultTo(uuidv4());
       table.uuid('employee_id').references('id').inTable('users');
-      table.uuid('training_schedule_section_video_id').references('id').inTable('training_schedule_section_video');
+      table.uuid('training_schedule_section_video_id').references('id').inTable('training_schedule_section_videos');
       table.integer('status');
       table.time('watched_time');
       table.uuid('created_by').references('id').inTable('users');
