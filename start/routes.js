@@ -57,7 +57,7 @@ Route.group(() => {
 
   Route.resource('consolidatedevaluationcycledevelopmentplans', 'ConsolidatedEvaluationCycleDevelopmentPlanController').apiOnly();
 
-  Route.get('dashboardsummaries', 'DashboardSummaryController.index').middleware(['is:(administrator)']);
+  Route.resource('dashboardsummaries', 'DashboardSummaryController').apiOnly().middleware(['is:(administrator)']);
 
   Route.resource('departments', 'DepartmentController')
     .apiOnly()
