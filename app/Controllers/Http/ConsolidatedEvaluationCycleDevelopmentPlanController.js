@@ -145,13 +145,14 @@ class ConsolidatedEvaluationCycleDevelopmentPlanController {
     });
   }
 
-  async show({ auth }) {
+  async show({ auth, params }) {
+    const { id } = params;
     return User.query()
       .select(['id', 'active', 'company_id', 'department_id', 'email', 'hierarchy_id', 'name', 'position_id'])
       .where('id', auth.user.id)
       .where({ active: true })
       .with('evaluationCycleDevelopmentPlans', (builder) => {
-        builder.with('developmentPlans');
+        builder.where({ evaluation_cycle_id: id }).with('developmentPlans');
       })
       .orderBy('name', 'asc')
       .first();
