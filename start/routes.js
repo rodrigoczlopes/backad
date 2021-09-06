@@ -220,6 +220,8 @@ Route.group(() => {
 
   Route.resource('trainings', 'TrainingController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
   Route.resource('trainingRequests', 'TrainingRequestController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
+
+  Route.get('pdireport/:id', 'PdiReportController.show').middleware(['is:(administrator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas
