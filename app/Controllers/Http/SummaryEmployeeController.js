@@ -11,7 +11,7 @@ formulário para ele
 */
 
 class SummaryEmployeeController {
-  async show({ params }) {
+  async handle({ params }) {
     const { evaluation_cycle_id, employee_id } = params;
 
     const employees = await User.query()

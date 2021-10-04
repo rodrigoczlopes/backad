@@ -174,10 +174,10 @@ Route.group(() => {
     .apiOnly()
     .validator(new Map([[['users.update'], ['User']]]));
 
-  Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.show').middleware([
+  Route.get('summaryareaemployees/:id', 'SummaryDepartmentEmployeeController.handle').middleware([
     'is:(administrator || evaluator)',
   ]);
-  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.show');
+  Route.get('summaryemployees/:evaluation_cycle_id/:employee_id', 'SummaryEmployeeController.handle');
   // .middleware(['is:(administrator || evaluator)']);
 
   Route.resource('useraccessprofiles', 'UserAccessProfileController').apiOnly();

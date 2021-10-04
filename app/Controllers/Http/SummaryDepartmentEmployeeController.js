@@ -5,7 +5,7 @@
 const User = use('App/Models/User');
 
 class SummaryDepartmentEmployeeController {
-  async show({ params }) {
+  async handle({ params }) {
     const { id } = params;
 
     return User.query()
