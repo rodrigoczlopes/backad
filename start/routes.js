@@ -216,12 +216,12 @@ Route.group(() => {
     'is:(evaluator)',
   ]);
 
-  Route.get('continuousfeedbackemployeelist/:id', 'ContinuousFeedbackEmployeeListController.show');
+  Route.get('continuousfeedbackemployeelist/:id', 'ContinuousFeedbackEmployeeListController.handle');
 
   Route.resource('trainings', 'TrainingController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
   Route.resource('trainingRequests', 'TrainingRequestController').apiOnly().middleware(['is:(evaluator)', 'is:(administrator)']);
 
-  Route.get('pdireport/:id', 'PdiReportController.show').middleware(['is:(administrator)']);
+  Route.get('pdireport/:id', 'PdiReportController.handle').middleware(['is:(administrator)']);
 }).middleware(['auth']);
 
 // Exemplo de autenticação nas rotas

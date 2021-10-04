@@ -5,7 +5,7 @@
 const User = use('App/Models/User');
 
 class ContinuousFeedbackEmployeeListController {
-  async show({ params, response }) {
+  async handle({ params, response }) {
     try {
       const employeeContinuousFeedback = await User.query()
         .where({ id: params.id })
