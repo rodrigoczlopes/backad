@@ -1,8 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
 
-// eslint-disable-next-line no-multi-assign
-const UuidGeneratorHook = (exports = module.exports = {});
+class UuidGeneratorHook {
+  async uuid(model) {
+    model.id = uuidv4().toUpperCase();
+  }
+}
 
-UuidGeneratorHook.uuid = async (model) => {
-  model.id = uuidv4().toUpperCase();
-};
+module.exports = UuidGeneratorHook;

@@ -1,15 +1,15 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-multi-assign */
 const Ws = use('Ws');
 
-const NotificationHook = (exports = module.exports = {});
+class NotificationHook {
+  async sendWs(modelInstance) {
+    const channel = Ws.getChannel('notification:*');
+    if (!channel) return;
 
-NotificationHook.sendWs = async (modelInstance) => {
-  const channel = Ws.getChannel('notification:*');
-  if (!channel) return;
-
-  const topic = channel.topic(`notification:${modelInstance.user}`);
-  if (topic) {
-    topic.broadcast('message', modelInstance);
+    const topic = channel.topic(`notification:${modelInstance.user}`);
+    if (topic) {
+      topic.broadcast('message', modelInstance);
+    }
   }
-};
+}
+
+module.exports = NotificationHook;
