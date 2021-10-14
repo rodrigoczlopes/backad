@@ -11,7 +11,8 @@ class NewPasswordMail {
     return 'NewPasswordMail-job';
   }
 
-  async handle({ email, name, username, password }) {
+  async handle({ data }) {
+    const { email, name, username, password } = data;
     try {
       await Mail.send(['emails.resetpassword'], { email, name, username, password }, (message) => {
         message

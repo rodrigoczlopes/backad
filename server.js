@@ -20,5 +20,6 @@ const { Ignitor } = require('@adonisjs/ignitor');
 new Ignitor(require('@adonisjs/fold')) // eslint-disable-line
   .appRoot(__dirname)
   .wsServer()
+  .preLoad('preloads/bull')
   .fireHttpServer()
   .catch(console.error);

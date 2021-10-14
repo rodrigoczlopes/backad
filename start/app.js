@@ -24,6 +24,7 @@ const providers = [
   '@adonisjs/redis/providers/RedisProvider',
   'adonis-kue/providers/KueProvider',
   'adonis-acl/providers/AclProvider',
+  '@rocketseat/adonis-bull/providers/Bull',
 
   path.join(__dirname, '..', 'providers', 'CustomValidationProvider'),
 ];
@@ -42,6 +43,7 @@ const aceProviders = [
   '@adonisjs/vow/providers/VowProvider',
   'adonis-kue/providers/CommandsProvider',
   'adonis-acl/providers/CommandsProvider',
+  '@rocketseat/adonis-bull/providers/Command',
 ];
 
 /*
