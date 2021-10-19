@@ -29,9 +29,14 @@ class CommentController {
 
   async store({ request, response, auth }) {
     const data = request.all();
-    const comment = await Comment.create({ ...data, created_by: auth.user.id });
-    const commentReturn = await this.show({ params: { id: comment.id } });
-    return response.status(201).json(commentReturn);
+    const existsComment = await Comment.query().where({ description: data.description }).first();
+    if (!existsComment) {
+      const comment = await Comment.create({ ...data, created_by: auth.user.id });
+      const commentReturn = await this.show({ params: { id: comment.id } });
+      return response.status(201).json(commentReturn);
+    }
+
+    return response.status(400).json({ message: 'Já existe um comentário com esta descrição' });
   }
 
   async show({ params }) {

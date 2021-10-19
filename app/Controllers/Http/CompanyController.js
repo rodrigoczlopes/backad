@@ -37,9 +37,14 @@ class CompanyController {
 
   async store({ request, response, auth }) {
     const data = request.all();
-    const company = await Company.create({ ...data, created_by: auth.user.id });
-    await Redis.del('companies');
-    return response.status(201).json(company);
+    const existsCompany = await Company.query().where({ name: data.name }).first();
+    if (!existsCompany) {
+      const company = await Company.create({ ...data, created_by: auth.user.id });
+      await Redis.del('companies');
+      return response.status(201).json(company);
+    }
+
+    return response.status(400).json({ message: 'Já existe uma empresa com este nome' });
   }
 
   async update({ params, request, auth }) {

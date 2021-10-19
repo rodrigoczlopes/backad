@@ -33,9 +33,14 @@ class ClassificationController {
 
   async store({ request, response, auth }) {
     const data = request.all();
-    const classification = await Classification.create({ ...data, created_by: auth.user.id });
-    const classificationReturn = await this.show({ params: { id: classification.id } });
-    return response.status(201).json(classificationReturn);
+    const existClassification = await Classification.query().where({ description: data.description }).first();
+    if (!existClassification) {
+      const classification = await Classification.create({ ...data, created_by: auth.user.id });
+      const classificationReturn = await this.show({ params: { id: classification.id } });
+      return response.status(201).json(classificationReturn);
+    }
+
+    return response.status(400).json({ message: 'Já existe uma classificação com esta descrição' });
   }
 
   async show({ params }) {
