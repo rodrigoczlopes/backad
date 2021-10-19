@@ -46,14 +46,18 @@ class BehaviorController {
     const data = request.all();
 
     if (data.behaviors?.length > 0) {
-      data.behaviors?.forEach((userToAdd) => {
-        Behavior.create(userToAdd);
+      data.behaviors?.forEach(async (behaviorToAdd) => {
+        const existBehaviorToAdd = await Behavior.query().where({ description: behaviorToAdd.description }).fetch();
+        if (!existBehaviorToAdd) {
+          Behavior.create(behaviorToAdd);
+        }
       });
 
       return response.status(201).json({ message: 'Bulk data created successfully!' });
     }
 
-    const existBehavior = await Behavior.query().where({ description: data.description });
+    const existBehavior = await Behavior.query().where({ description: data.description }).first();
+
     if (!existBehavior) {
       const behavior = await Behavior.create({ ...data, created_by: auth.user.id });
       const behaviorReturn = await this.show({ params: { id: behavior.id } });
