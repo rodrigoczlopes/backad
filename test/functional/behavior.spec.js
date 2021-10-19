@@ -8,50 +8,35 @@ trait('Test/ApiClient');
 trait('DatabaseTransactions');
 trait('Auth/Client');
 
-test('it should be able to create behavior', async ({ client }) => {
+const makeBehavior = async () => {
   const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
   const path = await Factory.model('App/Models/Path').create({ company_id: company.id, created_by: user.id });
   const skill = await Factory.model('App/Models/Skill').create({ company_id: company.id, created_by: user.id });
 
-  const response = await client
-    .post('/behaviors')
-    .loginVia(user, 'jwt')
-    .send({
-      description:
-        'Correlaciona a dinâmica organizacional com aspectos relevantes da(s) área(s) sob sua responsabilidade, considerando o impacto de suas ações',
-      path_id: path.id,
-      skill_id: skill.id,
-      company_id: company.id,
-      created_by: user.id,
-    })
-    .end();
+  const behavior = {
+    description:
+      'Correlaciona a dinâmica organizacional com aspectos relevantes da(s) área(s) sob sua responsabilidade, considerando o impacto de suas ações',
+    path_id: path.id,
+    skill_id: skill.id,
+    company_id: company.id,
+    created_by: user.id,
+  };
+
+  return { behavior, user, company };
+};
+
+test('it should be able to create behavior', async ({ client }) => {
+  const { behavior, user } = await makeBehavior();
+  const response = await client.post('/behaviors').loginVia(user, 'jwt').send(behavior).end();
   response.assertStatus(201);
 });
 
 test('it should not be able to register a duplicate behavior', async ({ client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
-  const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
-  const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+  const { behavior: mockBehavior, user } = await makeBehavior();
 
-  const behavior = await Factory.model('App/Models/Behavior').make({
-    description:
-      'Comunicar informações relevantes de forma clara, objetiva e compreensivel, utilizando de forma eficaz as ferraqmentas de comunicação da organização',
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
-
-  const behaviorDuplicated = await Factory.model('App/Models/Behavior').make({
-    description:
-      'Comunicar informações relevantes de forma clara, objetiva e compreensivel, utilizando de forma eficaz as ferraqmentas de comunicação da organização',
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const behavior = await Factory.model('App/Models/Behavior').make(mockBehavior);
+  const behaviorDuplicated = await Factory.model('App/Models/Behavior').make(mockBehavior);
 
   const response = await client.post('/behaviors').loginVia(user, 'jwt').send(behavior.toJSON()).end();
 
@@ -62,17 +47,9 @@ test('it should not be able to register a duplicate behavior', async ({ client }
 });
 
 test('it should be able to list behaviors', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
-  const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+  const { behavior: mockBehavior, user, company } = await makeBehavior();
 
-  const behavior = await Factory.model('App/Models/Behavior').make({
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const behavior = await Factory.model('App/Models/Behavior').make(mockBehavior);
 
   await company.behaviors().save(behavior);
 
@@ -86,17 +63,9 @@ test('it should be able to list behaviors', async ({ assert, client }) => {
 });
 
 test('it should be able to show single behavior', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
-  const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+  const { behavior: mockBehavior, user, company } = await makeBehavior();
 
-  const behavior = await Factory.model('App/Models/Behavior').make({
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const behavior = await Factory.model('App/Models/Behavior').make(mockBehavior);
 
   await company.behaviors().save(behavior);
 
@@ -110,16 +79,9 @@ test('it should be able to show single behavior', async ({ assert, client }) => 
 });
 
 test('it should be able to update behavior', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
-  const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
-  const behavior = await Factory.model('App/Models/Behavior').make({
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const { behavior: mockBehavior, user, company } = await makeBehavior();
+
+  const behavior = await Factory.model('App/Models/Behavior').make(mockBehavior);
 
   await company.behaviors().save(behavior);
 
@@ -135,17 +97,9 @@ test('it should be able to update behavior', async ({ assert, client }) => {
 });
 
 test('it should be able to delete behavior', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const path = await Factory.model('App/Models/Path').create({ created_by: user.id });
-  const skill = await Factory.model('App/Models/Skill').create({ created_by: user.id });
+  const { behavior: mockBehavior, user, company } = await makeBehavior();
 
-  const behavior = await Factory.model('App/Models/Behavior').make({
-    path_id: path.id,
-    skill_id: skill.id,
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const behavior = await Factory.model('App/Models/Behavior').make(mockBehavior);
 
   await company.behaviors().save(behavior);
 
