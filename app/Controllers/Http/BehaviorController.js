@@ -47,7 +47,7 @@ class BehaviorController {
 
     if (data.behaviors?.length > 0) {
       data.behaviors?.forEach(async (behaviorToAdd) => {
-        const existBehaviorToAdd = await Behavior.query().where({ description: behaviorToAdd.description }).fetch();
+        const existBehaviorToAdd = await Behavior.query().where({ description: behaviorToAdd.description }).first();
         if (!existBehaviorToAdd) {
           Behavior.create(behaviorToAdd);
         }
