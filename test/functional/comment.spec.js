@@ -8,35 +8,31 @@ trait('Test/ApiClient');
 trait('DatabaseTransactions');
 trait('Auth/Client');
 
-test('it should be able to create comment', async ({ client }) => {
+const makeComment = async () => {
   const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
-  const response = await client
-    .post('/comments')
-    .loginVia(user, 'jwt')
-    .send({
-      description: 'Quais foram as principais contribuições do avaliado no período?',
-      company_id: company.id,
-      created_by: user.id,
-    })
-    .end();
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
+
+  const comment = {
+    description: 'Quais foram as principais contribuições do avaliado no período?',
+    company_id: company.id,
+    created_by: user.id,
+  };
+
+  return { comment, company, user };
+};
+
+test('it should be able to create comment', async ({ client }) => {
+  const { user, comment } = await makeComment();
+  const response = await client.post('/comments').loginVia(user, 'jwt').send(comment).end();
   response.assertStatus(201);
 });
 
 test('it should not be able to register a duplicate comment', async ({ client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
-  const comment = await Factory.model('App/Models/Comment').make({
-    description: 'Quais foram as principais contribuições do avaliado no período?',
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const { user, comment: commentMock } = await makeComment();
 
-  const commentDuplicated = await Factory.model('App/Models/Comment').make({
-    description: 'Quais foram as principais contribuições do avaliado no período?',
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const comment = await Factory.model('App/Models/Comment').make(commentMock);
+
+  const commentDuplicated = await Factory.model('App/Models/Comment').make(commentMock);
 
   const response = await client.post('/comments').loginVia(user, 'jwt').send(comment.toJSON()).end();
 
@@ -47,9 +43,8 @@ test('it should not be able to register a duplicate comment', async ({ client })
 });
 
 test('it should be able to list comments', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const comment = await Factory.model('App/Models/Comment').make({ company_id: company.id, created_by: user.id });
+  const { user, comment: commentMock, company } = await makeComment();
+  const comment = await Factory.model('App/Models/Comment').make(commentMock);
 
   await company.comments().save(comment);
 
@@ -57,15 +52,16 @@ test('it should be able to list comments', async ({ assert, client }) => {
 
   response.assertStatus(200);
 
-  assert.equal(response.body[0].description, comment.description);
-  assert.equal(response.body[0].createdBy.id, user.id);
-  assert.equal(response.body[0].companies.name, 'OrangeDev');
+  const { data } = response.body;
+
+  assert.equal(data[0].description, comment.description);
+  assert.equal(data[0].createdBy.id, user.id);
+  assert.equal(data[0].companies.name, company.name);
 });
 
 test('it should be able to show single comment', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const comment = await Factory.model('App/Models/Comment').make({ company_id: company.id, created_by: user.id });
+  const { user, comment: commentMock, company } = await makeComment();
+  const comment = await Factory.model('App/Models/Comment').make(commentMock);
 
   await company.comments().save(comment);
 
@@ -75,13 +71,12 @@ test('it should be able to show single comment', async ({ assert, client }) => {
 
   assert.equal(response.body.description, comment.description);
   assert.equal(response.body.createdBy.id, user.id);
-  assert.equal(response.body.companies.name, 'OrangeDev');
+  assert.equal(response.body.companies.name, company.name);
 });
 
 test('it should be able to update comment', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const comment = await Factory.model('App/Models/Comment').make({ company_id: company.id, created_by: user.id });
+  const { user, comment: commentMock, company } = await makeComment();
+  const comment = await Factory.model('App/Models/Comment').make(commentMock);
 
   await company.comments().save(comment);
 
@@ -97,9 +92,8 @@ test('it should be able to update comment', async ({ assert, client }) => {
 });
 
 test('it should be able to delete comment', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const comment = await Factory.model('App/Models/Comment').make({ company_id: company.id, created_by: user.id });
+  const { user, comment: commentMock, company } = await makeComment();
+  const comment = await Factory.model('App/Models/Comment').make(commentMock);
 
   await company.comments().save(comment);
 

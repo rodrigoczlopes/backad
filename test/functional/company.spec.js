@@ -8,37 +8,29 @@ trait('Test/ApiClient');
 trait('DatabaseTransactions');
 trait('Auth/Client');
 
-test('it should be able to create company', async ({ client }) => {
+const makeCompany = async () => {
   const user = await Factory.model('App/Models/User').create();
 
-  const response = await client
-    .post('/companies')
-    .loginVia(user, 'jwt')
-    .send({
-      name: 'Unimed Varginha Cooperativa de Trabalho Médico',
-      code: 50,
-      created_by: user.id,
-    })
-    .end();
+  const company = {
+    name: 'Unimed Varginha Cooperativa de Trabalho Médico',
+    code: 50,
+    created_by: user.id,
+  };
+  return { user, company };
+};
 
+test('it should be able to create company', async ({ client }) => {
+  const { user, company } = await makeCompany();
+  const response = await client.post('/companies').loginVia(user, 'jwt').send(company).end();
   response.assertStatus(201);
 });
 
 test('it cannot be able to register a duplicate company', async ({ client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').make({
-    name: 'Unimed Varginha Cooperativa de Trabalho Médico',
-    code: 50,
-    created_by: user.id,
-    updated_by: user.id,
-  });
+  const { user, company: companyMock } = await makeCompany();
 
-  const companyDuplicated = await Factory.model('App/Models/Company').make({
-    name: 'Unimed Varginha Cooperativa de Trabalho Médico',
-    code: 50,
-    created_by: user.id,
-    updated_by: user.id,
-  });
+  const company = await Factory.model('App/Models/Company').make(companyMock);
+
+  const companyDuplicated = await Factory.model('App/Models/Company').make(companyMock);
 
   const response = await client.post('/companies').loginVia(user, 'jwt').send(company.toJSON()).end();
 
@@ -49,8 +41,8 @@ test('it cannot be able to register a duplicate company', async ({ client }) => 
 });
 
 test('it should be able to list companies', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').make({ created_by: user.id, updated_by: user.id });
+  const { user, company: companyMock } = await makeCompany();
+  const company = await Factory.model('App/Models/Company').make(companyMock);
 
   await user.createCompany().save(company);
 
@@ -58,13 +50,15 @@ test('it should be able to list companies', async ({ assert, client }) => {
 
   response.assertStatus(200);
 
-  assert.equal(response.body[0].name, company.name);
-  assert.equal(response.body[0].createdBy.id, user.id);
+  const { data } = response.body;
+
+  assert.equal(data[0].name, company.name);
+  assert.equal(data[0].createdBy.id, user.id);
 });
 
 test('it should be able to show single company', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id, updated_by: user.id });
+  const { user, company: companyMock } = await makeCompany();
+  const company = await Factory.model('App/Models/Company').make(companyMock);
 
   await user.createCompany().save(company);
 
@@ -77,8 +71,8 @@ test('it should be able to show single company', async ({ assert, client }) => {
 });
 
 test('it should be able to update company', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ updated_by: user.id });
+  const { user, company: companyMock } = await makeCompany();
+  const company = await Factory.model('App/Models/Company').make(companyMock);
 
   await user.createCompany().save(company);
 
@@ -94,8 +88,8 @@ test('it should be able to update company', async ({ assert, client }) => {
 });
 
 test('it should be able to delete company', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ updated_by: user.id });
+  const { user, company: companyMock } = await makeCompany();
+  const company = await Factory.model('App/Models/Company').make(companyMock);
 
   await user.createCompany().save(company);
 

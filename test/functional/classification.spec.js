@@ -8,35 +8,31 @@ trait('Test/ApiClient');
 trait('DatabaseTransactions');
 trait('Auth/Client');
 
-test('it should be able to create classification', async ({ client }) => {
+const makeClassification = async () => {
   const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
-  const response = await client
-    .post('/classifications')
-    .loginVia(user, 'jwt')
-    .send({
-      description: 'Quais foram as principais contribuições do avaliado no período?',
-      company_id: company.id,
-      created_by: user.id,
-    })
-    .end();
+  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
+
+  const classification = {
+    description: 'Quais foram as principais contribuições do avaliado no período?',
+    company_id: company.id,
+    created_by: user.id,
+  };
+
+  return { user, company, classification };
+};
+
+test('it should be able to create classification', async ({ client }) => {
+  const { classification, user } = await makeClassification();
+  const response = await client.post('/classifications').loginVia(user, 'jwt').send(classification).end();
   response.assertStatus(201);
 });
 
 test('it should not be able to register a duplicate classification', async ({ client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ created_by: user.id });
-  const classification = await Factory.model('App/Models/Classification').make({
-    description: 'Quais foram as principais contribuições do avaliado no período?',
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const { classification: classificationMock, user } = await makeClassification();
 
-  const classificationDuplicated = await Factory.model('App/Models/Classification').make({
-    description: 'Quais foram as principais contribuições do avaliado no período?',
-    company_id: company.id,
-    created_by: user.id,
-  });
+  const classification = await Factory.model('App/Models/Classification').make(classificationMock);
+
+  const classificationDuplicated = await Factory.model('App/Models/Classification').make(classificationMock);
 
   const response = await client.post('/classifications').loginVia(user, 'jwt').send(classification.toJSON()).end();
 
@@ -51,9 +47,9 @@ test('it should not be able to register a duplicate classification', async ({ cl
 });
 
 test('it should be able to list classifications', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const classification = await Factory.model('App/Models/Classification').make({ company_id: company.id, created_by: user.id });
+  const { classification: classificationMock, user, company } = await makeClassification();
+
+  const classification = await Factory.model('App/Models/Classification').make(classificationMock);
 
   await company.classifications().save(classification);
 
@@ -61,15 +57,17 @@ test('it should be able to list classifications', async ({ assert, client }) => 
 
   response.assertStatus(200);
 
-  assert.equal(response.body.description, classification.description);
-  assert.equal(response.body.createdBy.id, user.id);
-  assert.equal(response.body.companies.name, 'OrangeDev');
+  const { data } = response.body;
+
+  assert.equal(data[0].description, classification.description);
+  assert.equal(data[0].createdBy.id, user.id);
+  assert.equal(data[0].companies.name, company.name);
 });
 
 test('it should be able to show single classification', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const classification = await Factory.model('App/Models/Classification').make({ company_id: company.id, created_by: user.id });
+  const { classification: classificationMock, user, company } = await makeClassification();
+
+  const classification = await Factory.model('App/Models/Classification').make(classificationMock);
 
   await company.classifications().save(classification);
 
@@ -79,13 +77,13 @@ test('it should be able to show single classification', async ({ assert, client 
 
   assert.equal(response.body.description, classification.description);
   assert.equal(response.body.createdBy.id, user.id);
-  assert.equal(response.body.companies.name, 'OrangeDev');
+  assert.equal(response.body.companies.name, company.name);
 });
 
 test('it should be able to update classification', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const classification = await Factory.model('App/Models/Classification').make({ company_id: company.id, created_by: user.id });
+  const { classification: classificationMock, user, company } = await makeClassification();
+
+  const classification = await Factory.model('App/Models/Classification').make(classificationMock);
 
   await company.classifications().save(classification);
 
@@ -101,9 +99,9 @@ test('it should be able to update classification', async ({ assert, client }) =>
 });
 
 test('it should be able to delete classification', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create();
-  const company = await Factory.model('App/Models/Company').create({ name: 'OrangeDev', created_by: user.id });
-  const classification = await Factory.model('App/Models/Classification').make({ company_id: company.id, created_by: user.id });
+  const { classification: classificationMock, user, company } = await makeClassification();
+
+  const classification = await Factory.model('App/Models/Classification').make(classificationMock);
 
   await company.classifications().save(classification);
 

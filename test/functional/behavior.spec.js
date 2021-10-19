@@ -59,7 +59,7 @@ test('it should be able to list behaviors', async ({ assert, client }) => {
 
   assert.equal(response.body[0].name, behavior.name);
   assert.equal(response.body[0].createdBy.id, user.id);
-  assert.equal(response.body[0].companies.name, 'OrangeDev');
+  assert.equal(response.body[0].companies.name, company.name);
 });
 
 test('it should be able to show single behavior', async ({ assert, client }) => {
@@ -75,7 +75,7 @@ test('it should be able to show single behavior', async ({ assert, client }) => 
 
   assert.equal(response.body.name, behavior.name);
   assert.equal(response.body.createdBy.id, user.id);
-  assert.equal(response.body.companies.name, 'OrangeDev');
+  assert.equal(response.body.companies.name, company.name);
 });
 
 test('it should be able to update behavior', async ({ assert, client }) => {
