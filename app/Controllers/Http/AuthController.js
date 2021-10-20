@@ -43,7 +43,7 @@ class AuthController {
 
       const userData = await User.findByOrFail('username', username);
 
-      await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions']);
+      await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions', 'userAccessProfiles']);
 
       const {
         id,
@@ -54,14 +54,18 @@ class AuthController {
         userAccessProfiles,
         active,
         company_id,
-        hierarchies: { description: hierarchy },
-        hierarchies: { level: hierarchyLevel },
-        positions: { description: position },
-        departments: { name: department },
-        departments: { id: departmentId },
+        hierarchies,
+        positions,
+        departments,
         roles,
         permissions,
-      } = userData.toJSON();
+      } = await userData.toJSON();
+
+      const hierarchy = hierarchies?.description;
+      const hierarchyLevel = hierarchies?.level;
+      const position = positions?.description;
+      const department = departments?.name;
+      const departmentId = departments?.id;
 
       const user = {
         id,
