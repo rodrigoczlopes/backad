@@ -29,6 +29,7 @@ class EvaluationCycleController {
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
+      .with('companies')
       .orderBy('description')
       .paginate(page, itemsPerPage);
   }
@@ -39,16 +40,17 @@ class EvaluationCycleController {
 
     const evaluationCycle = await EvaluationCycle.create({ ...data, created_by: auth.user.id });
 
-    const evaluationCycleAreas = department_hierarchies.map((department) => ({
+    const evaluationCycleAreas = department_hierarchies?.map((department) => ({
       evaluation_cycle_id: evaluationCycle.id,
       department_id: department,
       created_by: auth.user.id,
     }));
 
-    await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    if (evaluationCycleAreas) {
+      await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    }
 
     await evaluationCycle.loadMany(['companies', 'evaluationCycleAreas']);
-    console.log('------->', 'verificando se está passando por aqui, pois está muito estranho');
     return response.status(201).json(evaluationCycle);
   }
 
@@ -71,12 +73,15 @@ class EvaluationCycleController {
     await evaluationCycle.save();
 
     await EvaluationCycleArea.query().where({ evaluation_cycle_id: evaluationCycle.id }).delete();
-    const evaluationCycleAreas = department_hierarchies.map((department) => ({
+
+    const evaluationCycleAreas = department_hierarchies?.map((department) => ({
       evaluation_cycle_id: evaluationCycle.id,
       department_id: department,
     }));
 
-    await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    if (evaluationCycleAreas) {
+      await EvaluationCycleArea.createMany(evaluationCycleAreas);
+    }
 
     await evaluationCycle.loadMany(['companies', 'evaluationCycleAreas']);
 
