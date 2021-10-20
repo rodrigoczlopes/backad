@@ -47,41 +47,43 @@ test('it should not be able to register a duplicate evaluation cycle', async ({ 
 });
 
 test('it should be able to list evaluation cycle', async ({ assert, client }) => {
-  const { user, evaluationCycle: evaluationCycleMake, company } = await makeEvaluationCycle();
+  const { user, evaluationCycleMock, company } = await makeEvaluationCycle();
 
-  await company.evaluationCycles().save(evaluationCycleMake);
+  await company.evaluationCycles().save(evaluationCycleMock);
 
   const response = await client.get('/evaluationcycles').loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
-  assert.equal(response.body[0].description, evaluationCycleMake.description);
-  assert.equal(response.body[0].createdBy.id, user.id);
-  assert.equal(response.body[0].companies.name, company.name);
+  const { data } = response.body;
+
+  assert.equal(data[0].description, evaluationCycleMock.description);
+  assert.equal(data[0].createdBy.id, user.id);
+  assert.equal(data[0].companies.name, company.name);
 });
 
 test('it should be able to show single evaluation cycle', async ({ assert, client }) => {
-  const { user, evaluationCycle: evaluationCycleMake, company } = await makeEvaluationCycle();
-  await company.evaluationCycles().save(evaluationCycleMake);
+  const { user, evaluationCycleMock, company } = await makeEvaluationCycle();
+  await company.evaluationCycles().save(evaluationCycleMock);
 
-  const response = await client.get(`/evaluationcycles/${evaluationCycleMake.id}`).loginVia(user, 'jwt').end();
+  const response = await client.get(`/evaluationcycles/${evaluationCycleMock.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(200);
 
-  assert.equal(response.body.description, evaluationCycleMake.description);
+  assert.equal(response.body.description, evaluationCycleMock.description);
   assert.equal(response.body.createdBy.id, user.id);
   assert.equal(response.body.companies.name, company.name);
 });
 
 test('it should be able to update evaluation cycle', async ({ assert, client }) => {
-  const { user, evaluationCycle: evaluationCycleMake, company } = await makeEvaluationCycle();
+  const { user, evaluationCycleMock, company } = await makeEvaluationCycle();
 
-  await company.evaluationCycles().save(evaluationCycleMake);
+  await company.evaluationCycles().save(evaluationCycleMock);
 
   const response = await client
-    .put(`/evaluationcycles/${evaluationCycleMake.id}`)
+    .put(`/evaluationcycles/${evaluationCycleMock.id}`)
     .loginVia(user, 'jwt')
-    .send({ ...evaluationCycleMake.toJSON(), description: 'Avaliação por Competência | 2020' })
+    .send({ ...evaluationCycleMock.toJSON(), description: 'Avaliação por Competência | 2020' })
     .end();
 
   response.assertStatus(200);
@@ -90,13 +92,13 @@ test('it should be able to update evaluation cycle', async ({ assert, client }) 
 });
 
 test('it should be able to delete evaluation cycle', async ({ assert, client }) => {
-  const { user, evaluationCycle: evaluationCycleMake, company } = await makeEvaluationCycle();
+  const { user, evaluationCycleMock, company } = await makeEvaluationCycle();
 
-  await company.evaluationCycles().save(evaluationCycleMake);
+  await company.evaluationCycles().save(evaluationCycleMock);
 
-  const response = await client.delete(`/evaluationcycles/${evaluationCycleMake.id}`).loginVia(user, 'jwt').end();
+  const response = await client.delete(`/evaluationcycles/${evaluationCycleMock.id}`).loginVia(user, 'jwt').end();
 
   response.assertStatus(204);
-  const checkEvaluationCycle = await EvaluationCycle.find(evaluationCycleMake.id);
+  const checkEvaluationCycle = await EvaluationCycle.find(evaluationCycleMock.id);
   assert.isNull(checkEvaluationCycle);
 });
