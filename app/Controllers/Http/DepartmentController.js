@@ -51,10 +51,14 @@ class DepartmentController {
 
   async store({ request, response, auth }) {
     const data = request.all();
-    const department = await Department.create({ ...data, created_by: auth.user.id });
-    const departmentReturn = await this.show({ params: { id: department.id } });
-    await Redis.del('departments');
-    return response.status(201).json(departmentReturn);
+    const existsDepartment = await Department.query().where({ name: data.name }).first();
+    if (!existsDepartment) {
+      const department = await Department.create({ ...data, created_by: auth.user.id });
+      const departmentReturn = await this.show({ params: { id: department.id } });
+      await Redis.del('departments');
+      return response.status(201).json(departmentReturn);
+    }
+    return response.status(400).json({ message: 'Já existe um setor com este nome' });
   }
 
   async show({ params }) {

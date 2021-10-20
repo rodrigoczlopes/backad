@@ -14,7 +14,7 @@
     "adonis-app"
   ],
   "author": "Unimed Varginha Cooperativa de Trabalho Médico",
-  "license": "UNLICENSED",
+  "license": "LICENSED",
   "private": true,
   "dependencies": {
     "@adonisjs/ace": "^5.0.8",

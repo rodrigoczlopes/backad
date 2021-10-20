@@ -11,47 +11,26 @@ const EvaluationCycleArea = use('App/Models/EvaluationCycleArea');
 class EvaluationCycleController {
   async index({ request }) {
     let { page, itemsPerPage } = request.get();
-    const { searchSentence, searchBy, company_id } = request.get();
+    const { searchSentence, searchBy } = request.get();
 
     if (!page) {
       page = 1;
       itemsPerPage = 20000;
     }
 
-    if (!company_id) {
-      if (searchSentence) {
-        return EvaluationCycle.query()
-          .where(searchBy, 'like', `%${searchSentence}%`)
-          .orderBy(searchBy)
-          .paginate(page, itemsPerPage);
-      }
-
+    if (searchSentence) {
       return EvaluationCycle.query()
-        .with('createdBy', (builder) => {
-          builder.select(['id', 'name', 'email', 'avatar']);
-        })
-        .orderBy('description')
+        .where(searchBy, 'like', `%${searchSentence}%`)
+        .orderBy(searchBy)
         .paginate(page, itemsPerPage);
     }
 
-    // TODO: Inserir no frontend uma opção para a pessoa selecionar o ciclo que quer visualizar
     return EvaluationCycle.query()
-      .where({ company_id })
-      .where('initial_evaluation_period', '<=', new Date())
-      .where('final_evaluation_period', '>=', new Date())
-      .select(
-        'id',
-        'company_id',
-        'initial_evaluation_period',
-        'final_evaluation_period',
-        'initial_manager_feedback',
-        'final_manager_feedback',
-        'initial_employee_evaluation',
-        'final_employee_evaluation',
-        'initial_manager_evaluation',
-        'final_manager_evaluation'
-      )
-      .first();
+      .with('createdBy', (builder) => {
+        builder.select(['id', 'name', 'email', 'avatar']);
+      })
+      .orderBy('description')
+      .paginate(page, itemsPerPage);
   }
 
   async store({ request, response, auth }) {
@@ -63,11 +42,13 @@ class EvaluationCycleController {
     const evaluationCycleAreas = department_hierarchies.map((department) => ({
       evaluation_cycle_id: evaluationCycle.id,
       department_id: department,
+      created_by: auth.user.id,
     }));
 
     await EvaluationCycleArea.createMany(evaluationCycleAreas);
 
     await evaluationCycle.loadMany(['companies', 'evaluationCycleAreas']);
+    console.log('------->', 'verificando se está passando por aqui, pois está muito estranho');
     return response.status(201).json(evaluationCycle);
   }
 

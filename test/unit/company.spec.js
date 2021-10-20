@@ -50,10 +50,8 @@ test('it should be able to list companies', async ({ assert, client }) => {
 
   response.assertStatus(200);
 
-  const { data } = response.body;
-
-  assert.equal(data[0].name, company.name);
-  assert.equal(data[0].createdBy.id, user.id);
+  assert.equal(response.body[0].name, company.name);
+  assert.equal(response.body[0].createdBy.id, user.id);
 });
 
 test('it should be able to show single company', async ({ assert, client }) => {
