@@ -48,7 +48,10 @@ class FormController {
       company_id: data.company_id,
       created_by: auth.user.id,
     }));
-    await BehaviorForm.createMany(behaviorForm);
+
+    if (behaviorForm) {
+      await BehaviorForm.createMany(behaviorForm);
+    }
     const formReturn = await this.show({ params: { id: form.id } });
     return response.status(201).json(formReturn);
   }
@@ -79,7 +82,11 @@ class FormController {
       company_id: data.company_id,
       created_by: auth.user.id,
     }));
-    await BehaviorForm.createMany(behaviorForm);
+
+    if (behaviorForm) {
+      await BehaviorForm.createMany(behaviorForm);
+    }
+
     return form;
   }
 

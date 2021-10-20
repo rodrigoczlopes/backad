@@ -9,11 +9,11 @@ const Redis = use('Redis');
 
 class NotificationController {
   async index({ auth }) {
-    const cachedNotifications = await Redis.get(`notifications_${auth.id}`);
+    const cachedNotifications = await Redis.get(`notifications_${auth.user.id}`);
     if (cachedNotifications) {
       return JSON.parse(cachedNotifications);
     }
-    const notification = await Notification.query()
+    const notifications = await Notification.query()
       .where('user', auth.user.id)
       .with('users', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
@@ -21,8 +21,8 @@ class NotificationController {
       .orderBy('created_at', 'desc')
       .fetch();
 
-    await Redis.set(`notifications_${auth.id}`, JSON.stringify(notification));
-    return notification;
+    await Redis.set(`notifications_${auth.user.id}`, JSON.stringify(notifications));
+    return notifications;
   }
 
   async store({ request, response }) {

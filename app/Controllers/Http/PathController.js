@@ -50,6 +50,7 @@ class PathController {
     const data = request.all();
     const path = await Path.create({ ...data, created_by: auth.user.id });
     const pathReturn = await this.show({ params: { id: path.id } });
+    await Redis.del(`paths`);
     return response.status(201).json(pathReturn);
   }
 
@@ -64,6 +65,7 @@ class PathController {
     const path = await Path.find(params.id);
     path.merge({ ...data, updated_by: auth.user.id });
     await path.save();
+    await Redis.del(`paths`);
     return path;
   }
 

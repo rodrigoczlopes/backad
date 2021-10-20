@@ -15,21 +15,16 @@ class RatingScaleController {
     }
 
     if (searchSentence) {
-      const ratingScales = await RatingScale.query()
-        .where(searchBy, 'like', `%${searchSentence}%`)
-        .orderBy('score')
-        .paginate(page, itemsPerPage);
-      return ratingScales;
+      return RatingScale.query().where(searchBy, 'like', `%${searchSentence}%`).orderBy('score').paginate(page, itemsPerPage);
     }
 
-    const ratingScale = await RatingScale.query()
+    return RatingScale.query()
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
       .with('companies')
       .orderBy('score')
       .paginate(page, itemsPerPage);
-    return ratingScale;
   }
 
   async store({ request, response, auth }) {
