@@ -7,20 +7,31 @@ trait('Test/ApiClient');
 trait('DatabaseTransactions');
 trait('Auth/Client');
 
-test('it should register new user', async ({ assert, client }) => {
-  const userGroup = await Factory.model('App/Models/UserGroup').create();
+const makeUser = async () => {
   const company = await Factory.model('App/Models/Company').create();
+  const role = await Factory.model('App/Models/Role').make({
+    slug: 'administrator',
+    name: 'Administrador',
+    description: 'Administrador',
+  });
+
   const userPayload = {
     registry: '0145',
     username: '50.0145',
     name: 'Mateus Cabral da Silva',
     email: 'mateus.silva@unimedvarginha.coop.br',
     cpf: '063.602.086-01',
-    user_group_id: userGroup.id,
     company_id: company.id,
   };
 
   const loggedUser = await Factory.model('App/Models/User').create();
+  await loggedUser.roles().save(role);
+  return { userPayload, company, role, loggedUser };
+};
+
+test('it should register new user', async ({ assert, client }) => {
+  const { userPayload, loggedUser } = await makeUser();
+
   let user = await Factory.model('App/Models/User').make(userPayload);
   user = user.toJSON();
   delete user.avatar_url; // Deleting this field because when make toJSON on upper row this field is auto generated
@@ -30,20 +41,8 @@ test('it should register new user', async ({ assert, client }) => {
 });
 
 test('it should user be unique', async ({ client }) => {
-  const userGroup = await Factory.model('App/Models/UserGroup').create();
-  const company = await Factory.model('App/Models/Company').create();
+  const { userPayload, loggedUser } = await makeUser();
 
-  const userPayload = {
-    registry: '0145',
-    username: '50.0145',
-    name: 'Mateus Cabral da Silva',
-    email: 'mateus.silva@unimedvarginha.coop.br',
-    cpf: '063.602.086-01',
-    user_group_id: userGroup.id,
-    company_id: company.id,
-  };
-
-  const loggedUser = await Factory.model('App/Models/User').create();
   let user = await Factory.model('App/Models/User').make(userPayload);
   user = user.toJSON();
   delete user.avatar_url; // Deleting this field because when make toJSON on upper row this field is auto generated

@@ -7,33 +7,37 @@ const Redis = use('Redis');
 class AuthController {
   async register({ request, response }) {
     const { permissions, roles, ...data } = request.all();
+    console.log('----> opa <----');
+    try {
+      if (data.employees?.length > 0) {
+        data.employees?.forEach((userToAdd) => {
+          const userAlreadyExists = User.findBy('register', userToAdd.register);
+          if (!userAlreadyExists) {
+            User.create(userToAdd);
+          }
+        });
 
-    if (data.employees?.length > 0) {
-      data.employees?.forEach((userToAdd) => {
-        const userAlreadyExists = User.findBy('register', userToAdd.register);
-        if (!userAlreadyExists) {
-          User.create(userToAdd);
-        }
-      });
+        return response.status(201).json({ message: 'ok' });
+      }
 
-      return response.status(201).json({ message: 'ok' });
+      const user = await User.create(data);
+
+      if (roles) {
+        await user.roles().attach(roles);
+      }
+
+      if (permissions) {
+        await user.permissions().attach(permissions);
+      }
+
+      await user.loadMany(['roles', 'permissions']);
+
+      await Redis.del(`department-employee-list-${data.department_id}`);
+
+      return response.status(201).json(user);
+    } catch (error) {
+      return response.status(400).json({ message: error.message });
     }
-
-    const user = await User.create(data);
-
-    if (roles) {
-      await user.roles().attach(roles);
-    }
-
-    if (permissions) {
-      await user.permissions().attach(permissions);
-    }
-
-    await user.loadMany(['roles', 'permissions']);
-
-    await Redis.del(`department-employee-list-${data.department_id}`);
-
-    return user;
   }
 
   async authenticate({ response, request, auth }) {

@@ -211,3 +211,13 @@ Factory.blueprint('App/Models/Token', (faker, i, data = {}) => {
     ...data,
   };
 });
+
+Factory.blueprint('App/Models/Role', (faker, i, data = {}) => {
+  return {
+    id: faker.integer([1, 5]),
+    name: faker.sentence({ words: 1 }),
+    description: faker.sentence({ words: 1 }),
+    slug: faker.sentence({ words: 1 }),
+    ...data,
+  };
+});
