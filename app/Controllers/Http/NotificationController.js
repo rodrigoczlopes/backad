@@ -32,7 +32,7 @@ class NotificationController {
     return response.status(201).json(notification);
   }
 
-  async show({ params, auth }) {
+  async show({ params }) {
     const notification = await Notification.findOrFail(params.id);
     await notification.loadMany({ users: (builder) => builder.select(['id', 'name', 'email', 'avatar']) });
     return notification;
