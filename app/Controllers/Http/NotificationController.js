@@ -25,32 +25,32 @@ class NotificationController {
     return notifications;
   }
 
-  async store({ request, response }) {
+  async store({ request, response, auth }) {
     const data = request.all();
     const notification = await Notification.create(data);
-    await Redis.del(`notifications_${data.user}`);
+    await Redis.del(`notifications_${auth.user.id}`);
     return response.status(201).json(notification);
   }
 
-  async show({ params }) {
+  async show({ params, auth }) {
     const notification = await Notification.findOrFail(params.id);
     await notification.loadMany({ users: (builder) => builder.select(['id', 'name', 'email', 'avatar']) });
     return notification;
   }
 
-  async update({ params, request }) {
+  async update({ params, request, auth }) {
     const data = request.only(['content', 'user', 'read', 'hidden']);
 
     const notification = await Notification.findOrFail(params.id);
     notification.merge(data);
     await notification.save();
-    await Redis.del(`notifications_${data.user}`);
+    await Redis.del(`notifications_${auth.user.id}`);
     return notification;
   }
 
-  async destroy({ params }) {
+  async destroy({ params, auth }) {
     const notification = await Notification.findOrFail(params.id);
-    await Redis.del(`notifications_${notification.user}`);
+    await Redis.del(`notifications_${auth.user.id}`);
     await notification.delete();
   }
 }
