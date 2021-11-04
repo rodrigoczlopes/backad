@@ -69,6 +69,8 @@ Route.group(() => {
     );
   Route.get('departmentemployees', 'DepartmentEmployeeController.index');
   Route.get('departmenthierarchies', 'DepartmentHierarchyController.index');
+  Route.get('alldepartmenthierarchies', 'DepartmentHierarchyController.cycle');
+
   Route.resource('developmentplans', 'DevelopmentPlanController')
     .apiOnly()
     .validator(

@@ -81,6 +81,39 @@ class DepartmentHierarchyController {
     });
     return list_to_tree(treeNode);
   }
+
+  async cycle({ auth }) {
+    const departments = await Department.query()
+      .where('company_id', auth.user.company_id)
+      .where('active', true)
+      .orderBy('level', 'asc')
+      .fetch();
+    let treeNode = [];
+    let parentId = {};
+
+    const deparmentJson = departments.toJSON();
+
+    deparmentJson.forEach((department) => {
+      const level = department.level.split('.');
+      const unUnUnPreviousLevel = level[level.length - 5];
+      const unUnPreviousLevel = level[level.length - 4];
+      const unPreviousLevel = level[level.length - 3];
+      const previousLevel = level[level.length - 2];
+      const lastLevel = level[level.length - 1];
+
+      parentId = { ...parentId, [`${unUnPreviousLevel}.${unPreviousLevel}.${previousLevel}.${lastLevel}`]: department.id };
+
+      const item = {
+        value: department.id,
+        label: department.name,
+        leaf: true,
+        children: [],
+        parentId: parentId[`${unUnUnPreviousLevel}.${unUnPreviousLevel}.${unPreviousLevel}.${previousLevel}`],
+      };
+      treeNode = [...treeNode, item];
+    });
+    return list_to_tree(treeNode);
+  }
 }
 
 module.exports = DepartmentHierarchyController;
