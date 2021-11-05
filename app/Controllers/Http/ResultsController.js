@@ -12,7 +12,7 @@ const Hierarchy = use('App/Models/Hierarchy');
 
 class ResultsController {
   async index({ request, auth }) {
-    const { type } = request.all();
+    const { type, cycle } = request.all();
 
     if (type === 'all') {
       return User.query()
@@ -22,7 +22,7 @@ class ResultsController {
           builder.select(['id', 'name']);
         })
         .with('evaluationCycleAnswers', (builder) => {
-          builder.select(['id', 'user_answer', 'leader_answer', 'employee_id']);
+          builder.where({ evaluation_cycle_id: cycle }).select(['id', 'user_answer', 'leader_answer', 'employee_id']);
         })
         .orderBy('name', 'asc')
         .fetch();
@@ -77,7 +77,7 @@ class ResultsController {
             builder.select(['id', 'description', 'level', 'active']);
           })
           .with('evaluationCycleAnswers', (builder) => {
-            builder.select(['id', 'user_answer', 'leader_answer', 'employee_id']);
+            builder.where({ evaluation_cycle_id: cycle }).select(['id', 'user_answer', 'leader_answer', 'employee_id']);
           })
           .orderBy('name', 'asc')
           .fetch();

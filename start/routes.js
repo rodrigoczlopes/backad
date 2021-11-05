@@ -55,6 +55,11 @@ Route.group(() => {
       ])
     );
 
+  Route.get(
+    'consolidatedevaluationcycledevelopmentplans/:id/:cycle',
+    'ConsolidatedEvaluationCycleDevelopmentPlanController.index'
+  );
+
   Route.resource('consolidatedevaluationcycledevelopmentplans', 'ConsolidatedEvaluationCycleDevelopmentPlanController').apiOnly();
 
   Route.resource('dashboardsummaries', 'DashboardSummaryController').apiOnly().middleware(['is:(administrator)']);

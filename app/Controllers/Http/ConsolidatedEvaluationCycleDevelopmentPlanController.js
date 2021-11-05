@@ -11,7 +11,7 @@ const Department = use('App/Models/Department');
 const Hierarchy = use('App/Models/Hierarchy');
 
 class ConsolidatedEvaluationCycleDevelopmentPlanController {
-  async index({ auth }) {
+  async index({ params, auth }) {
     // Verificando a hierarquia do líder que está acessando
     const hierarchy = await Hierarchy.find(auth.user.hierarchy_id);
     const hierarchyjson = hierarchy.toJSON();
@@ -61,7 +61,7 @@ class ConsolidatedEvaluationCycleDevelopmentPlanController {
             builder.select(['id', 'description', 'level', 'active']);
           })
           .with('evaluationCycleDevelopmentPlans', (builder) => {
-            builder.with('developmentPlans');
+            builder.where({ evaluation_cycle_id: params.cycle }).with('developmentPlans');
           })
           .orderBy('name', 'asc')
           .fetch();
