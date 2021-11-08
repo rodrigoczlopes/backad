@@ -15,7 +15,7 @@ class PdiReportController {
         builder.select(['active', 'id', 'name', 'level']);
       })
       .with('evaluationCycleDevelopmentPlans', (builder) => {
-        builder.with('developmentPlans');
+        builder.where({ evaluation_cycle_id: id }).with('developmentPlans');
       })
       .withCount('evaluationCycleDevelopmentPlans as employeeReceivedPdi', (builder) => {
         builder.where({ evaluation_cycle_id: id });
