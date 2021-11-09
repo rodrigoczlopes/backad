@@ -13,6 +13,10 @@ class ContinuousFeedbackController {
       .with('createdBy', (builder) => {
         builder.select(['id', 'name', 'email', 'avatar']);
       })
+      .with('continuousFeedbackDevelopmentPlans')
+      .with('employees', (builder) => {
+        builder.with('departments').select('id', 'name', 'department_id');
+      })
       .fetch();
   }
 
