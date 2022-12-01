@@ -21,6 +21,8 @@ Route.group(() => {
         [['behaviors.update'], ['BehaviorUpdate']],
       ])
     );
+
+  
   Route.resource('behaviorforms', 'BehaviorFormController')
     .apiOnly()
     .validator(
