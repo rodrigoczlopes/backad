@@ -6,6 +6,7 @@ class EvaluationCycleDevelopmentPlanSchema extends Schema {
     this.table('evaluation_cycle_development_plans', (table) => {
       table.dropColumn('fakeId');
       table.string('fake_id');
+      table.string('expected');
     });
   }
 
@@ -13,6 +14,7 @@ class EvaluationCycleDevelopmentPlanSchema extends Schema {
     this.table('evaluation_cycle_development_plans', (table) => {
       table.string('fakeId');
       table.dropColumn('fake_id');
+      table.string('expected');
     });
   }
 }

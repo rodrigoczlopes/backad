@@ -36,7 +36,7 @@ class ContinuousFeedbackDevelopmentPlanController {
   }
 
   async update({ params, request, response, auth }) {
-    const data = request.only(['action', 'initial_date', 'final_date', 'leader_finished', 'status', 'fake_id']);
+    const data = request.only(['action', 'initial_date', 'final_date', 'leader_finished', 'status', 'fake_id', 'expected']);
 
     try {
       const continuousFeedbackDevelopmentPlan = await ContinuousFeedbackDevelopmentPlan.find(params.id);

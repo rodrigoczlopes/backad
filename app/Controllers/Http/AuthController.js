@@ -5,11 +5,8 @@ const Ws = use('Ws');
 const Redis = use('Redis');
 
 class AuthController {
-  
   async register({ request, response }) {
-    
     const { permissions, roles, ...data } = request.all();
-    console.log('----> opa <----');
     try {
       if (data.employees?.length > 0) {
         data.employees?.forEach((userToAdd) => {
@@ -43,15 +40,11 @@ class AuthController {
   }
 
   async authenticate({ response, request, auth }) {
-    
     try {
       const { username, password } = request.all();
-      console.log(username, password)
+      const { token } = await auth.attempt(username, password);
 
-       const { token } = await auth.attempt(username, password);
-      
       const userData = await User.findByOrFail('username', username);
-     console.log(userData)
 
       await userData.loadMany(['positions', 'hierarchies', 'departments', 'roles', 'permissions', 'userAccessProfiles']);
 
@@ -102,12 +95,12 @@ class AuthController {
         userChannel.broadcastToAll('logout');
       }
 
-      return {token, user };
+      return { token, user };
     } catch (err) {
       if (err.authScheme) {
         return response.status(401).json({ message: 'PasswordMisMatchException' });
       }
-      return response.status (500).json({message: err.message});
+      return err;
     }
   }
 }
